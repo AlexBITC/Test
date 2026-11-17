@@ -209,9 +209,11 @@ class Tracks:
             out.append(self.value(self.ch[key], f) if key in self.ch else obj.location[k])
         return out
 
-    def bake(self, fs, fe, loop_frames=0):
+    def bake(self, fs, fe, loop_frames=0, loop_start=None):
         """loop_frames > 0: Kanaele, die das ganze Video abdecken, gleiten in den letzten
-        loop_frames Frames exakt auf ihren Wert von Frame fs zurueck (nahtloser Loop)."""
+        loop_frames Frames exakt auf ihren Wert von Frame loop_start (Standard fs) zurueck
+        (nahtloser Loop; mit loop_start > fs bleibt davor ein 'in'-Teil unveraendert)."""
+        ls = fs if loop_start is None else loop_start
         n_keys = 0
         for ch in self.ch.values():
             if not ch["layers"]:
@@ -220,8 +222,8 @@ class Tracks:
             b = min(fe, max(l[3] for l in ch["layers"]) + 1)
             frames = list(range(a, b + 1))
             vals = [self.value(ch, f) for f in frames]
-            if loop_frames and a <= fs and b >= fe:
-                v0 = vals[frames.index(fs)]
+            if loop_frames and a <= ls and b >= fe:
+                v0 = vals[frames.index(ls)]
                 for i, f in enumerate(frames):
                     if f >= fe - loop_frames:
                         w = ease_in_out((f - (fe - loop_frames)) / loop_frames)

@@ -1,9 +1,12 @@
 {
   "name": "ki-staunen-video-engine",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "Blender-basierte Video-Engine fuer TikTok-Kurzvideos im Stil KI-Staunen",
+  "description": "Video-Engine fuer TikTok-Kurzvideos im Stil KI-Staunen: Asset-Bibliothek aus Blender, 2D-Compose pro Episode",
   "scripts": {
+    "setup": "./setup.sh",
+    "assets": "python3 -m engine.build_assets",
+    "compose": "python3 -m engine.compose",
     "render": "python3 -m engine.render",
     "voices": "python3 -m engine.tts --check-voices"
   }

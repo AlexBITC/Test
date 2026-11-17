@@ -1,0 +1,7 @@
+numpy
+pillow
+scipy
+soundfile
+librosa
+faster-whisper
+piper-tts

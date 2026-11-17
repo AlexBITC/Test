@@ -50,9 +50,9 @@ def _load(p):
 SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22}
 
 
-def build_mix(tl: dict, work: Path) -> Path:
-    anchors = json.loads((work / "anchors.json").read_text())
-    cues = anchors.get("cues", [])
+def build_mix(tl: dict, work: Path, cue_list=None) -> Path:
+    """cue_list: [(frame, art, gain), ...]; ohne Angabe aus anchors.json (alte Blender-Pipeline)."""
+    cues = cue_list if cue_list is not None else json.loads((work / "anchors.json").read_text()).get("cues", [])
     sfx = {k: _load(v) for k, v in make_sfx(work / "sfx").items()}
     n = int(tl["frames"] / FPS * SR) + SR
     mix = np.zeros(n, np.float32)
