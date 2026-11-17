@@ -1,0 +1,10 @@
+{
+  "name": "ki-staunen-video-engine",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Blender-basierte Video-Engine fuer TikTok-Kurzvideos im Stil KI-Staunen",
+  "scripts": {
+    "render": "python3 -m engine.render",
+    "voices": "python3 -m engine.tts --check-voices"
+  }
+}

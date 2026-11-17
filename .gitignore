@@ -1,0 +1,6 @@
+out/cache/
+out/work/
+__pycache__/
+*.pyc
+node_modules/
+.env

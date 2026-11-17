@@ -1,0 +1,91 @@
+{
+  "folge": 2,
+  "slug": "drei-helfer",
+  "titel": "Byte schickt drei Helfer los",
+  "hook": "150 € zu viel. Jeden Monat.",
+  "begriff": "Beschaffung",
+  "kapitel": ["ANGEBOTE LESEN", "ERSPARNIS RECHNEN", "MAIL SCHREIBEN"],
+  "szenen": [
+    {
+      "sprecher": "byte",
+      "text": "Kalle, du zahlst 150 Euro zu viel. Jeden Monat.",
+      "highlight": ["150"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Frame 1 ist schon in Bewegung: Kamera fährt, Mehlstaub schwebt im Gegenlicht, Kalle wischt mit einem Tuch über die Theke, Kasse geschlossen, Byte schwebt rechts neben Kalle. Beat bei 'Kalle': Byte dreht sich mit Whoosh einmal um die eigene Achse, türkise Lichtspur, Antenne schwingt nach. Kalle schaut hoch, Augen folgen Byte. Beat bei '150': Ein 25-kg-Mehlsack (neutrales Etikett 'MEHL 25 kg', keine Marke) fällt von oben auf die Theke, Squash beim Aufprall (80 % Höhe, 120 % Breite), dann Stretch zurück, Mehlwolke als Partikel-Ring, Brötchen im Korb hüpfen kurz mit. Beat bei 'zu viel': rotes Preisschild '150 € zu viel' klappt an einer Schnur auf und pendelt dreimal gedämpft aus, Buzz. Kalle zweifel: rechte Braue hoch, Kopf 10° schief, Schnurrbart zuckt. Byte-Gesicht: ernste Strich-Augen. [Overlay] Hook-Karte slidet ab Frame 1 von oben rein (0–0,3 s), steht bis 2 s, dann nach oben raus. Kamera: Push-in von halbtotal (35 mm) auf amerikanisch (50 mm), ease-out, leichter Handheld-Drift."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Ich hab drei Mehl-Angebote im Postfach. Aber null Zeit.",
+      "highlight": ["Mehl-Angebote"],
+      "reaktion": "zweifel",
+      "set": "buero",
+      "kapitel": null,
+      "visual": "[3D] Übergang: Whip-Pan von der Theke ins Büro (8 Frames, Motion Blur). Szenenstart: Kalle plumpst auf den Bürostuhl, Stuhl federt und dreht sich leicht nach. Beat bei 'drei': Laptop-Postfach-Symbol springt hoch, roter Zähler zählt 1, 2, 3 (je ein Pop). Drei Briefumschläge flattern aus dem Laptop und stapeln sich schief, der oberste rutscht fast runter und bleibt wackelnd hängen. Beat bei 'null': Kalle hebt beide Hände, die Wanduhr im Hintergrund dreht die Zeiger im Zeitraffer. Kalle kratzt sich unter der Mütze, die Mütze verrutscht. Byte schwebt hinter Kalles Schulter rein, Pixelaugen blinzeln neugierig. Kamera: langsame Kreisfahrt (30°) um den Schreibtisch, endet mit Kalle links und Laptop rechts."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ich schick drei Helfer los. Du drückst nur auf Senden.",
+      "highlight": ["Helfer", "Senden"],
+      "reaktion": "staunen",
+      "set": "buero",
+      "kapitel": null,
+      "visual": "[3D] Szenenstart: Byte fliegt vor Kalle, der Antennenpunkt blinkt immer schneller, Byte zieht sich auf 85 % zusammen (Antizipation). Beat bei 'Helfer': Lichtblitz und Whoosh, aus Byte springen drei kleine Helfer-Bytes (je 45 % Größe) mit Nummern-Badges 1, 2, 3, Byte selbst bleibt in der Mitte. Erkennungszeichen: Helfer 1 eine Scan-Brille, Helfer 2 kreisende Ziffern, Helfer 3 eine kleine Feder. Sie salutieren nacheinander (4 Frames versetzt) und schwärmen mit Lichtspuren in Dreiecksformation aus. Beat bei 'Senden': Ein kleiner Senden-Knopf poppt als Hologramm vor Kalle auf und blinkt. Kalle staunen: 4 Frames Antizipation (Kopf leicht runter), dann Augen x1,6 mit Overshoot, Kinnlade fällt, Mütze hüpft zweimal, gelbe '!'-Partikel. Kamera: Rückfahrt von nah (50 mm) auf halbtotal (28 mm), am Ende Whip-Pan ins Studio."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Helfer eins liest die Angebote. Gleiches Mehl: Du zahlst 18 Euro pro Sack, der Günstigste 15,50.",
+      "highlight": ["18", "15,50"],
+      "reaktion": "zweifel",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Szenenstart: Das Studiolicht fährt hoch, der Screen schaltet mit Scanline-Flackern ein. Kapitel-Banner slidet rein, der Fortschrittsbalken füllt sich. Beat bei 'liest': Helfer 1 fliegt zu drei schwebenden Briefumschlägen, ein türkiser Scan-Strahl fährt über jeden (6 Frames versetzt). Die Laschen klappen auf, das Papier gleitet raus und verwandelt sich mit Mehl-Puff in je einen Mehlsack, der mit Squash landet. Beat bei '18': Über dem linken Sack klappt das rote Schild '18,00 €' auf (180° am Scharnier, Overshoot, Nachwackeln), Buzz. Beat bei '15,50': Über dem rechten Sack klappt das grüne Schild '15,50 €' auf, Funkel-Partikel, Ding, der mittlere Sack wird dezent grau. Kalle steht links unten im Studio, zweifel: beugt sich vor und kneift ein Auge zusammen. [Screen] 2 Zeilen, Zahlen zählen synchron zu den Beats hoch: 'Bisher: 18,00 € pro Sack' / 'Bestes Angebot: 15,50 €'. Kamera: Fahrt von links nach rechts an den Säcken entlang (35 mm, ease-in-out), endet leicht von unten auf dem grünen Schild."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Helfer zwei rechnet: 2,50 Euro weniger, mal 60 Säcke im Monat. Macht 150 Euro.",
+      "highlight": ["2,50", "60", "150"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Szenenstart: In der Kapitel-Leiste bekommt Kapitel 1 ein ✓ mit Pop, Kapitel 2 leuchtet auf. Helfer 2 fliegt zwischen die beiden Schilder, seine Ziffern kreisen schneller. Beat bei '2,50': Aus der Lücke zwischen den Schildern fallen goldene Münzen und stapeln sich zu einer kleinen Säule '2,50 €'. Jede Münze federt kurz, die letzte dreht sich wie ein Kreisel aus. Beat bei '60': Hinter Helfer 2 fallen 60 kleine Mehlsäcke in einem Raster aus 6 Reihen à 10, als Welle von links nach rechts (2 Frames pro Sack versetzt, Pop pro Reihe, kleiner Puff pro Sack). Beat bei '150': Neben dem Raster wächst eine große goldene Münzsäule, ihre Beschriftung zählt bis '150 €' mit, oben ein Glanzblitz, Ding. Kalle staunen, sein Kopf folgt der wachsenden Säule nach oben. [Screen] 2,50 € × 60 Säcke = 150 €, jeder Teil erscheint auf seinem Beat. Kamera: seitliche Fahrt am Raster entlang, danach Tilt an der Münzsäule hoch."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Helfer drei schreibt die Mail an den neuen Lieferanten. Höflich und mit Bitte um Probelieferung.",
+      "highlight": ["Probelieferung"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Szenenstart: In der Kapitel-Leiste bekommt Kapitel 2 ein ✓, Kapitel 3 wird aktiv. Helfer 3 dockt an eine schwebende Low-Poly-Tastatur an. Beat bei 'schreibt': Helfer 3 tippt, jede Taste federt einzeln runter und leuchtet türkis, kleine Funken. Beat bei 'Höflich': Neben der Mail erscheint mit Pop ein Haken. Beat bei 'Probelieferung': Ein Mini-Mehlsack mit Schleife poppt neben der Mail auf und dreht sich langsam. Kalle staunt, setzt dann eine Lesebrille auf und nickt zweimal anerkennend. [Screen] Die Mail baut sich mit blinkendem Cursor Zeile für Zeile auf: 'Anfrage: 60 Sack Mehl pro Monat' / 'Bitte um eine Probelieferung' / 'Freundliche Grüße, Kalle'. Kamera: Push-in auf den Screen, bis er 70 % der Bildbreite füllt, dann Schwenk auf Kalles Gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Das ist Beschaffung: das Richtige zum besten Preis einkaufen. Aufs Jahr sind das 1.800 Euro.",
+      "highlight": ["Beschaffung", "1.800"],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": null,
+      "visual": "[3D] Szenenstart: Das Licht dimmt auf einen Spot, das Kapitel-Banner fährt raus. Alle drei Helfer fliegen zurück und verschmelzen mit einem Lichtblitz wieder mit Byte. Beat bei 'Beschaffung': Die Begriff-Karte 'BESCHAFFUNG' slidet mit Glanz-Sweep rein. Beat bei 'Richtige': Eine große Balkenwaage wächst aus dem Boden, links ein Mehlsack mit Häkchen-Plakette 'Qualität', rechts ein Preisschild 'Preis'. Die Waage kippt erst nach links, dann nach rechts und pendelt in drei gedämpften Schwüngen ins Gleichgewicht. Beat bei '1.800': Davor fallen nacheinander 12 Münzsäulen à 150 € (3 Frames versetzt, Pop je Säule), darüber erscheint groß '1.800 €' und zählt hoch. Kalle neutral, seine Augen folgen den fallenden Säulen, der Schnurrbart zuckt. [Screen] 150 € × 12 = 1.800 €. Kamera: langsame Kreisfahrt (45°) um die Waage, leicht von unten."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Gesendet! Des gibt's doch net!",
+      "highlight": ["Gesendet"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Übergang: Whip-Pan zurück zur Theke. Szenenstart: Auf dem Laptop pulsiert ein großer runder Senden-Button, Kalle holt mit dem Zeigefinger weit aus (6 Frames Antizipation). Beat bei 'Gesendet': Der Finger trifft, der Button federt (Squash auf 60 %), ein türkiser Schockwellen-Ring breitet sich aus, Ding. Ein Briefumschlag faltet sich in 10 Frames zum Papierflieger und fliegt mit Lichtspur in einer Kurve durch die Ladentür. Beat bei 'Des': Kalle jubel, Arme hoch, Mehlwolke, Konfetti in Palettenfarben, Mütze springt. Byte macht einen Looping, die Pixelaugen werden zu ^^. [Overlay] Kapitel-Leiste: alle drei mit ✓ und Glanz-Sweep. Kamera: Push-in von unten auf Kalle (28 mm), kurzer Kamera-Shake beim Button-Treffer."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Moment … wie lang zahl ich schon 150 Euro zu viel?",
+      "highlight": ["150"],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Szenenstart: Das Konfetti hängt kurz in der Luft und fällt in Zeitlupe. Kalle hält inne, sein Lächeln friert ein. Beat bei 'Moment': Kalles Augen werden langsam größer, eine Schweißperle rollt herunter. Beat bei '150': schock, die Mütze schießt hoch, rotiert und landet wieder. Die Kassenschublade springt auf, goldene Münzen flattern wie kleine Vögel heraus und verschwinden nach oben, Buzz. Byte zuckt zurück, die Pixelaugen werden zu O_O. Kamera: harter Zoom auf Kalles Gesicht (4 Frames), 0,5 s halten. Danach schnelle Rückfahrt (ease-in-out) exakt in die Kameraposition von Frame 1 aus Szene 1. Dabei schließt sich die Kasse, das Konfetti ist weg, Kalle nimmt das Tuch auf, Byte schwebt rechts an derselben Stelle wie im ersten Frame. Das letzte Frame entspricht dem ersten Frame (nahtloser Loop)."
+    }
+  ]
+}

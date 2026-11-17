@@ -1,0 +1,512 @@
+"""2D-Ebene als transparente PNG-Sequenz (1080x1920) und Screen-Texturen fuer den Studio-Screen.
+
+Einheitliches UI-System: abgerundete Karten (Radius 28 px), halbtransparentes Navy, 2 px tuerkise
+Kante, weicher Schatten, Einblendungen mit Slide + Fade (200-300 ms). Eine Schriftfamilie
+(Lilita One), zwei Groessen pro Bild: GROSS 84 px, KLEIN 40 px.
+"""
+from __future__ import annotations
+
+import json
+import math
+import os
+from functools import lru_cache
+from multiprocessing import Pool
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+FONT = Path(__file__).resolve().parent / "fonts" / "LilitaOne-Regular.ttf"
+FALLBACK = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+W, H = 1080, 1920
+BIG, SMALL = 84, 40
+FPS = 30
+# Palette
+NAVY = (27, 24, 48)
+TURQ = (46, 230, 214)
+GOLD = (242, 180, 90)
+FLOUR = (245, 241, 232)
+RED = (255, 90, 95)
+GREEN = (61, 220, 132)
+YELLOW = (255, 225, 77)
+GREY = (120, 116, 150)
+# Layout (Safe Zone: oben 220, rechts 160, unten 420)
+X0, X1 = 60, 920
+TOP = 236
+SUB_Y = 1350          # Mitte der Untertitel (Band 1250-1450)
+SUB_X = (60 + 900) // 2
+
+
+@lru_cache(maxsize=16)
+def font(size):
+    try:
+        return ImageFont.truetype(str(FONT), size)
+    except OSError:
+        return ImageFont.truetype(FALLBACK, size)
+
+
+def clamp01(t):
+    return max(0.0, min(1.0, t))
+
+
+def ease_out(t):
+    t = clamp01(t)
+    return 1 - (1 - t) ** 3
+
+
+def ease_in_out(t):
+    t = clamp01(t)
+    return 4 * t ** 3 if t < 0.5 else 1 - (-2 * t + 2) ** 3 / 2
+
+
+def ease_out_back(t, s=1.70158):
+    t = clamp01(t)
+    return 1 + (s + 1) * (t - 1) ** 3 + s * (t - 1) ** 2
+
+
+def slide(f, f_in, f_out=None, dur=8):
+    """0..1 Sichtbarkeit (Slide + Fade, 8 Frames = 267 ms)."""
+    a = ease_out((f - f_in) / dur)
+    if f_out is not None:
+        a = min(a, 1 - ease_in_out((f - f_out) / dur))
+    return clamp01(a)
+
+
+# ------------------------------------------------------------------ Zeichen-Helfer
+def card(img, box, alpha=1.0, border=TURQ, fill=NAVY, fill_a=0.84, radius=28, glow=False):
+    if alpha <= 0.01:
+        return
+    x0, y0, x1, y1 = [int(v) for v in box]
+    pad = 40
+    sh = Image.new("RGBA", (x1 - x0 + 2 * pad, y1 - y0 + 2 * pad), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle((pad, pad + 10, pad + x1 - x0, pad + y1 - y0 + 10), radius,
+                                         fill=(0, 0, 0, int(150 * alpha)))
+    sh = sh.filter(ImageFilter.GaussianBlur(14))
+    img.alpha_composite(sh, (x0 - pad, y0 - pad))
+    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.rounded_rectangle((x0, y0, x1, y1), radius, fill=(*fill, int(255 * fill_a * alpha)),
+                        outline=(*border, int(255 * alpha)), width=2)
+    img.alpha_composite(layer)
+
+
+def sweep(img, box, t, radius=28, alpha=1.0):
+    """Glanz-Sweep: diagonales Lichtband laeuft einmal ueber die Karte (t 0..1)."""
+    if not (0 < t < 1) or alpha <= 0:
+        return
+    x0, y0, x1, y1 = [int(v) for v in box]
+    w, h = x1 - x0, y1 - y0
+    band = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(band)
+    cx = -h + (w + 2 * h) * t
+    d.polygon([(cx, 0), (cx + 70, 0), (cx + 70 - h * 0.6, h), (cx - h * 0.6, h)], fill=(255, 255, 255, int(90 * alpha)))
+    band = band.filter(ImageFilter.GaussianBlur(6))
+    mask = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, w - 1, h - 1), radius, fill=255)
+    clip = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    clip.paste(band, (0, 0), mask)
+    img.alpha_composite(clip, (x0, y0))
+
+
+def text_center(img, xy, s, size, fill, alpha=1.0, stroke=0, stroke_fill=(0, 0, 0), scale=1.0, anchor="mm"):
+    if alpha <= 0.01:
+        return
+    sz = max(4, int(round(size * scale)))
+    fnt = font(sz)
+    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.text(xy, s, font=fnt, fill=(*fill, int(255 * alpha)), anchor=anchor, stroke_width=int(stroke * scale),
+           stroke_fill=(*stroke_fill, int(255 * alpha)))
+    img.alpha_composite(layer)
+
+
+def check_icon(d, cx, cy, s, color, width=6):
+    d.line([(cx - s * 0.45, cy), (cx - s * 0.12, cy + s * 0.35), (cx + s * 0.5, cy - s * 0.4)], fill=color, width=width,
+           joint="curve")
+
+
+# ------------------------------------------------------------------ Untertitel-Gruppen
+def subtitle_groups(scene):
+    """2-4 Woerter pro Einblendung, Umbruch an Satzzeichen und nach Breite (max. 840 px)."""
+    words = []
+    for w in scene["words"]:
+        if not any(ch.isalnum() for ch in w["w"]):
+            if words:
+                words[-1] = dict(words[-1], w=words[-1]["w"] + " " + w["w"])
+            continue
+        words.append(dict(w))
+    fnt = font(BIG)
+    groups, cur = [], []
+
+    def width(ws):
+        return sum(fnt.getlength(x["w"]) for x in ws) + (fnt.getlength(" ") + 16) * (len(ws) - 1)
+    for w in words:
+        if cur and (len(cur) >= 4 or width(cur + [w]) > 820):
+            groups.append(cur)
+            cur = []
+        cur.append(w)
+        if w["w"][-1] in ".!?:…," and len(cur) >= 2:
+            groups.append(cur)
+            cur = []
+    if cur:
+        if len(cur) == 1 and groups and len(groups[-1]) < 4 and width(groups[-1] + cur) <= 820:
+            groups[-1] = groups[-1] + cur
+        else:
+            groups.append(cur)
+    return groups
+
+
+def draw_subtitles(img, tl, f):
+    for si, s in enumerate(tl["scenes"]):
+        if not (s["f0"] <= f < s["f1"]):
+            continue
+        groups = subtitle_groups(s)
+        for gi, g in enumerate(groups):
+            g0 = g[0]["f0"] - 2
+            g1 = groups[gi + 1][0]["f0"] - 2 if gi + 1 < len(groups) else s["f1"] - 3
+            if not (g0 <= f < g1):
+                continue
+            out = clamp01((g1 - f) / 3)
+            fnt = font(BIG)
+            space = fnt.getlength(" ") + 16
+            total = sum(fnt.getlength(x["w"]) for x in g) + space * (len(g) - 1)
+            x = SUB_X - total / 2
+            for w in g:
+                ww = fnt.getlength(w["w"])
+                if f >= w["f0"] - 2:
+                    t = (f - (w["f0"] - 2)) / 6
+                    sc = 0.6 + 0.4 * ease_out_back(t, 3.0)
+                    a = clamp01((f - (w["f0"] - 2) + 1) / 2) * out
+                    col = YELLOW if w["hl"] else (255, 255, 255)
+                    text_center(img, (x + ww / 2, SUB_Y), w["w"], BIG, col, a, stroke=7, scale=sc)
+                x += ww + space
+
+
+# ------------------------------------------------------------------ Elemente
+def draw_hook(img, tl, f):
+    f_in, f_out = 0, 60
+    if f > f_out + 10:
+        return
+    a = slide(f, f_in, f_out, 9)
+    if a <= 0:
+        return
+    dy = -160 * (1 - a)
+    hook = tl["hook"]
+    parts = hook.split(". ", 1)
+    lines = [parts[0] + "." if len(parts) > 1 else parts[0]] + ([parts[1]] if len(parts) > 1 else [])
+    box = (X0, TOP + dy, X1, TOP + 60 + 92 * len(lines) + dy)
+    card(img, box, a)
+    for i, ln in enumerate(lines):
+        col = RED if any(ch.isdigit() for ch in ln) else (255, 255, 255)
+        text_center(img, ((X0 + X1) / 2, TOP + 30 + 46 + 92 * i + dy), ln, BIG, col, a)
+
+
+def chapter_state(tl, f):
+    """(aktives Kapitel, Banner sichtbar, Leiste sichtbar, alle erledigt)"""
+    for s in tl["scenes"]:
+        if s["f0"] <= f < s["f1"]:
+            return s
+    return tl["scenes"][-1]
+
+
+def draw_banner(img, tl, f):
+    sc = tl["scenes"]
+    # Banner-Bereiche: zusammenhaengende Szenen mit kapitel != None
+    for i, s in enumerate(sc):
+        if s["kapitel"] is None:
+            continue
+        k = s["kapitel"]
+        first = i == 0 or sc[i - 1]["kapitel"] is None
+        last = i == len(sc) - 1 or sc[i + 1]["kapitel"] is None
+        f_in = s["f0"] if first else s["f0"] - 100000
+        f_out = s["f1"] - 4 if last else None
+        if not (s["f0"] - 2 <= f < s["f1"] + (6 if last else 0)):
+            continue
+        a = slide(f, f_in + 2, f_out, 8)
+        dx = -80 * (1 - a)
+        box = (X0 + dx, TOP, X1 + dx, TOP + 84)
+        card(img, box, a)
+        label = f"{k + 1} · {tl['kapitel'][k]}"
+        text_center(img, (X0 + 34 + dx, TOP + 36), label, SMALL, (255, 255, 255), a, anchor="lm")
+        prog = ease_in_out((f - s["f0"] - 4) / max(1, s["f1"] - s["f0"] - 10))
+        layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        d = ImageDraw.Draw(layer)
+        bx0, bx1, by = X0 + 34 + dx, X1 - 34 + dx, TOP + 66
+        d.rounded_rectangle((bx0, by, bx1, by + 8), 4, fill=(255, 255, 255, int(50 * a)))
+        if prog > 0:
+            d.rounded_rectangle((bx0, by, bx0 + (bx1 - bx0) * prog, by + 8), 4, fill=(*TURQ, int(255 * a)))
+        img.alpha_composite(layer)
+
+
+def draw_chapter_bar(img, tl, f):
+    sc = tl["scenes"]
+    n = len(tl["kapitel"])
+    if n == 0:
+        return
+    cur = chapter_state(tl, f)
+    idx = sc.index(cur)
+    show_from = next((s["f0"] for s in sc if s["kapitel"] is not None), None)
+    if show_from is None:
+        return
+    # Sichtbar in Kapitel-Szenen und in der Szene, die alle Kapitel abschliesst (erste Szene nach dem
+    # letzten Kapitel mit Jubel), sonst ausgeblendet.
+    chap_scenes = [i for i, s in enumerate(sc) if s["kapitel"] is not None]
+    finale = next((i for i in range(chap_scenes[-1] + 1, len(sc)) if sc[i]["reaktion"] == "jubel"), None)
+    vis_ranges = [(sc[chap_scenes[0]]["f0"], sc[chap_scenes[-1]]["f1"])]
+    if finale is not None:
+        vis_ranges.append((sc[finale]["f0"], sc[finale]["f1"]))
+    a = 0.0
+    for r0, r1 in vis_ranges:
+        a = max(a, slide(f, r0 + 4, r1 - 5, 8))
+    if a <= 0:
+        return
+    in_finale = finale is not None and sc[finale]["f0"] <= f < sc[finale]["f1"]
+    y0 = TOP + 98 if cur["kapitel"] is not None else TOP
+    gap = 14
+    pw = (X1 - X0 - gap * (n - 1)) / n
+    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    # Status je Kapitel
+    active = cur["kapitel"]
+    done = set()
+    for s in sc:
+        if s["kapitel"] is not None and s["f1"] <= f:
+            done.add(s["kapitel"])
+    if in_finale:
+        done = set(range(n))
+        active = None
+    pills = []
+    for j in range(n):
+        x0 = X0 + j * (pw + gap)
+        box = (x0, y0, x0 + pw, y0 + 56)
+        # Pop des Hakens beim Abschluss
+        done_f = next((s["f1"] for s in sc if s["kapitel"] == j), None)
+        if j in done:
+            k = ease_out_back((f - done_f) / 6, 2.6) if done_f and f >= done_f else 1.0
+            fill, border, txt = (*GREEN, int(230 * a)), (*GREEN, int(255 * a)), (255, 255, 255)
+        elif j == active:
+            k = 1.0
+            fill, border, txt = (*TURQ, int(235 * a)), (255, 255, 255, int(255 * a)), NAVY
+        else:
+            k = 1.0
+            fill, border, txt = (*NAVY, int(200 * a)), (*GREY, int(255 * a)), GREY
+        d.rounded_rectangle(box, 28, fill=fill, outline=border, width=2)
+        pills.append((box, j, txt, k))
+    img.alpha_composite(layer)
+    for box, j, txt, k in pills:
+        cx, cy = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
+        if j in done:
+            lay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+            dd = ImageDraw.Draw(lay)
+            s_ = 30 * max(0.0, k)
+            check_icon(dd, cx - 34, cy, s_, (255, 255, 255, int(255 * a)), width=max(1, int(7 * k)))
+            img.alpha_composite(lay)
+            text_center(img, (cx + 22, cy + 1), str(j + 1), SMALL, txt, a)
+        else:
+            text_center(img, (cx, cy + 1), str(j + 1), SMALL, txt, a)
+    if in_finale:
+        t = (f - sc[finale]["f0"] - 8) / 18
+        for box, *_ in pills:
+            sweep(img, box, t, 28, a)
+
+
+def draw_term(img, tl, f, anchors):
+    begriff = tl.get("begriff")
+    if not begriff:
+        return
+    for s in tl["scenes"]:
+        b = s["beats"].get(begriff)
+        if b is None:
+            continue
+        f_in, f_out = b + 1, s["f1"] - 6
+        if not (f_in - 1 <= f < s["f1"] + 4):
+            continue
+        a = slide(f, f_in, f_out, 8)
+        dy = -60 * (1 - a)
+        box = (X0, TOP + dy, X1, TOP + 172 + dy)
+        card(img, box, a, border=YELLOW)
+        text_center(img, ((X0 + X1) / 2, TOP + 66 + dy), begriff.upper(), BIG, YELLOW, a)
+        # Definition aus dem Sprechtext nach dem Begriff (z. B. 'das Richtige zum besten Preis einkaufen')
+        txt = s["text"]
+        idx = txt.lower().find(begriff.lower())
+        rest = txt[idx + len(begriff):].lstrip(":, ").split(".")[0] if idx >= 0 else ""
+        if rest:
+            text_center(img, ((X0 + X1) / 2, TOP + 132 + dy), rest[0].upper() + rest[1:], SMALL, (255, 255, 255), a)
+        sweep(img, box, (f - f_in - 4) / 16, 28, a)
+
+
+def fmt_num(v, dec=0):
+    s = f"{v:,.{dec}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return s
+
+
+def draw_labels(img, f, anchors):
+    if not anchors:
+        return
+    for lab in anchors.get("labels", []):
+        if not (lab["f0"] <= f < lab["f1"] + 6):
+            continue
+        a = slide(f, lab["f0"], lab["f1"], 6)
+        pos = anchors["anchors"][lab["anchor"]][f]
+        x, y, z = pos
+        if z <= 0:
+            continue
+        t = ease_out((f - lab["count_f0"]) / max(1, lab["count_f1"] - lab["count_f0"]))
+        v = lab["from"] + (lab["to"] - lab["from"]) * t
+        s = lab["fmt"].format(fmt_num(round(v), lab.get("dec", 0)))
+        fnt = font(BIG)
+        half = fnt.getlength(s) / 2 + 30
+        x = max(X0 + half, min(X1 - half, x))
+        y = max(TOP + 60, min(1180, y + lab.get("dy", 0)))
+        pop_k = 1 + 0.12 * math.sin(math.pi * clamp01((f - lab["count_f1"]) / 6)) if f >= lab["count_f1"] else 1.0
+        text_center(img, (x, y), s, BIG, GOLD, a, stroke=8, stroke_fill=NAVY, scale=pop_k)
+
+
+def overlay_frame(tl, f, anchors):
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    draw_hook(img, tl, f)
+    draw_banner(img, tl, f)
+    draw_chapter_bar(img, tl, f)
+    draw_term(img, tl, f, anchors)
+    draw_labels(img, f, anchors)
+    draw_subtitles(img, tl, f)
+    return img
+
+
+_G = {}
+
+
+def _init(tl, anchors, outdir):
+    _G.update(tl=tl, anchors=anchors, outdir=outdir)
+
+
+def _work(f):
+    p = os.path.join(_G["outdir"], f"{f:05d}.png")
+    overlay_frame(_G["tl"], f, _G["anchors"]).save(p, compress_level=1)
+    return f
+
+
+def overlay_frames(tl, outdir, frames, anchors_path, procs=4):
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    anchors = json.loads(Path(anchors_path).read_text()) if Path(anchors_path).exists() else None
+    with Pool(procs, initializer=_init, initargs=(tl, anchors, str(outdir))) as pool:
+        for _ in pool.imap_unordered(_work, frames, chunksize=8):
+            pass
+
+
+# ================================================================== Screen-Texturen (1280x720)
+SW, SH = 1280, 720
+
+
+def _screen_bg(f, flicker=0.0):
+    img = Image.new("RGBA", (SW, SH), (*NAVY, 255))
+    d = ImageDraw.Draw(img)
+    for x in range(0, SW, 160):
+        d.line([(x, 110), (x, SH)], fill=(46, 230, 214, 14), width=2)
+    for y in range(110, SH, 160):
+        d.line([(0, y), (SW, y)], fill=(46, 230, 214, 14), width=2)
+    # App-Kopfzeile
+    d.rounded_rectangle((36, 30, SW - 36, 96), 22, fill=(36, 32, 74, 255), outline=(*TURQ, 255), width=2)
+    for i, col in enumerate((RED, YELLOW, GREEN)):
+        d.ellipse((64 + 34 * i, 52, 86 + 34 * i, 74), fill=(*col, 255))
+    if flicker > 0:
+        import random
+        r = random.Random(int(f))
+        for _ in range(int(14 * flicker)):
+            y = r.randrange(0, SH)
+            d.rectangle((0, y, SW, y + r.randint(2, 10)), fill=(46, 230, 214, int(90 * flicker)))
+    return img
+
+
+def _t(img, xy, s, size, col, alpha=1.0, anchor="lm"):
+    d = ImageDraw.Draw(img)
+    d.text(xy, s, font=font(size), fill=(*col, int(255 * alpha)), anchor=anchor)
+
+
+def screen_frame(tl, f):
+    sc = tl["scenes"]
+    s = chapter_state(tl, f)
+    i = sc.index(s)
+    if s["set"] != "studio":
+        return None
+    img = _screen_bg(f, flicker=max(0.0, 1 - (f - s["f0"]) / 12) if i > 0 and sc[i - 1]["set"] != "studio" else 0.0)
+    b = s["beats"]
+    # Screen-Typografie: zwei Groessen (SCR_SMALL 64, SCR_BIG 150 fuer Zahlen)
+    if "18" in b and "15,50" in b:      # Szene: Angebote vergleichen
+        for row, (key, lab, val, col, suf) in enumerate([("18", "Bisher:", 18.0, RED, " pro Sack"),
+                                                         ("15,50", "Bestes Angebot:", 15.5, GREEN, "")]):
+            bf = b[key]
+            a = ease_out((f - (bf - 6)) / 8)
+            if a <= 0:
+                continue
+            y = 235 + row * 180
+            dx = -60 * (1 - a)
+            v = val * ease_out((f - (bf - 2)) / 10)
+            num = f"{v:.2f}".replace(".", ",") + " €"
+            full = f"{val:.2f}".replace(".", ",") + " €"
+            lw = font(64).getlength(lab + " ")
+            nw = font(150).getlength(full)
+            sw = (font(64).getlength(" " + suf.strip()) + 20) if suf else 0
+            x0 = SW / 2 - (lw + nw + sw) / 2 + dx
+            _t(img, (x0, y), lab, 64, (255, 255, 255), a)
+            _t(img, (x0 + lw, y), num, 150, col, a)
+            if suf:
+                _t(img, (x0 + lw + nw + 20, y + 18), suf.strip(), 64, (200, 200, 220), a)
+    elif "2,50" in b and "60" in b:     # Ersparnis rechnen
+        y1, y2 = 235, 405
+        x0 = SW / 2 - (font(150).getlength("2,50 € × 60 ") + font(64).getlength("Säcke")) / 2
+        a = ease_out((f - (b["2,50"] - 4)) / 7)
+        if a > 0:
+            _t(img, (x0, y1 - 30 * (1 - a)), "2,50 €", 150, GOLD, a)
+        x = x0 + font(150).getlength("2,50 € ")
+        a = ease_out((f - (b["60"] - 4)) / 7)
+        if a > 0:
+            _t(img, (x, y1 - 30 * (1 - a)), "× 60", 150, (255, 255, 255), a)
+            _t(img, (x + font(150).getlength("× 60 "), y1 + 18 - 30 * (1 - a)), "Säcke", 64, (200, 200, 220), a)
+        a = ease_out((f - (b["150"] - 4)) / 7)
+        if a > 0:
+            v = int(round(150 * ease_out((f - b["150"]) / 14)))
+            _t(img, (SW / 2, y2 - 30 * (1 - a)), f"= {v} €", 150, GREEN, a, anchor="mm")
+    elif "schreibt" in b:               # Mail schreiben
+        lines = ["Anfrage: 60 Sack Mehl pro Monat", "Bitte um eine Probelieferung", "Freundliche Grüße, Kalle"]
+        starts = [b["schreibt"], b.get("Höflich", b["schreibt"] + 40) + 4, b.get("Probelieferung", b["schreibt"] + 80) + 14]
+        _t(img, (90, 170), "An: neuer Lieferant", 64, (170, 170, 200))
+        y = 260
+        cur_xy = None
+        for ln, st in zip(lines, starts):
+            n = int(max(0, (f - st) / 1.1))
+            shown = ln[:min(len(ln), n)]
+            if shown:
+                _t(img, (90, y), shown, 76, (255, 255, 255))
+                if n <= len(ln) + 2:
+                    cur_xy = (90 + font(76).getlength(shown) + 8, y)
+            y += 92
+        if cur_xy is None:
+            cur_xy = (90, 260)
+        if (f // 8) % 2 == 0:
+            d = ImageDraw.Draw(img)
+            d.rectangle((cur_xy[0], cur_xy[1] - 38, cur_xy[0] + 10, cur_xy[1] + 38), fill=(*TURQ, 255))
+    elif "1.800" in b:                  # Beschaffung: aufs Jahr
+        bf = b["1.800"]
+        _t(img, (SW / 2, 235), "150 € × 12", 150, GOLD, anchor="mm")
+        a = ease_out((f - (bf - 4)) / 7)
+        if a > 0:
+            v = int(round(1800 * ease_out((f - bf) / 40)))
+            _t(img, (SW / 2, 405 - 30 * (1 - a)), "= " + fmt_num(v) + " €", 150, GREEN, a, anchor="mm")
+    return img
+
+
+def screen_textures(tl, outdir):
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    blank = outdir / "blank.png"
+    _screen_bg(0).save(blank)
+    for f in range(tl["frames"]):
+        p = outdir / f"{f:05d}.png"
+        im = screen_frame(tl, f)
+        if p.exists() or p.is_symlink():
+            p.unlink()
+        if im is None:
+            os.symlink("blank.png", p)
+        else:
+            im.convert("RGB").save(p, compress_level=1)
