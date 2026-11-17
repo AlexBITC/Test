@@ -709,9 +709,9 @@ def direct(W):
     t1, t2 = OV.calc_times(sc[9])
     col_ = PR.coin_column(coll, "coins", 52, spacing=0.03)
     COL = ST.p(1.18, 0.3, 1.7)
-    K10, B10 = ST.p(-0.38, -0.5, 0), ST.p(0.72, -0.6, 2.3)
+    K10, BY10 = ST.p(-0.38, -0.5, 0), ST.p(0.72, -0.6, 2.3)
     set_kalle(f0_10, S[10][0], K10, 0.2)
-    T.set(b.root, "location", lambda f: tuple(B10), f0_10, S[10][0])
+    T.set(b.root, "location", lambda f: tuple(BY10), f0_10, S[10][0])
     col_.root.location = COL
     col_.root.scale = (1.3, 1.3, 1.0)
     d_start, d_end = t1 + 6, t2

@@ -252,8 +252,8 @@ def render_frames_parallel(tl_path: Path, frames: list, workers: int, scale: flo
             continue
         lst = logdir / f"frames_{k}.txt"
         lst.write_text(",".join(map(str, ch)))
-        cmd = [BLENDER, "-b", "--factory-startup", "--python", str(ENGINE / "scene.py"), "--",
-               str(tl_path), "frames", str(lst), str(outdir), str(scale)]
+        cmd = [BLENDER, "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(ENGINE / "scene.py"),
+               "--", str(tl_path), "frames", str(lst), str(outdir), str(scale)]
         lf = open(logdir / f"blender_{k}.log", "w")
         procs.append((subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT), lf))
     t0 = time.time()
@@ -266,6 +266,9 @@ def render_frames_parallel(tl_path: Path, frames: list, workers: int, scale: flo
         lf.close()
         if p.returncode != 0:
             raise RuntimeError(f"Blender-Worker fehlgeschlagen, siehe {logdir}")
+    missing = [f for f in frames if not (outdir / f"{f:05d}.png").exists()]
+    if missing:
+        raise RuntimeError(f"{len(missing)} Frames fehlen (Blender-Fehler?), siehe {logdir}/blender_*.log")
 
 
 # ------------------------------------------------------------------ Hilfen fuer Stufen
@@ -273,7 +276,8 @@ def start_anchors(tl_path: Path, work: Path):
     out = work / "anchors.json"
     if out.exists() and out.stat().st_mtime > tl_path.stat().st_mtime:
         return None
-    cmd = [BLENDER, "-b", "--factory-startup", "--python", str(ENGINE / "scene.py"), "--", str(tl_path), "anchors", str(out)]
+    cmd = [BLENDER, "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(ENGINE / "scene.py"), "--",
+           str(tl_path), "anchors", str(out)]
     return subprocess.Popen(cmd, stdout=open(work / "anchors.log", "w"), stderr=subprocess.STDOUT)
 
 
