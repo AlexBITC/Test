@@ -325,7 +325,7 @@ def direct(W):
 
     def theta(f):
         return lerp(th0, th1, ease_in_out((f - A0) / max(1, orbit_end - A0)))
-    K6L, B6L = V(-0.55, -0.3, 0), V(0.08, -0.6, 2.15)
+    K6L, B6L = V(-0.42, -0.3, 0), V(0.16, -0.6, 2.15)
     T.set(k.root, "location", lambda f: tuple(P0 + rotz(K6L, theta(f))), f0_6, f1_6)
     T.set(k.root, "rotation_euler", lambda f: (0, 0, theta(f) - 0.18), f0_6, f1_6)
     T.set(b.root, "location", lambda f: tuple(P0 + rotz(B6L, theta(f))), f0_6, f1_6)
