@@ -7,7 +7,7 @@ import bpy
 from mathutils import Vector
 
 import look as L
-from anim import (ease_in_out, ease_out, ease_out_back, spring, tween, window, pop, unpop)
+from anim import (ease_in_out, ease_out, ease_out_back, spring, tween, window, pop, unpop, Noise)
 
 FPS = 30
 
@@ -416,3 +416,385 @@ def flash(T, coll, name, loc, f0, dur=8, r=0.6, color=L.FLOUR, energy=400):
     lt = L.light(f"{name}_l", "POINT", 0, color, loc, size=0.3, coll=coll, shadow=False, cutoff=6)
     T.set(lt.data, "energy", lambda f: energy * window(f, f0, f0 + dur + 4, 2, dur), f0 - 1, f0 + dur + 5)
     return o
+
+
+# =================================================================== Website-Folge: neue Requisiten
+def _segment(name, a, b, r, mat, coll, seg=6):
+    """Zylinder von Punkt a nach b (fuer Lichtlinien, Pfade)."""
+    a, b = Vector(a), Vector(b)
+    d = b - a
+    o = L.cyl(name, r, 1.0, seg, mat, None, (0, 0, 0), coll, origin="bottom")
+    o.location = a
+    o.rotation_mode = "QUATERNION"
+    o.rotation_quaternion = d.to_track_quat("Z", "Y")
+    o["len"] = d.length
+    o.scale = (1, 1, d.length)
+    return o
+
+
+def glow_line(T, coll, name, a, b, f_in, f_out=None, r=0.012, color=L.TURQ, dur=8):
+    """Leuchtende Linie, die von a nach b waechst (und wieder verschwindet)."""
+    m = L.mat(f"glowline_{color}", color, 0.5, emit=color, strength=5.0)
+    o = _segment(name, a, b, r, m, coll)
+    ln = o["len"]
+
+    def scl(f):
+        g = ease_out((f - f_in) / dur)
+        if f_out is not None and f > f_out:
+            g *= 1 - ease_in_out((f - f_out) / 6)
+        return (1 if g > 0 else 0, 1 if g > 0 else 0, max(0.0, g) * ln)
+    T.set(o, "scale", scl, f_in - 1, (f_out + 7) if f_out is not None else f_in + dur + 1)
+    return o
+
+
+# ------------------------------------------------------------------ Bestellzettel-Stapel
+def order_slips(coll, name, n=14, seed=5):
+    """Wackliger Stapel kleiner Bestellzettel (jeder mit Kritzel-Zeilen)."""
+    r = random.Random(seed)
+    root = L.empty(name, coll=coll)
+    m_p = L.mat("slip_paper", "#FBF6EA", 0.75)
+    m_y = L.mat("slip_yellow", "#F7E7A6", 0.75)
+    m_ink = L.mat("slip_ink", "#3A4A8A", 0.6)
+    slips = []
+    for i in range(n):
+        piv = L.empty(f"{name}_s{i}", root, (r.uniform(-0.03, 0.03), r.uniform(-0.03, 0.03), 0.004 + i * 0.011), coll)
+        piv.rotation_euler = (r.uniform(-0.04, 0.04), r.uniform(-0.04, 0.04), r.uniform(-0.35, 0.35))
+        L.box(f"{name}_sm{i}", (0.2, 0.15, 0.004), m_y if i % 4 == 1 else m_p, piv, (0, 0, 0), coll)
+        for j in range(3):
+            L.box(f"{name}_si{i}_{j}", (0.12 - 0.03 * (j == 2), 0.008, 0.002), m_ink, piv,
+                  (-0.02, 0.04 - j * 0.03, 0.003), coll)
+        slips.append(piv)
+    return P(root=root, slips=slips)
+
+
+def slips_flutter(T, sl, f0, f1, amount=1.0, seed=8):
+    """Obere Zettel flattern im Luftzug."""
+    n = len(sl.slips)
+    for i, s in enumerate(sl.slips):
+        k = amount * (0.2 + 0.8 * (i / (n - 1)) ** 2)
+        nz = Noise(seed + i, 3, 1.4)
+        T.add(s, "rotation_euler", lambda f, k=k, nz=nz: (0.18 * k * nz(f / FPS), 0.14 * k * nz(f / FPS + 3),
+                                                           0.08 * k * nz(f / FPS + 6)), f0, f1)
+
+
+def slips_blowaway(T, sl, idx, f0, targets, seed=12, dur=(22, 34)):
+    """Zettel idx wirbeln hoch und segeln zu den Zielen (Weltkoordinaten), danach liegen sie dort."""
+    r = random.Random(seed)
+    for k, i in enumerate(idx):
+        s = sl.slips[i]
+        p_start = Vector(sl.root.location) + Vector(s.location)
+        d = r.randint(*dur)
+        st = f0 + k * 2
+        tgt = Vector(targets[k % len(targets)])
+        up = r.uniform(0.6, 1.1)
+        spin = Vector((r.uniform(-6, 6), r.uniform(-6, 6), r.uniform(-9, 9)))
+
+        def world(f, s=s, st=st, d=d, tgt=tgt, up=up, p0=p_start):
+            t = min(1.0, max(0.0, (f - st) / d))
+            p = p0.lerp(tgt, ease_in_out(t))
+            p.z += up * math.sin(math.pi * min(1, t * 1.15)) + 0.06 * math.sin(t * 18)
+            return p
+
+        par = sl.root
+
+        def loc(f, s=s, world=world):
+            # in lokale Koordinaten des Stapels (Stapel steht still, ist nicht skaliert/rotiert)
+            return tuple(world(f) - Vector(par.location))
+        T.set(s, "location", loc, st, st + d + 1)
+        T.set(s, "rotation_euler", lambda f, st=st, d=d, spin=spin: tuple(
+            spin * ease_out(min(1.0, max(0.0, (f - st) / d))) * 0.5), st, st + d + 1)
+
+
+def V3(x):
+    return Vector(x)
+
+
+# ------------------------------------------------------------------ Rezeptkarte
+def recipe_card(coll, name, lines=("1 Mehl", "2 Wasser", "3 Backen")):
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_card", (0.9, 0.03, 0.78), L.mat("recipe_card", "#FFF4E0", 0.7), root, (0, 0, 0), coll,
+          bevel=0.03, seg=2)
+    L.box(f"{name}_band", (0.9, 0.032, 0.14), L.mat("recipe_band", "#8B4A1F", 0.6), root, (0, -0.002, 0.32), coll)
+    L.text(f"{name}_title", "REZEPT", 0.09, L.mat("recipe_title", "#FFF4E0", 0.6), root, (0, -0.022, 0.318),
+           coll, extrude=0.003, font=L.font())
+    rows = []
+    m_t = L.mat("recipe_text", "#5E3014", 0.6)
+    for i, t in enumerate(lines):
+        row = L.empty(f"{name}_row{i}", root, (-0.36, -0.022, 0.13 - i * 0.2), coll)
+        L.text(f"{name}_t{i}", t, 0.13, m_t, row, (0, 0, 0), coll, extrude=0.004, align="LEFT", font=L.font())
+        rows.append(row)
+    return P(root=root, rows=rows)
+
+
+# ------------------------------------------------------------------ Code-Zeilen-Platte
+def code_plate(coll, name, png, height=0.075, parent=None, loc=(0, 0, 0), backing=True):
+    """Duenne leuchtende Platte mit der Textur einer echten Code-Zeile."""
+    root = L.empty(name, parent, loc, coll)
+    pl = L.tplane(f"{name}_tex", png, height=height, parent=root, loc=(0, -0.008, 0), coll=coll, emit=2.0,
+                  origin="center")
+    if backing:
+        w = pl["w"] + 0.04
+        L.box(f"{name}_back", (w, 0.012, height + 0.02), L.mat("plate_back", "#14303A", 0.5, emit=L.TURQ,
+                                                                 strength=0.25), root, (0, 0, 0), coll)
+        L.box(f"{name}_edge", (w + 0.01, 0.006, 0.006), L.mat("plate_edge", L.TURQ, 0.5, emit=L.TURQ, strength=5.0),
+              root, (0, -0.004, -height / 2 - 0.01), coll)
+    root["w"] = pl["w"]
+    return root
+
+
+def tower_slot(i, n, radius=0.42, rise=0.045, turn=0.42):  # noqa: ARG001
+    """Position/Drehung der i-ten Platte im Spiral-Code-Turm (lokal zum Turm-Fuss)."""
+    a = i * turn
+    return Vector((radius * math.sin(a), -radius * math.cos(a), 0.05 + i * rise)), a
+
+
+# ------------------------------------------------------------------ Teigschuessel
+def dough_bowl(coll, name):
+    root = L.empty(name, coll=coll)
+    m_b = L.mat("bowl", "#6F86B8", 0.45)
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=False, segments=14, radius1=0.17, radius2=0.3, depth=0.26)
+    bmesh.ops.translate(bm, vec=Vector((0, 0, 0.13)), verts=bm.verts)
+    L.from_bm(f"{name}_wall", bm, m_b, root, (0, 0, 0), coll)
+    L.cyl(f"{name}_foot", 0.17, 0.02, 14, m_b, root, (0, 0, 0.01), coll)
+    L.torus(f"{name}_rim", 0.3, 0.018, 16, 5, L.mat("bowl_rim", "#8FA4D2", 0.45), root, (0, 0, 0.26), coll)
+    dough = L.empty(f"{name}_dough", root, (0, 0, 0.16), coll)
+    L.sphere(f"{name}_doughm", 0.25, 12, 7, (1, 1, 0.45), L.mat("dough", "#F3E3C3", 0.8), dough, (0, 0, 0), coll)
+    return P(root=root, dough=dough)
+
+
+# ------------------------------------------------------------------ Website-Ebene
+def web_layer(coll, name, geruest_png, stil_png, height, parent=None, loc=(0, 0, 0), card=False):
+    """Eine Website-Ebene: Platte (Bevel-Animation), Geruest-Textur vorne, Stil-Textur (bei Karten auf der
+    Rueckseite -> Dominodrehung), Schatten darunter."""
+    root = L.empty(name, parent, loc, coll)
+    spin = L.empty(f"{name}_spin", root, (0, 0, 0), coll)
+    w_px, h_px = L.img_size(stil_png)
+    width = height * w_px / h_px
+    slab = L.box(f"{name}_slab", (width * 0.98, 0.02, height * 0.96), L.mat("layer_slab", "#21456E", 0.5, emit=L.TURQ,
+                                                                             strength=0.2), spin, (0, 0.012, 0), coll)
+    bev = slab.modifiers.new("Bevel", "BEVEL")
+    bev.width = 0.0
+    bev.segments = 4
+    bev.limit_method = "ANGLE"
+    ger = L.tplane(f"{name}_ger", geruest_png, height=height, parent=spin, loc=(0, -0.004, 0), coll=coll, emit=2.5)
+    stil = L.empty(f"{name}_stilpiv", spin, (0, 0, height / 2), coll)   # Farbwelle: waechst von oben nach unten
+    if card:
+        stp = L.tplane(f"{name}_stil", stil_png, height=height, parent=spin, loc=(0, 0.026, 0), coll=coll, emit=1.0)
+        stp.rotation_euler = (0, 0, math.pi)
+        stil.scale = (1, 1, 1)
+    else:
+        stp = L.tplane(f"{name}_stil", stil_png, height=height, parent=stil, loc=(0, -0.006, 0), coll=coll, emit=1.0,
+                       origin="top")
+        stil.scale = (1, 1, 0)
+    # leuchtender Geruest-Rahmen (sichtbar bis die Farbwelle kommt)
+    frame = L.empty(f"{name}_frame", spin, (0, -0.012, 0), coll)
+    m_f = L.mat("layer_frame", L.TURQ, 0.5, emit=L.TURQ, strength=5.0)
+    t = 0.012
+    for k_, (sx, sz, x, z) in enumerate([(width, t, 0, height / 2), (width, t, 0, -height / 2),
+                                         (t, height, -width / 2, 0), (t, height, width / 2, 0)]):
+        L.box(f"{name}_fr{k_}", (sx, 0.006, sz), m_f, frame, (x, 0, z), coll)
+    shadow = L.box(f"{name}_shadow", (width * 0.96, 0.004, height * 0.9), L.mat("layer_shadow", "#0E0C1C", 0.9),
+                   root, (0.02 * height, 0.05, -0.05 * height), coll)
+    shadow.scale = (0, 0, 0)
+    return P(root=root, spin=spin, slab=slab, bevel=bev, ger=ger, stil=stil, stil_plane=stp, shadow=shadow, frame=frame,
+             w=width, h=height, card=card)
+
+
+def color_wave(coll, name, width):
+    """Warme Farbwelle: leuchtendes Band, das ueber die Ebenen nach unten laeuft."""
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_core", (width, 0.02, 0.06), L.mat("wave_core", "#FFE14D", 0.5, emit="#FFC24D", strength=6.0),
+          root, (0, 0, 0), coll)
+    L.box(f"{name}_glow", (width, 0.01, 0.22), L.mat("wave_glow", "#FF9F43", 0.5, emit="#FF9F43", strength=2.0,
+                                                     alpha=0.55), root, (0, 0.01, 0.06), coll)
+    return root
+
+
+# ------------------------------------------------------------------ Gebaeck-Set
+CRUST_C = "#C98A4B"
+
+
+def pastry(coll, name, kind, parent=None, loc=(0, 0, 0), s=1.0):
+    """Low-Poly-Gebaeck: broetchen, brezel, croissant, stollen, laugenstange, schnecke, brot."""
+    root = L.empty(name, parent, loc, coll)
+    root.scale = (s, s, s)
+    crust = L.mat("p_crust", CRUST_C, 0.65)
+    lauge = L.mat("p_lauge", "#7A3E17", 0.55)
+    salt = L.mat("p_salt", "#FFFFFF", 0.6)
+    if kind == "broetchen":
+        L.sphere(f"{name}_m", 0.1, 10, 6, (1.2, 1.0, 0.72), crust, root, (0, 0, 0.06), coll)
+        L.box(f"{name}_cut", (0.13, 0.016, 0.016), L.mat("p_cut", "#EBC48A", 0.7), root, (0, 0, 0.128), coll)
+    elif kind == "brezel":
+        for sx in (-1, 1):
+            t = L.torus(f"{name}_loop{sx}", 0.055, 0.022, 10, 5, lauge, root, (sx * 0.05, 0, 0.09), coll, axis="Y")
+            t.rotation_euler = (0, sx * 0.4, 0)
+        o = L.torus(f"{name}_belly", 0.11, 0.024, 12, 5, lauge, root, (0, 0, 0.06), coll, axis="Y")
+        o.scale = (1, 1, 0.55)
+        for j in range(4):
+            L.ico(f"{name}_salt{j}", 0.01, 0, (1, 1, 1), salt, root, (-0.07 + j * 0.045, -0.03, 0.12 - 0.02 * (j % 2)),
+                  coll)
+    elif kind == "croissant":
+        for j in range(5):
+            a = (j - 2) * 0.42
+            r = 0.05 if j == 2 else 0.04 if j in (1, 3) else 0.028
+            L.sphere(f"{name}_seg{j}", r, 8, 5, (1, 1.1, 1), L.mat("p_crois", "#E0A458", 0.6), root,
+                     (0.11 * math.sin(a), 0.04 * (1 - math.cos(a)), 0.05), coll)
+    elif kind == "stollen":
+        L.box(f"{name}_m", (0.24, 0.1, 0.08), L.mat("p_stollen", "#D9A866", 0.7), root, (0, 0, 0.045), coll,
+              bevel=0.03, seg=2)
+        L.box(f"{name}_sugar", (0.22, 0.09, 0.03), salt, root, (0, 0, 0.085), coll, bevel=0.012)
+    elif kind == "laugenstange":
+        o = L.cyl(f"{name}_m", 0.03, 0.26, 8, lauge, root, (0, 0, 0.04), coll, axis="X")
+        for j in range(3):
+            L.ico(f"{name}_salt{j}", 0.01, 0, (1, 1, 1), salt, root, (-0.08 + j * 0.08, -0.02, 0.07), coll)
+    elif kind == "schnecke":
+        L.cyl(f"{name}_m", 0.1, 0.05, 12, L.mat("p_schnecke", "#E3A962", 0.65), root, (0, 0, 0.03), coll)
+        L.torus(f"{name}_sw", 0.055, 0.012, 12, 4, L.mat("p_swirl", "#B5762E", 0.6), root, (0, 0, 0.058), coll)
+        for j in range(3):
+            a = j * 2.1
+            L.ico(f"{name}_r{j}", 0.012, 0, (1, 1, 1), L.mat("p_raisin", "#4A2A3A", 0.6), root,
+                  (0.075 * math.cos(a), 0.075 * math.sin(a), 0.06), coll)
+    elif kind == "brot":
+        L.sphere(f"{name}_m", 0.13, 10, 6, (1.4, 0.9, 0.75), L.mat("p_brot", "#A9652C", 0.65), root, (0, 0, 0.07), coll)
+    return root
+
+
+CARD_PASTRY = ["broetchen", "brezel", "croissant", "stollen", "brot", "schnecke", "laugenstange", "broetchen",
+               "stollen", "brot", "croissant", "schnecke"]
+
+
+# ------------------------------------------------------------------ Geraete
+DEVICE = {  # Breite, Hoehe, Tiefe, Displayrand
+    "handy": (0.42, 0.86, 0.04, 0.025),
+    "tablet": (0.84, 1.15, 0.04, 0.045),
+    "laptop": (1.44, 0.92, 0.035, 0.04),
+}
+
+
+def device(coll, name, kind, displays, scale=1.0):
+    """Low-Poly-Handy/Tablet/Laptop. displays: Liste von PNG-Pfaden (umschaltbar ueber Scale)."""
+    w, h, d, rim = DEVICE[kind]
+    root = L.empty(name, coll=coll)
+    root.scale = (scale,) * 3
+    body = L.empty(f"{name}_body", root, (0, 0, 0), coll)
+    m_body = L.mat(f"dev_{kind}", "#2A2747" if kind != "laptop" else "#9AA0B8", 0.4, metallic=0.3)
+    screen_parent = body
+    if kind == "laptop":
+        L.box(f"{name}_base", (w * 1.04, 0.62, 0.04), m_body, body, (0, -0.31, -h / 2 - 0.02), coll, bevel=0.012)
+        L.box(f"{name}_keys", (w * 0.9, 0.36, 0.006), L.mat("laptop_keys", "#2D2A44", 0.6), body,
+              (0, -0.3, -h / 2 + 0.002), coll)
+    L.box(f"{name}_shell", (w, d, h), m_body, body, (0, d / 2, 0), coll, bevel=0.03 if kind != "laptop" else 0.012,
+          seg=2)
+    L.box(f"{name}_bezel", (w - 0.01, 0.004, h - 0.01), L.mat("dev_bezel", "#0E0C1A", 0.4), body, (0, -0.002, 0), coll,
+          bevel=0.02 if kind != "laptop" else 0.008, seg=2)
+    if kind == "handy":
+        L.box(f"{name}_notch", (0.09, 0.006, 0.018), L.mat("dev_notch", "#000000", 0.4), body, (0, -0.005, h / 2 - 0.03),
+              coll, bevel=0.008)
+    dw, dh = w - 2 * rim, h - 2 * rim - (0.02 if kind == "handy" else 0)
+    scr = []
+    for i, png in enumerate(displays):
+        pw, ph = L.img_size(png)
+        # Bild fuellt das Display in der Breite; Hoehe wird beschnitten (oben buendig)
+        p = _display_plane(coll, f"{name}_disp{i}", png, dw, dh, body, (0, -0.006 - 0.0005 * i, -0.01 if kind == "handy" else 0))
+        p.scale = (1, 1, 1) if i == 0 else (0, 0, 0)
+        scr.append(p)
+    return P(root=root, body=body, displays=scr, w=w, h=h, dw=dw, dh=dh, kind=kind)
+
+
+def _display_plane(coll, name, png, dw, dh, parent, loc):
+    """Ebene dw x dh; UV zeigt den oberen Ausschnitt des Bildes (Breite passt)."""
+    pw, ph = L.img_size(png)
+    vis = min(1.0, (dh / dw) * pw / ph)        # sichtbarer Anteil der Bildhoehe
+    bm = bmesh.new()
+    vs = [bm.verts.new((-dw / 2, 0, -dh / 2)), bm.verts.new((dw / 2, 0, -dh / 2)), bm.verts.new((dw / 2, 0, dh / 2)),
+          bm.verts.new((-dw / 2, 0, dh / 2))]
+    f = bm.faces.new(vs)
+    uv = bm.loops.layers.uv.new("UVMap")
+    for lp, co in zip(f.loops, [(0, 1 - vis), (1, 1 - vis), (1, 1), (0, 1)]):
+        lp[uv].uv = co
+    root = L.empty(f"{name}_piv", parent, loc, coll)
+    L._mesh_obj(name, bm, L.img_mat(f"disp_{png}", png, 1.0, alpha=False), root, (0, 0, 0), coll)
+    return root
+
+
+# ------------------------------------------------------------------ 3D-Finger
+def finger(coll, name):
+    root = L.empty(name, coll=coll)
+    skin = L.mat("skin", "#E7B08A", 0.62)
+    L.cyl(f"{name}_m", 0.045, 0.32, 10, skin, root, (0, 0, 0.16), coll, origin="center")
+    L.sphere(f"{name}_tip", 0.045, 10, 6, (1, 1, 1), skin, root, (0, 0, 0.0), coll)
+    L.box(f"{name}_nail", (0.05, 0.01, 0.06), L.mat("nail", "#F4D2BE", 0.4), root, (0, -0.04, 0.04), coll, bevel=0.01)
+    L.cyl(f"{name}_sleeve", 0.07, 0.2, 10, L.mat("shirt", "#7C8DB5", 0.66), root, (0, 0, 0.4), coll)
+    return root
+
+
+# ------------------------------------------------------------------ Gruener Haken
+def check_badge(coll, name):
+    root = L.empty(name, coll=coll)
+    L.cyl(f"{name}_disc", 0.16, 0.04, 20, L.mat("check_disc", L.GREEN, 0.5, emit=L.GREEN, strength=1.5), root,
+          (0, 0, 0), coll, axis="Y")
+    L.poly_flat(f"{name}_mark", [(-0.08, 0.0), (-0.03, -0.05), (0.08, 0.06), (0.06, 0.08), (-0.03, -0.01),
+                                 (-0.06, 0.02)], 0.02, L.mat("check_mark", "#FFFFFF", 0.4, emit="#FFFFFF", strength=2.0),
+                root, (0, -0.03, 0), coll)
+    return root
+
+
+# ------------------------------------------------------------------ Mini-Laden mit Leuchtschild
+def mini_shop(coll, name):
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_house", (0.8, 0.6, 0.55), L.mat("shop_wall", "#F3E6CF", 0.7), root, (0, 0, 0.275), coll)
+    bm = bmesh.new()
+    v = [bm.verts.new(p) for p in [(-0.46, -0.36, 0), (0.46, -0.36, 0), (0, -0.36, 0.3), (-0.46, 0.36, 0),
+                                   (0.46, 0.36, 0), (0, 0.36, 0.3)]]
+    for f in [(0, 1, 2), (5, 4, 3), (0, 3, 4, 1), (1, 4, 5, 2), (0, 2, 5, 3)]:
+        bm.faces.new([v[i] for i in f])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    L.from_bm(f"{name}_roof", bm, L.mat("shop_roof", "#8B4A1F", 0.6), root, (0, 0, 0.55), coll)
+    L.box(f"{name}_door", (0.18, 0.02, 0.3), L.mat("shop_door", "#5E3014", 0.6), root, (0, -0.305, 0.15), coll)
+    L.box(f"{name}_win", (0.22, 0.02, 0.16), L.mat("shop_win", "#FFE7BF", 0.4, emit="#FFD9A0", strength=2.5), root,
+          (0.24, -0.305, 0.3), coll)
+    L.box(f"{name}_awning", (0.84, 0.16, 0.04), L.mat("shop_awning", "#FF5A5F", 0.6), root, (0, -0.37, 0.48), coll)
+    sign = L.empty(f"{name}_sign", root, (0, -0.33, 0.98), coll)
+    L.box(f"{name}_signboard", (0.5, 0.04, 0.36), L.mat("sign_board", "#1D2A4A", 0.5), sign, (0, 0, 0), coll,
+          bevel=0.03, seg=2)
+    m_n = L.mat("neon", L.YELLOW, 0.4, emit=L.YELLOW, strength=6.0)
+    for sx in (-1, 1):
+        t = L.torus(f"{name}_neon{sx}", 0.06, 0.012, 12, 4, m_n, sign, (sx * 0.055, -0.03, 0.04), coll, axis="Y")
+    o = L.torus(f"{name}_neonb", 0.12, 0.013, 14, 4, m_n, sign, (0, -0.03, -0.01), coll, axis="Y")
+    o.scale = (1, 1, 0.55)
+    L.cyl(f"{name}_pole", 0.015, 0.2, 6, L.mat("antenna", L.METAL, 0.5, metallic=0.4), root, (0, -0.33, 0.72), coll)
+    return P(root=root, sign=sign)
+
+
+# ------------------------------------------------------------------ Low-Poly-Kunde
+def customer(coll, name, color, s=1.0):
+    root = L.empty(name, coll=coll)
+    root.scale = (s, s, s)
+    body = L.empty(f"{name}_body", root, (0, 0, 0), coll)
+    L.cyl(f"{name}_torso", 0.07, 0.2, 8, L.mat(f"cust_{color}", color, 0.6), body, (0, 0, 0.24), coll, r2=0.05)
+    L.sphere(f"{name}_head", 0.06, 8, 6, (1, 1, 1), L.mat("skin", "#E7B08A", 0.62), body, (0, 0, 0.41), coll)
+    legs = []
+    for sx in (-1, 1):
+        lp = L.empty(f"{name}_leg{sx}", body, (sx * 0.03, 0, 0.14), coll)
+        L.box(f"{name}_legm{sx}", (0.035, 0.035, 0.14), L.mat("cust_leg", "#34497A", 0.6), lp, (0, 0, -0.07), coll)
+        legs.append(lp)
+    return P(root=root, body=body, legs=legs)
+
+
+def customer_walk(T, cu, path_fn, f0, f1, f_arrive):
+    """Laeuft entlang path_fn(t 0..1) von f0 bis f_arrive, Beine schwingen, Koerper wippt."""
+    def t(f):
+        return min(1.0, max(0.0, (f - f0) / max(1, f_arrive - f0)))
+    T.set(cu.root, "location", lambda f: tuple(path_fn(t(f))), f0, f1)
+
+    def yaw(f):
+        a, b = Vector(path_fn(max(0, t(f) - 0.02))), Vector(path_fn(min(1, t(f) + 0.02)))
+        d = b - a
+        return (0, 0, math.atan2(-d.x, d.y) if d.length > 1e-5 else 0)
+    T.set(cu.root, "rotation_euler", yaw, f0, f1)
+    walking = lambda f: 1.0 if f < f_arrive else 0.0  # noqa: E731
+    for k, lg in enumerate(cu.legs):
+        T.set(lg, "rotation_euler", lambda f, k=k: (0.6 * walking(f) * math.sin(0.9 * (f - f0) + k * math.pi), 0, 0),
+              f0, f1)
+    T.set(cu.body, "location", lambda f: (0, 0, 0.02 * walking(f) * abs(math.sin(0.9 * (f - f0)))), f0, f1)

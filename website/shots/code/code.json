@@ -1,0 +1,2030 @@
+{
+ "zeilen": 327,
+ "dateien": [
+  {
+   "zeile": 1,
+   "datei": "zeile_001.png",
+   "text": "<!doctype html>",
+   "modus": "html"
+  },
+  {
+   "zeile": 2,
+   "datei": "zeile_002.png",
+   "text": "<html lang=\"de\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 3,
+   "datei": "zeile_003.png",
+   "text": "<head>",
+   "modus": "html"
+  },
+  {
+   "zeile": 4,
+   "datei": "zeile_004.png",
+   "text": "<meta charset=\"utf-8\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 5,
+   "datei": "zeile_005.png",
+   "text": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 6,
+   "datei": "zeile_006.png",
+   "text": "<title>Bäckerei Kalle – seit 1996</title>",
+   "modus": "html"
+  },
+  {
+   "zeile": 7,
+   "datei": "zeile_007.png",
+   "text": "<meta name=\"description\" content=\"Bäckerei Kalle, Musterstraße 12: jeden Morgen frisch, von Hand gebacken.\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 8,
+   "datei": "zeile_008.png",
+   "text": "<style>",
+   "modus": "html"
+  },
+  {
+   "zeile": 9,
+   "datei": "zeile_009.png",
+   "text": ":root {",
+   "modus": "css"
+  },
+  {
+   "zeile": 10,
+   "datei": "zeile_010.png",
+   "text": "--kruste: #8B4A1F;",
+   "modus": "css"
+  },
+  {
+   "zeile": 11,
+   "datei": "zeile_011.png",
+   "text": "--kruste-dunkel: #5E3014;",
+   "modus": "css"
+  },
+  {
+   "zeile": 12,
+   "datei": "zeile_012.png",
+   "text": "--creme: #FFF4E0;",
+   "modus": "css"
+  },
+  {
+   "zeile": 13,
+   "datei": "zeile_013.png",
+   "text": "--creme-tief: #F6E2BF;",
+   "modus": "css"
+  },
+  {
+   "zeile": 14,
+   "datei": "zeile_014.png",
+   "text": "--akzent: #FFE14D;",
+   "modus": "css"
+  },
+  {
+   "zeile": 15,
+   "datei": "zeile_015.png",
+   "text": "--text: #3A2414;",
+   "modus": "css"
+  },
+  {
+   "zeile": 16,
+   "datei": "zeile_016.png",
+   "text": "--radius: 18px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 17,
+   "datei": "zeile_017.png",
+   "text": "--schatten: 0 8px 24px rgba(94, 48, 20, 0.18);",
+   "modus": "css"
+  },
+  {
+   "zeile": 18,
+   "datei": "zeile_018.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 19,
+   "datei": "zeile_019.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 20,
+   "datei": "zeile_020.png",
+   "text": "* { box-sizing: border-box; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 21,
+   "datei": "zeile_021.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 22,
+   "datei": "zeile_022.png",
+   "text": "body {",
+   "modus": "css"
+  },
+  {
+   "zeile": 23,
+   "datei": "zeile_023.png",
+   "text": "margin: 0;",
+   "modus": "css"
+  },
+  {
+   "zeile": 24,
+   "datei": "zeile_024.png",
+   "text": "font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif;",
+   "modus": "css"
+  },
+  {
+   "zeile": 25,
+   "datei": "zeile_025.png",
+   "text": "background: var(--creme);",
+   "modus": "css"
+  },
+  {
+   "zeile": 26,
+   "datei": "zeile_026.png",
+   "text": "color: var(--text);",
+   "modus": "css"
+  },
+  {
+   "zeile": 27,
+   "datei": "zeile_027.png",
+   "text": "line-height: 1.5;",
+   "modus": "css"
+  },
+  {
+   "zeile": 28,
+   "datei": "zeile_028.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 29,
+   "datei": "zeile_029.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 30,
+   "datei": "zeile_030.png",
+   "text": ".kopf {",
+   "modus": "css"
+  },
+  {
+   "zeile": 31,
+   "datei": "zeile_031.png",
+   "text": "display: flex;",
+   "modus": "css"
+  },
+  {
+   "zeile": 32,
+   "datei": "zeile_032.png",
+   "text": "align-items: center;",
+   "modus": "css"
+  },
+  {
+   "zeile": 33,
+   "datei": "zeile_033.png",
+   "text": "gap: 12px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 34,
+   "datei": "zeile_034.png",
+   "text": "padding: 14px 20px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 35,
+   "datei": "zeile_035.png",
+   "text": "background: var(--kruste);",
+   "modus": "css"
+  },
+  {
+   "zeile": 36,
+   "datei": "zeile_036.png",
+   "text": "color: var(--creme);",
+   "modus": "css"
+  },
+  {
+   "zeile": 37,
+   "datei": "zeile_037.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 38,
+   "datei": "zeile_038.png",
+   "text": ".kopf svg { width: 44px; height: 44px; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 39,
+   "datei": "zeile_039.png",
+   "text": ".kopf h1 { margin: 0; font-size: 1.4rem; letter-spacing: 0.02em; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 40,
+   "datei": "zeile_040.png",
+   "text": ".kopf small { display: block; font-size: 0.8rem; opacity: 0.8; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 41,
+   "datei": "zeile_041.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 42,
+   "datei": "zeile_042.png",
+   "text": ".hero {",
+   "modus": "css"
+  },
+  {
+   "zeile": 43,
+   "datei": "zeile_043.png",
+   "text": "margin: 20px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 44,
+   "datei": "zeile_044.png",
+   "text": "padding: 36px 24px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 45,
+   "datei": "zeile_045.png",
+   "text": "border-radius: var(--radius);",
+   "modus": "css"
+  },
+  {
+   "zeile": 46,
+   "datei": "zeile_046.png",
+   "text": "background: linear-gradient(160deg, var(--kruste) 0%, var(--kruste-dunkel) 100%);",
+   "modus": "css"
+  },
+  {
+   "zeile": 47,
+   "datei": "zeile_047.png",
+   "text": "color: var(--creme);",
+   "modus": "css"
+  },
+  {
+   "zeile": 48,
+   "datei": "zeile_048.png",
+   "text": "box-shadow: var(--schatten);",
+   "modus": "css"
+  },
+  {
+   "zeile": 49,
+   "datei": "zeile_049.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 50,
+   "datei": "zeile_050.png",
+   "text": ".hero h2 { margin: 0 0 10px; font-size: 1.9rem; line-height: 1.2; color: var(--creme); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 51,
+   "datei": "zeile_051.png",
+   "text": ".hero p { margin: 0 0 20px; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 52,
+   "datei": "zeile_052.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 53,
+   "datei": "zeile_053.png",
+   "text": ".knopf {",
+   "modus": "css"
+  },
+  {
+   "zeile": 54,
+   "datei": "zeile_054.png",
+   "text": "display: inline-block;",
+   "modus": "css"
+  },
+  {
+   "zeile": 55,
+   "datei": "zeile_055.png",
+   "text": "padding: 12px 22px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 56,
+   "datei": "zeile_056.png",
+   "text": "border: 0;",
+   "modus": "css"
+  },
+  {
+   "zeile": 57,
+   "datei": "zeile_057.png",
+   "text": "border-radius: 999px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 58,
+   "datei": "zeile_058.png",
+   "text": "background: var(--akzent);",
+   "modus": "css"
+  },
+  {
+   "zeile": 59,
+   "datei": "zeile_059.png",
+   "text": "color: var(--text);",
+   "modus": "css"
+  },
+  {
+   "zeile": 60,
+   "datei": "zeile_060.png",
+   "text": "font-weight: 700;",
+   "modus": "css"
+  },
+  {
+   "zeile": 61,
+   "datei": "zeile_061.png",
+   "text": "font-size: 1rem;",
+   "modus": "css"
+  },
+  {
+   "zeile": 62,
+   "datei": "zeile_062.png",
+   "text": "text-decoration: none;",
+   "modus": "css"
+  },
+  {
+   "zeile": 63,
+   "datei": "zeile_063.png",
+   "text": "cursor: pointer;",
+   "modus": "css"
+  },
+  {
+   "zeile": 64,
+   "datei": "zeile_064.png",
+   "text": "box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);",
+   "modus": "css"
+  },
+  {
+   "zeile": 65,
+   "datei": "zeile_065.png",
+   "text": "transition: transform 0.12s ease;",
+   "modus": "css"
+  },
+  {
+   "zeile": 66,
+   "datei": "zeile_066.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 67,
+   "datei": "zeile_067.png",
+   "text": ".knopf:active { transform: scale(0.95); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 68,
+   "datei": "zeile_068.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 69,
+   "datei": "zeile_069.png",
+   "text": "section { margin: 28px 20px; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 70,
+   "datei": "zeile_070.png",
+   "text": "section > h2 { color: var(--kruste); margin: 0 0 14px; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 71,
+   "datei": "zeile_071.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 72,
+   "datei": "zeile_072.png",
+   "text": ".raster {",
+   "modus": "css"
+  },
+  {
+   "zeile": 73,
+   "datei": "zeile_073.png",
+   "text": "display: grid;",
+   "modus": "css"
+  },
+  {
+   "zeile": 74,
+   "datei": "zeile_074.png",
+   "text": "grid-template-columns: 1fr;",
+   "modus": "css"
+  },
+  {
+   "zeile": 75,
+   "datei": "zeile_075.png",
+   "text": "gap: 14px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 76,
+   "datei": "zeile_076.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 77,
+   "datei": "zeile_077.png",
+   "text": ".karte {",
+   "modus": "css"
+  },
+  {
+   "zeile": 78,
+   "datei": "zeile_078.png",
+   "text": "display: flex;",
+   "modus": "css"
+  },
+  {
+   "zeile": 79,
+   "datei": "zeile_079.png",
+   "text": "align-items: center;",
+   "modus": "css"
+  },
+  {
+   "zeile": 80,
+   "datei": "zeile_080.png",
+   "text": "gap: 14px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 81,
+   "datei": "zeile_081.png",
+   "text": "padding: 14px 16px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 82,
+   "datei": "zeile_082.png",
+   "text": "border-radius: var(--radius);",
+   "modus": "css"
+  },
+  {
+   "zeile": 83,
+   "datei": "zeile_083.png",
+   "text": "background: #fff;",
+   "modus": "css"
+  },
+  {
+   "zeile": 84,
+   "datei": "zeile_084.png",
+   "text": "box-shadow: var(--schatten);",
+   "modus": "css"
+  },
+  {
+   "zeile": 85,
+   "datei": "zeile_085.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 86,
+   "datei": "zeile_086.png",
+   "text": ".karte svg { width: 48px; height: 48px; flex: none; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 87,
+   "datei": "zeile_087.png",
+   "text": ".karte h3 { margin: 0; font-size: 1.05rem; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 88,
+   "datei": "zeile_088.png",
+   "text": ".karte .preis { margin-left: auto; font-weight: 800; color: var(--kruste); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 89,
+   "datei": "zeile_089.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 90,
+   "datei": "zeile_090.png",
+   "text": ".zeiten {",
+   "modus": "css"
+  },
+  {
+   "zeile": 91,
+   "datei": "zeile_091.png",
+   "text": "padding: 18px 20px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 92,
+   "datei": "zeile_092.png",
+   "text": "border-radius: var(--radius);",
+   "modus": "css"
+  },
+  {
+   "zeile": 93,
+   "datei": "zeile_093.png",
+   "text": "background: var(--creme-tief);",
+   "modus": "css"
+  },
+  {
+   "zeile": 94,
+   "datei": "zeile_094.png",
+   "text": "box-shadow: var(--schatten);",
+   "modus": "css"
+  },
+  {
+   "zeile": 95,
+   "datei": "zeile_095.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 96,
+   "datei": "zeile_096.png",
+   "text": ".zeiten table { width: 100%; border-collapse: collapse; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 97,
+   "datei": "zeile_097.png",
+   "text": ".zeiten td { padding: 6px 0; border-bottom: 1px dashed rgba(139, 74, 31, 0.3); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 98,
+   "datei": "zeile_098.png",
+   "text": ".zeiten td:last-child { text-align: right; font-weight: 700; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 99,
+   "datei": "zeile_099.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 100,
+   "datei": "zeile_100.png",
+   "text": "form {",
+   "modus": "css"
+  },
+  {
+   "zeile": 101,
+   "datei": "zeile_101.png",
+   "text": "display: grid;",
+   "modus": "css"
+  },
+  {
+   "zeile": 102,
+   "datei": "zeile_102.png",
+   "text": "gap: 12px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 103,
+   "datei": "zeile_103.png",
+   "text": "padding: 20px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 104,
+   "datei": "zeile_104.png",
+   "text": "border-radius: var(--radius);",
+   "modus": "css"
+  },
+  {
+   "zeile": 105,
+   "datei": "zeile_105.png",
+   "text": "background: #fff;",
+   "modus": "css"
+  },
+  {
+   "zeile": 106,
+   "datei": "zeile_106.png",
+   "text": "box-shadow: var(--schatten);",
+   "modus": "css"
+  },
+  {
+   "zeile": 107,
+   "datei": "zeile_107.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 108,
+   "datei": "zeile_108.png",
+   "text": "label { font-weight: 700; font-size: 0.9rem; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 109,
+   "datei": "zeile_109.png",
+   "text": "input, select {",
+   "modus": "css"
+  },
+  {
+   "zeile": 110,
+   "datei": "zeile_110.png",
+   "text": "width: 100%;",
+   "modus": "css"
+  },
+  {
+   "zeile": 111,
+   "datei": "zeile_111.png",
+   "text": "margin-top: 4px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 112,
+   "datei": "zeile_112.png",
+   "text": "padding: 12px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 113,
+   "datei": "zeile_113.png",
+   "text": "border: 2px solid var(--creme-tief);",
+   "modus": "css"
+  },
+  {
+   "zeile": 114,
+   "datei": "zeile_114.png",
+   "text": "border-radius: 12px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 115,
+   "datei": "zeile_115.png",
+   "text": "font: inherit;",
+   "modus": "css"
+  },
+  {
+   "zeile": 116,
+   "datei": "zeile_116.png",
+   "text": "background: var(--creme);",
+   "modus": "css"
+  },
+  {
+   "zeile": 117,
+   "datei": "zeile_117.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 118,
+   "datei": "zeile_118.png",
+   "text": "input:focus, select:focus { outline: none; border-color: var(--kruste); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 119,
+   "datei": "zeile_119.png",
+   "text": ".fehler { color: #B3261E; font-size: 0.85rem; min-height: 1.2em; margin: 0; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 120,
+   "datei": "zeile_120.png",
+   "text": ".danke {",
+   "modus": "css"
+  },
+  {
+   "zeile": 121,
+   "datei": "zeile_121.png",
+   "text": "display: none;",
+   "modus": "css"
+  },
+  {
+   "zeile": 122,
+   "datei": "zeile_122.png",
+   "text": "align-items: center;",
+   "modus": "css"
+  },
+  {
+   "zeile": 123,
+   "datei": "zeile_123.png",
+   "text": "gap: 12px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 124,
+   "datei": "zeile_124.png",
+   "text": "padding: 18px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 125,
+   "datei": "zeile_125.png",
+   "text": "border-radius: var(--radius);",
+   "modus": "css"
+  },
+  {
+   "zeile": 126,
+   "datei": "zeile_126.png",
+   "text": "background: #E3F6E8;",
+   "modus": "css"
+  },
+  {
+   "zeile": 127,
+   "datei": "zeile_127.png",
+   "text": "color: #1E6B34;",
+   "modus": "css"
+  },
+  {
+   "zeile": 128,
+   "datei": "zeile_128.png",
+   "text": "font-weight: 800;",
+   "modus": "css"
+  },
+  {
+   "zeile": 129,
+   "datei": "zeile_129.png",
+   "text": "font-size: 1.1rem;",
+   "modus": "css"
+  },
+  {
+   "zeile": 130,
+   "datei": "zeile_130.png",
+   "text": "box-shadow: var(--schatten);",
+   "modus": "css"
+  },
+  {
+   "zeile": 131,
+   "datei": "zeile_131.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 132,
+   "datei": "zeile_132.png",
+   "text": ".danke.sichtbar { display: flex; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 133,
+   "datei": "zeile_133.png",
+   "text": ".danke svg { width: 40px; height: 40px; flex: none; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 134,
+   "datei": "zeile_134.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 135,
+   "datei": "zeile_135.png",
+   "text": ".fuss {",
+   "modus": "css"
+  },
+  {
+   "zeile": 136,
+   "datei": "zeile_136.png",
+   "text": "margin-top: 36px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 137,
+   "datei": "zeile_137.png",
+   "text": "padding: 22px 20px;",
+   "modus": "css"
+  },
+  {
+   "zeile": 138,
+   "datei": "zeile_138.png",
+   "text": "background: var(--kruste-dunkel);",
+   "modus": "css"
+  },
+  {
+   "zeile": 139,
+   "datei": "zeile_139.png",
+   "text": "color: var(--creme);",
+   "modus": "css"
+  },
+  {
+   "zeile": 140,
+   "datei": "zeile_140.png",
+   "text": "font-size: 0.9rem;",
+   "modus": "css"
+  },
+  {
+   "zeile": 141,
+   "datei": "zeile_141.png",
+   "text": "text-align: center;",
+   "modus": "css"
+  },
+  {
+   "zeile": 142,
+   "datei": "zeile_142.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 143,
+   "datei": "zeile_143.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 144,
+   "datei": "zeile_144.png",
+   "text": "@media (min-width: 700px) {",
+   "modus": "css"
+  },
+  {
+   "zeile": 145,
+   "datei": "zeile_145.png",
+   "text": ".raster { grid-template-columns: repeat(2, 1fr); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 146,
+   "datei": "zeile_146.png",
+   "text": ".hero { padding: 56px 40px; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 147,
+   "datei": "zeile_147.png",
+   "text": ".hero h2 { font-size: 2.4rem; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 148,
+   "datei": "zeile_148.png",
+   "text": ".unten { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 28px 20px; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 149,
+   "datei": "zeile_149.png",
+   "text": ".unten section { margin: 0; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 150,
+   "datei": "zeile_150.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 151,
+   "datei": "zeile_151.png",
+   "text": "",
+   "modus": "css"
+  },
+  {
+   "zeile": 152,
+   "datei": "zeile_152.png",
+   "text": "@media (min-width: 1200px) {",
+   "modus": "css"
+  },
+  {
+   "zeile": 153,
+   "datei": "zeile_153.png",
+   "text": "main { max-width: 1320px; margin: 0 auto; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 154,
+   "datei": "zeile_154.png",
+   "text": ".raster { grid-template-columns: repeat(4, 1fr); }",
+   "modus": "css"
+  },
+  {
+   "zeile": 155,
+   "datei": "zeile_155.png",
+   "text": ".hero h2 { font-size: 3rem; }",
+   "modus": "css"
+  },
+  {
+   "zeile": 156,
+   "datei": "zeile_156.png",
+   "text": "}",
+   "modus": "css"
+  },
+  {
+   "zeile": 157,
+   "datei": "zeile_157.png",
+   "text": "</style>",
+   "modus": "html"
+  },
+  {
+   "zeile": 158,
+   "datei": "zeile_158.png",
+   "text": "</head>",
+   "modus": "html"
+  },
+  {
+   "zeile": 159,
+   "datei": "zeile_159.png",
+   "text": "<body>",
+   "modus": "html"
+  },
+  {
+   "zeile": 160,
+   "datei": "zeile_160.png",
+   "text": "<svg width=\"0\" height=\"0\" style=\"position:absolute\" aria-hidden=\"true\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 161,
+   "datei": "zeile_161.png",
+   "text": "<symbol id=\"brezel\" viewBox=\"0 0 64 64\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 162,
+   "datei": "zeile_162.png",
+   "text": "<path d=\"M32 50c-9 0-22-6-22-20 0-8 6-14 13-14 6 0 9 5 9 10 0-5 3-10 9-10 7 0 13 6 13 14 0 14-13 20-22 20z",
+   "modus": "html"
+  },
+  {
+   "zeile": 163,
+   "datei": "zeile_163.png",
+   "text": "M20 46l12-16 12 16\" fill=\"none\" stroke=\"#C7843F\" stroke-width=\"7\" stroke-linecap=\"round\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 164,
+   "datei": "zeile_164.png",
+   "text": "<circle cx=\"24\" cy=\"26\" r=\"1.6\" fill=\"#FFF4E0\"/><circle cx=\"41\" cy=\"24\" r=\"1.6\" fill=\"#FFF4E0\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 165,
+   "datei": "zeile_165.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 166,
+   "datei": "zeile_166.png",
+   "text": "<symbol id=\"broetchen\" viewBox=\"0 0 64 64\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 167,
+   "datei": "zeile_167.png",
+   "text": "<ellipse cx=\"32\" cy=\"36\" rx=\"24\" ry=\"16\" fill=\"#D89A52\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 168,
+   "datei": "zeile_168.png",
+   "text": "<path d=\"M20 30q12-8 24 0\" stroke=\"#F3D3A0\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 169,
+   "datei": "zeile_169.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 170,
+   "datei": "zeile_170.png",
+   "text": "<symbol id=\"croissant\" viewBox=\"0 0 64 64\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 171,
+   "datei": "zeile_171.png",
+   "text": "<path d=\"M8 40q24-34 48 0q-8 6-14 2q-10-14-20 0q-6 4-14-2z\" fill=\"#E0A458\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 172,
+   "datei": "zeile_172.png",
+   "text": "<path d=\"M26 30l4 10M38 30l-4 10\" stroke=\"#B5762E\" stroke-width=\"3\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 173,
+   "datei": "zeile_173.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 174,
+   "datei": "zeile_174.png",
+   "text": "<symbol id=\"stollen\" viewBox=\"0 0 64 64\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 175,
+   "datei": "zeile_175.png",
+   "text": "<rect x=\"8\" y=\"24\" width=\"48\" height=\"22\" rx=\"10\" fill=\"#E8C690\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 176,
+   "datei": "zeile_176.png",
+   "text": "<path d=\"M12 28h40\" stroke=\"#FFFFFF\" stroke-width=\"6\" stroke-linecap=\"round\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 177,
+   "datei": "zeile_177.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 178,
+   "datei": "zeile_178.png",
+   "text": "<symbol id=\"brot\" viewBox=\"0 0 64 64\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 179,
+   "datei": "zeile_179.png",
+   "text": "<path d=\"M8 42q0-22 24-22t24 22z\" fill=\"#A9652C\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 180,
+   "datei": "zeile_180.png",
+   "text": "<path d=\"M20 30l6 6M30 27l6 6M40 30l6 6\" stroke=\"#E8B77A\" stroke-width=\"3\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 181,
+   "datei": "zeile_181.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 182,
+   "datei": "zeile_182.png",
+   "text": "<symbol id=\"schnecke\" viewBox=\"0 0 64 64\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 183,
+   "datei": "zeile_183.png",
+   "text": "<circle cx=\"32\" cy=\"34\" r=\"20\" fill=\"#E3A962\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 184,
+   "datei": "zeile_184.png",
+   "text": "<path d=\"M32 34m-4 0a4 4 0 1 1 8 0a9 9 0 1 1 -18 0a14 14 0 1 1 28 0\" fill=\"none\" stroke=\"#B5762E\"",
+   "modus": "html"
+  },
+  {
+   "zeile": 185,
+   "datei": "zeile_185.png",
+   "text": "stroke-width=\"3\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 186,
+   "datei": "zeile_186.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 187,
+   "datei": "zeile_187.png",
+   "text": "<symbol id=\"haken\" viewBox=\"0 0 40 40\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 188,
+   "datei": "zeile_188.png",
+   "text": "<circle cx=\"20\" cy=\"20\" r=\"18\" fill=\"#2E9D52\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 189,
+   "datei": "zeile_189.png",
+   "text": "<path d=\"M11 21l6 6 12-13\" stroke=\"#fff\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>",
+   "modus": "html"
+  },
+  {
+   "zeile": 190,
+   "datei": "zeile_190.png",
+   "text": "</symbol>",
+   "modus": "html"
+  },
+  {
+   "zeile": 191,
+   "datei": "zeile_191.png",
+   "text": "</svg>",
+   "modus": "html"
+  },
+  {
+   "zeile": 192,
+   "datei": "zeile_192.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 193,
+   "datei": "zeile_193.png",
+   "text": "<header class=\"kopf\" id=\"kopf\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 194,
+   "datei": "zeile_194.png",
+   "text": "<svg aria-hidden=\"true\"><use href=\"#brezel\"/></svg>",
+   "modus": "html"
+  },
+  {
+   "zeile": 195,
+   "datei": "zeile_195.png",
+   "text": "<h1>Bäckerei Kalle <small>Musterstraße 12 · seit 1996</small></h1>",
+   "modus": "html"
+  },
+  {
+   "zeile": 196,
+   "datei": "zeile_196.png",
+   "text": "</header>",
+   "modus": "html"
+  },
+  {
+   "zeile": 197,
+   "datei": "zeile_197.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 198,
+   "datei": "zeile_198.png",
+   "text": "<main>",
+   "modus": "html"
+  },
+  {
+   "zeile": 199,
+   "datei": "zeile_199.png",
+   "text": "<section class=\"hero\" id=\"hero\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 200,
+   "datei": "zeile_200.png",
+   "text": "<h2>Jeden Morgen frisch, von Hand gebacken</h2>",
+   "modus": "html"
+  },
+  {
+   "zeile": 201,
+   "datei": "zeile_201.png",
+   "text": "<p>Brötchen, Brezeln und Stollen aus eigener Backstube.</p>",
+   "modus": "html"
+  },
+  {
+   "zeile": 202,
+   "datei": "zeile_202.png",
+   "text": "<a class=\"knopf\" href=\"#bestellen\">Stollen vorbestellen</a>",
+   "modus": "html"
+  },
+  {
+   "zeile": 203,
+   "datei": "zeile_203.png",
+   "text": "</section>",
+   "modus": "html"
+  },
+  {
+   "zeile": 204,
+   "datei": "zeile_204.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 205,
+   "datei": "zeile_205.png",
+   "text": "<section id=\"angebot\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 206,
+   "datei": "zeile_206.png",
+   "text": "<h2>Unser Angebot</h2>",
+   "modus": "html"
+  },
+  {
+   "zeile": 207,
+   "datei": "zeile_207.png",
+   "text": "<div class=\"raster\" id=\"raster\"></div>",
+   "modus": "html"
+  },
+  {
+   "zeile": 208,
+   "datei": "zeile_208.png",
+   "text": "</section>",
+   "modus": "html"
+  },
+  {
+   "zeile": 209,
+   "datei": "zeile_209.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 210,
+   "datei": "zeile_210.png",
+   "text": "<div class=\"unten\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 211,
+   "datei": "zeile_211.png",
+   "text": "<section id=\"zeiten\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 212,
+   "datei": "zeile_212.png",
+   "text": "<h2>Öffnungszeiten</h2>",
+   "modus": "html"
+  },
+  {
+   "zeile": 213,
+   "datei": "zeile_213.png",
+   "text": "<div class=\"zeiten\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 214,
+   "datei": "zeile_214.png",
+   "text": "<table>",
+   "modus": "html"
+  },
+  {
+   "zeile": 215,
+   "datei": "zeile_215.png",
+   "text": "<tr><td>Montag – Freitag</td><td>6:00 – 18:00</td></tr>",
+   "modus": "html"
+  },
+  {
+   "zeile": 216,
+   "datei": "zeile_216.png",
+   "text": "<tr><td>Samstag</td><td>6:00 – 13:00</td></tr>",
+   "modus": "html"
+  },
+  {
+   "zeile": 217,
+   "datei": "zeile_217.png",
+   "text": "<tr><td>Sonntag</td><td>7:30 – 11:00</td></tr>",
+   "modus": "html"
+  },
+  {
+   "zeile": 218,
+   "datei": "zeile_218.png",
+   "text": "</table>",
+   "modus": "html"
+  },
+  {
+   "zeile": 219,
+   "datei": "zeile_219.png",
+   "text": "</div>",
+   "modus": "html"
+  },
+  {
+   "zeile": 220,
+   "datei": "zeile_220.png",
+   "text": "</section>",
+   "modus": "html"
+  },
+  {
+   "zeile": 221,
+   "datei": "zeile_221.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 222,
+   "datei": "zeile_222.png",
+   "text": "<section id=\"bestellen\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 223,
+   "datei": "zeile_223.png",
+   "text": "<h2>Stollen vorbestellen</h2>",
+   "modus": "html"
+  },
+  {
+   "zeile": 224,
+   "datei": "zeile_224.png",
+   "text": "<form id=\"formular\" novalidate>",
+   "modus": "html"
+  },
+  {
+   "zeile": 225,
+   "datei": "zeile_225.png",
+   "text": "<label>Name",
+   "modus": "html"
+  },
+  {
+   "zeile": 226,
+   "datei": "zeile_226.png",
+   "text": "<input id=\"name\" name=\"name\" autocomplete=\"name\" placeholder=\"Dein Name\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 227,
+   "datei": "zeile_227.png",
+   "text": "</label>",
+   "modus": "html"
+  },
+  {
+   "zeile": 228,
+   "datei": "zeile_228.png",
+   "text": "<label>Anzahl",
+   "modus": "html"
+  },
+  {
+   "zeile": 229,
+   "datei": "zeile_229.png",
+   "text": "<input id=\"anzahl\" name=\"anzahl\" type=\"number\" min=\"1\" max=\"20\" placeholder=\"1\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 230,
+   "datei": "zeile_230.png",
+   "text": "</label>",
+   "modus": "html"
+  },
+  {
+   "zeile": 231,
+   "datei": "zeile_231.png",
+   "text": "<label>Abholtag",
+   "modus": "html"
+  },
+  {
+   "zeile": 232,
+   "datei": "zeile_232.png",
+   "text": "<select id=\"tag\" name=\"tag\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 233,
+   "datei": "zeile_233.png",
+   "text": "<option value=\"\">Bitte wählen</option>",
+   "modus": "html"
+  },
+  {
+   "zeile": 234,
+   "datei": "zeile_234.png",
+   "text": "<option>Freitag</option>",
+   "modus": "html"
+  },
+  {
+   "zeile": 235,
+   "datei": "zeile_235.png",
+   "text": "<option>Samstag</option>",
+   "modus": "html"
+  },
+  {
+   "zeile": 236,
+   "datei": "zeile_236.png",
+   "text": "<option>Sonntag</option>",
+   "modus": "html"
+  },
+  {
+   "zeile": 237,
+   "datei": "zeile_237.png",
+   "text": "</select>",
+   "modus": "html"
+  },
+  {
+   "zeile": 238,
+   "datei": "zeile_238.png",
+   "text": "</label>",
+   "modus": "html"
+  },
+  {
+   "zeile": 239,
+   "datei": "zeile_239.png",
+   "text": "<p class=\"fehler\" id=\"fehler\" role=\"alert\"></p>",
+   "modus": "html"
+  },
+  {
+   "zeile": 240,
+   "datei": "zeile_240.png",
+   "text": "<button class=\"knopf\" id=\"senden\" type=\"submit\">Stollen vorbestellen</button>",
+   "modus": "html"
+  },
+  {
+   "zeile": 241,
+   "datei": "zeile_241.png",
+   "text": "</form>",
+   "modus": "html"
+  },
+  {
+   "zeile": 242,
+   "datei": "zeile_242.png",
+   "text": "<div class=\"danke\" id=\"danke\" role=\"status\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 243,
+   "datei": "zeile_243.png",
+   "text": "<svg aria-hidden=\"true\"><use href=\"#haken\"/></svg>",
+   "modus": "html"
+  },
+  {
+   "zeile": 244,
+   "datei": "zeile_244.png",
+   "text": "<span>Danke! Deine Bestellung ist da.</span>",
+   "modus": "html"
+  },
+  {
+   "zeile": 245,
+   "datei": "zeile_245.png",
+   "text": "</div>",
+   "modus": "html"
+  },
+  {
+   "zeile": 246,
+   "datei": "zeile_246.png",
+   "text": "</section>",
+   "modus": "html"
+  },
+  {
+   "zeile": 247,
+   "datei": "zeile_247.png",
+   "text": "</div>",
+   "modus": "html"
+  },
+  {
+   "zeile": 248,
+   "datei": "zeile_248.png",
+   "text": "</main>",
+   "modus": "html"
+  },
+  {
+   "zeile": 249,
+   "datei": "zeile_249.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 250,
+   "datei": "zeile_250.png",
+   "text": "<footer class=\"fuss\" id=\"fuss\">",
+   "modus": "html"
+  },
+  {
+   "zeile": 251,
+   "datei": "zeile_251.png",
+   "text": "Bäckerei Kalle · Musterstraße 12 · seit 1996<br>",
+   "modus": "html"
+  },
+  {
+   "zeile": 252,
+   "datei": "zeile_252.png",
+   "text": "Demo-Seite ohne Server – Bestellungen werden nicht gespeichert.",
+   "modus": "html"
+  },
+  {
+   "zeile": 253,
+   "datei": "zeile_253.png",
+   "text": "</footer>",
+   "modus": "html"
+  },
+  {
+   "zeile": 254,
+   "datei": "zeile_254.png",
+   "text": "",
+   "modus": "html"
+  },
+  {
+   "zeile": 255,
+   "datei": "zeile_255.png",
+   "text": "<script>",
+   "modus": "html"
+  },
+  {
+   "zeile": 256,
+   "datei": "zeile_256.png",
+   "text": "const ANGEBOT = [",
+   "modus": "js"
+  },
+  {
+   "zeile": 257,
+   "datei": "zeile_257.png",
+   "text": "{ name: \"Brötchen\", preis: 0.45, bild: \"broetchen\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 258,
+   "datei": "zeile_258.png",
+   "text": "{ name: \"Laugenbrezel\", preis: 0.95, bild: \"brezel\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 259,
+   "datei": "zeile_259.png",
+   "text": "{ name: \"Croissant\", preis: 1.30, bild: \"croissant\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 260,
+   "datei": "zeile_260.png",
+   "text": "{ name: \"Butterstollen 750 g\", preis: 16.90, bild: \"stollen\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 261,
+   "datei": "zeile_261.png",
+   "text": "{ name: \"Bauernbrot 1 kg\", preis: 4.20, bild: \"brot\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 262,
+   "datei": "zeile_262.png",
+   "text": "{ name: \"Rosinenschnecke\", preis: 1.60, bild: \"schnecke\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 263,
+   "datei": "zeile_263.png",
+   "text": "{ name: \"Laugenstange\", preis: 1.10, bild: \"brezel\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 264,
+   "datei": "zeile_264.png",
+   "text": "{ name: \"Mohnbrötchen\", preis: 0.60, bild: \"broetchen\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 265,
+   "datei": "zeile_265.png",
+   "text": "{ name: \"Mandelstollen 500 g\", preis: 12.50, bild: \"stollen\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 266,
+   "datei": "zeile_266.png",
+   "text": "{ name: \"Dinkelbrot 750 g\", preis: 4.80, bild: \"brot\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 267,
+   "datei": "zeile_267.png",
+   "text": "{ name: \"Schoko-Croissant\", preis: 1.70, bild: \"croissant\" },",
+   "modus": "js"
+  },
+  {
+   "zeile": 268,
+   "datei": "zeile_268.png",
+   "text": "{ name: \"Zimtschnecke\", preis: 1.80, bild: \"schnecke\" }",
+   "modus": "js"
+  },
+  {
+   "zeile": 269,
+   "datei": "zeile_269.png",
+   "text": "];",
+   "modus": "js"
+  },
+  {
+   "zeile": 270,
+   "datei": "zeile_270.png",
+   "text": "",
+   "modus": "js"
+  },
+  {
+   "zeile": 271,
+   "datei": "zeile_271.png",
+   "text": "const euro = new Intl.NumberFormat(\"de-DE\", { style: \"currency\", currency: \"EUR\" });",
+   "modus": "js"
+  },
+  {
+   "zeile": 272,
+   "datei": "zeile_272.png",
+   "text": "",
+   "modus": "js"
+  },
+  {
+   "zeile": 273,
+   "datei": "zeile_273.png",
+   "text": "function karteBauen(eintrag) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 274,
+   "datei": "zeile_274.png",
+   "text": "const karte = document.createElement(\"article\");",
+   "modus": "js"
+  },
+  {
+   "zeile": 275,
+   "datei": "zeile_275.png",
+   "text": "karte.className = \"karte\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 276,
+   "datei": "zeile_276.png",
+   "text": "karte.innerHTML =",
+   "modus": "js"
+  },
+  {
+   "zeile": 277,
+   "datei": "zeile_277.png",
+   "text": "'<svg aria-hidden=\"true\"><use href=\"#' + eintrag.bild + '\"/></svg>' +",
+   "modus": "js"
+  },
+  {
+   "zeile": 278,
+   "datei": "zeile_278.png",
+   "text": "\"<h3></h3>\" +",
+   "modus": "js"
+  },
+  {
+   "zeile": 279,
+   "datei": "zeile_279.png",
+   "text": "'<span class=\"preis\"></span>';",
+   "modus": "js"
+  },
+  {
+   "zeile": 280,
+   "datei": "zeile_280.png",
+   "text": "karte.querySelector(\"h3\").textContent = eintrag.name;",
+   "modus": "js"
+  },
+  {
+   "zeile": 281,
+   "datei": "zeile_281.png",
+   "text": "karte.querySelector(\".preis\").textContent = euro.format(eintrag.preis);",
+   "modus": "js"
+  },
+  {
+   "zeile": 282,
+   "datei": "zeile_282.png",
+   "text": "return karte;",
+   "modus": "js"
+  },
+  {
+   "zeile": 283,
+   "datei": "zeile_283.png",
+   "text": "}",
+   "modus": "js"
+  },
+  {
+   "zeile": 284,
+   "datei": "zeile_284.png",
+   "text": "",
+   "modus": "js"
+  },
+  {
+   "zeile": 285,
+   "datei": "zeile_285.png",
+   "text": "const raster = document.getElementById(\"raster\");",
+   "modus": "js"
+  },
+  {
+   "zeile": 286,
+   "datei": "zeile_286.png",
+   "text": "ANGEBOT.forEach(function (eintrag) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 287,
+   "datei": "zeile_287.png",
+   "text": "raster.appendChild(karteBauen(eintrag));",
+   "modus": "js"
+  },
+  {
+   "zeile": 288,
+   "datei": "zeile_288.png",
+   "text": "});",
+   "modus": "js"
+  },
+  {
+   "zeile": 289,
+   "datei": "zeile_289.png",
+   "text": "",
+   "modus": "js"
+  },
+  {
+   "zeile": 290,
+   "datei": "zeile_290.png",
+   "text": "const formular = document.getElementById(\"formular\");",
+   "modus": "js"
+  },
+  {
+   "zeile": 291,
+   "datei": "zeile_291.png",
+   "text": "const fehler = document.getElementById(\"fehler\");",
+   "modus": "js"
+  },
+  {
+   "zeile": 292,
+   "datei": "zeile_292.png",
+   "text": "const danke = document.getElementById(\"danke\");",
+   "modus": "js"
+  },
+  {
+   "zeile": 293,
+   "datei": "zeile_293.png",
+   "text": "",
+   "modus": "js"
+  },
+  {
+   "zeile": 294,
+   "datei": "zeile_294.png",
+   "text": "function pruefen(daten) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 295,
+   "datei": "zeile_295.png",
+   "text": "if (daten.name.trim().length < 2) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 296,
+   "datei": "zeile_296.png",
+   "text": "return \"Bitte gib deinen Namen ein.\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 297,
+   "datei": "zeile_297.png",
+   "text": "}",
+   "modus": "js"
+  },
+  {
+   "zeile": 298,
+   "datei": "zeile_298.png",
+   "text": "const anzahl = Number(daten.anzahl);",
+   "modus": "js"
+  },
+  {
+   "zeile": 299,
+   "datei": "zeile_299.png",
+   "text": "if (!Number.isInteger(anzahl) || anzahl < 1 || anzahl > 20) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 300,
+   "datei": "zeile_300.png",
+   "text": "return \"Bitte eine Anzahl von 1 bis 20 wählen.\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 301,
+   "datei": "zeile_301.png",
+   "text": "}",
+   "modus": "js"
+  },
+  {
+   "zeile": 302,
+   "datei": "zeile_302.png",
+   "text": "if (!daten.tag) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 303,
+   "datei": "zeile_303.png",
+   "text": "return \"Bitte einen Abholtag wählen.\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 304,
+   "datei": "zeile_304.png",
+   "text": "}",
+   "modus": "js"
+  },
+  {
+   "zeile": 305,
+   "datei": "zeile_305.png",
+   "text": "return \"\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 306,
+   "datei": "zeile_306.png",
+   "text": "}",
+   "modus": "js"
+  },
+  {
+   "zeile": 307,
+   "datei": "zeile_307.png",
+   "text": "",
+   "modus": "js"
+  },
+  {
+   "zeile": 308,
+   "datei": "zeile_308.png",
+   "text": "formular.addEventListener(\"submit\", function (ereignis) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 309,
+   "datei": "zeile_309.png",
+   "text": "ereignis.preventDefault();",
+   "modus": "js"
+  },
+  {
+   "zeile": 310,
+   "datei": "zeile_310.png",
+   "text": "const daten = {",
+   "modus": "js"
+  },
+  {
+   "zeile": 311,
+   "datei": "zeile_311.png",
+   "text": "name: formular.name.value,",
+   "modus": "js"
+  },
+  {
+   "zeile": 312,
+   "datei": "zeile_312.png",
+   "text": "anzahl: formular.anzahl.value,",
+   "modus": "js"
+  },
+  {
+   "zeile": 313,
+   "datei": "zeile_313.png",
+   "text": "tag: formular.tag.value",
+   "modus": "js"
+  },
+  {
+   "zeile": 314,
+   "datei": "zeile_314.png",
+   "text": "};",
+   "modus": "js"
+  },
+  {
+   "zeile": 315,
+   "datei": "zeile_315.png",
+   "text": "const meldung = pruefen(daten);",
+   "modus": "js"
+  },
+  {
+   "zeile": 316,
+   "datei": "zeile_316.png",
+   "text": "fehler.textContent = meldung;",
+   "modus": "js"
+  },
+  {
+   "zeile": 317,
+   "datei": "zeile_317.png",
+   "text": "if (meldung) {",
+   "modus": "js"
+  },
+  {
+   "zeile": 318,
+   "datei": "zeile_318.png",
+   "text": "return;",
+   "modus": "js"
+  },
+  {
+   "zeile": 319,
+   "datei": "zeile_319.png",
+   "text": "}",
+   "modus": "js"
+  },
+  {
+   "zeile": 320,
+   "datei": "zeile_320.png",
+   "text": "// Demo ohne Server: Bestellung nur bestätigen (gleiche Höhe, kein Layout-Sprung)",
+   "modus": "js"
+  },
+  {
+   "zeile": 321,
+   "datei": "zeile_321.png",
+   "text": "danke.style.minHeight = formular.offsetHeight + \"px\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 322,
+   "datei": "zeile_322.png",
+   "text": "formular.style.display = \"none\";",
+   "modus": "js"
+  },
+  {
+   "zeile": 323,
+   "datei": "zeile_323.png",
+   "text": "danke.classList.add(\"sichtbar\");",
+   "modus": "js"
+  },
+  {
+   "zeile": 324,
+   "datei": "zeile_324.png",
+   "text": "});",
+   "modus": "js"
+  },
+  {
+   "zeile": 325,
+   "datei": "zeile_325.png",
+   "text": "</script>",
+   "modus": "html"
+  },
+  {
+   "zeile": 326,
+   "datei": "zeile_326.png",
+   "text": "</body>",
+   "modus": "html"
+  },
+  {
+   "zeile": 327,
+   "datei": "zeile_327.png",
+   "text": "</html>",
+   "modus": "html"
+  }
+ ],
+ "schluessel": {
+  "kopf": 193,
+  "angebot": 205,
+  "formular": 224
+ },
+ "platten": [
+  1,
+  6,
+  11,
+  16,
+  24,
+  31,
+  36,
+  43,
+  48,
+  55,
+  60,
+  65,
+  73,
+  79,
+  84,
+  91,
+  97,
+  103,
+  109,
+  114,
+  120,
+  125,
+  130,
+  137,
+  144,
+  149,
+  157,
+  162,
+  168,
+  173,
+  178,
+  183,
+  188,
+  194,
+  200,
+  206,
+  212,
+  217,
+  223,
+  228,
+  233,
+  238,
+  243,
+  248,
+  255,
+  260,
+  265,
+  273,
+  278,
+  285,
+  292,
+  299,
+  308,
+  313,
+  320,
+  327
+ ]
+}

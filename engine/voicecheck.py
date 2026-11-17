@@ -15,7 +15,14 @@ _UTMOS = None
 _UTMOS_ERR = None
 
 # Dialekt/Umgangssprache: Whisper schreibt Standarddeutsch, beide Seiten werden angeglichen
-EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "gibt's": "gibts",
+# Schwaebische Woerter duerfen abweichen (zaehlen nicht als Wortfehler)
+DIALECT = {"net", "nicht", "i", "ich", "des", "das", "verschlamp", "verschlampe"}
+DIALECT_REF = {"net", "i", "des", "verschlamp"}
+# Zahlwoerter und Pflichtbegriffe: muessen exakt erkannt werden
+NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun",
+                "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
+MUST = {"code", "marketing"}
+EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schreib": "schreibe", "gibt's": "gibts",
          "eintausend": "tausend",}
 
 
@@ -70,13 +77,14 @@ def split_compounds(ref: list, hyp: list) -> list:
     return out
 
 
-def wer(ref: list, hyp: list) -> float:
+def wer(ref: list, hyp: list, free=frozenset()) -> float:
+    """Wortfehlerrate; Woerter aus 'free' (Dialekt) im Referenztext kosten bei Ersetzung nichts."""
     d = np.zeros((len(ref) + 1, len(hyp) + 1), dtype=int)
-    d[:, 0] = np.arange(len(ref) + 1)
+    d[:, 0] = np.cumsum([0] + [0 if w in free else 1 for w in ref])
     d[0, :] = np.arange(len(hyp) + 1)
     for i in range(1, len(ref) + 1):
         for j in range(1, len(hyp) + 1):
-            d[i, j] = min(d[i - 1, j] + 1, d[i, j - 1] + 1, d[i - 1, j - 1] + (ref[i - 1] != hyp[j - 1]))
+            d[i, j] = min(d[i - 1, j] + (0 if ref[i - 1] in free else 1), d[i, j - 1] + 1, d[i - 1, j - 1] + (ref[i - 1] != hyp[j - 1] and ref[i - 1] not in free))
     return d[-1, -1] / max(1, len(ref))
 
 
@@ -123,7 +131,9 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     hyp_text = " ".join(s.text.strip() for s in segs).strip()
     ref_n = normalize(text)
     hyp_n = split_compounds(ref_n, normalize(hyp_text))
-    w_err = wer(ref_n, hyp_n)
+    raw_ref = [re.sub(r"^[^\w]+|[^\w']+$", "", w).lower() for w in split_words(text)]
+    free = frozenset(EQUIV.get(w, w) for w in raw_ref if w in DIALECT_REF)
+    w_err = wer(ref_n, hyp_n, free)
 
     # Zahlen und Fachbegriff exakt
     exact = []
@@ -132,6 +142,11 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
         if _num_token(core):
             sub = normalize(core)
             exact.append((core, _contains(hyp_n, sub)))
+    for w in raw_ref:
+        if w in NUMBER_WORDS:
+            exact.append((w, w in hyp_n))
+        elif w in MUST and begriff and w != begriff.lower():
+            exact.append((w, w in hyp_n))
     if begriff and begriff.lower() in text.lower():
         exact.append((begriff, begriff.lower() in hyp_n))
 

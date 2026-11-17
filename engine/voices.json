@@ -1,45 +1,67 @@
 {
-  "model": "eleven_v3",
+  "model": "eleven_multilingual_v2",
   "voices": {
     "kalle": {
       "voice_id": "nPczCjzI2devNBz1zQrb",
       "name": "Brian - Deep, Resonant and Comforting",
-      "source": "Casting aus GET /v1/voices: tief, warm, mittleres Alter (F0 ~95 Hz)"
+      "source": "Auswahl aus GET /v1/voices: männlich, mittleres Alter, warm und tief (F0 ~95 Hz)"
     },
     "byte": {
-      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
-      "name": "Alice - Clear, Engaging Educator",
-      "source": "Casting aus GET /v1/voices: hell, klar, freundlich; beste deutsche Aussprache von 'Helfer'/'Mehl' unter 6 hellen Kandidaten (F0 ~200-230 Hz)"
+      "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+      "name": "Laura - Enthusiast, Quirky Attitude",
+      "source": "Auswahl aus GET /v1/voices: hell, freundlich, frech ('quirky'); Casting gegen Jessica/Alice mit Whisper, alle Testsätze fehlerfrei (F0 ~180-210 Hz)"
     }
   },
   "settings": {
     "kalle": {
-      "stability": 0.5,
-      "similarity_boost": 0.8,
-      "style": 0.55,
+      "stability": 0.4,
+      "similarity_boost": 0.75,
+      "style": 0.35,
       "use_speaker_boost": true
     },
     "byte": {
       "stability": 0.5,
-      "similarity_boost": 0.8,
-      "style": 0.35,
+      "similarity_boost": 0.75,
+      "style": 0.25,
       "use_speaker_boost": true
     }
   },
+  "speech_overrides": {
+    "i.": "ich.",
+    "net!": "net!!"
+  },
   "speech_alternatives": {
-    "Mehl-Angebote": [
-      "Mehl Angebote",
-      "Mehlangebote"
+    "Code": [
+      "Kohd",
+      "Koud"
     ],
-    "Mehl:": [
-      "Mehl,"
+    "Code.": [
+      "Kohd.",
+      "Koud."
     ],
-    "Helfer": [
-      "Hellfer"
+    "Code:": [
+      "Kohd:",
+      "Koud:"
+    ],
+    "Marketing": [
+      "Market-ing",
+      "Marketting"
+    ],
+    "net.": [
+      "nicht."
+    ],
+    "net!": [
+      "nicht!"
     ]
   },
-  "hinweis": "eleven_v3 ignoriert 'speed'; Tempo wird per Rubberband-Time-Stretch korrigiert. pitch_semitones hebt/senkt eine Stimme mit Rubberband (Formanten erhalten).",
-  "pitch_semitones": {
-    "byte": 3.0
+  "pitch_semitones": {},
+  "hinweis": "Schreibweisen gelten nur für die Sprachausgabe; die Untertitel bleiben exakt wie im Episoden-JSON.",
+  "line_tuning": {
+    "8": {
+      "speed": 0.75,
+      "stability": 0.4,
+      "seed": 4300,
+      "grund": "kurzer Ausruf: langsamer und mit mehr Betonung (Casting-Test: Tonhöhen-Streuung 4,7 Halbtöne)"
+    }
   }
 }
