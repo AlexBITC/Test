@@ -80,7 +80,7 @@ def voices_stage(ep: dict, work: Path) -> list:
                 factor = max(tts.STRETCH_LIMIT[0], (hi - 0.05) / wps0)
             elif wps0 < lo:
                 factor = min(tts.STRETCH_LIMIT[1], (lo + 0.05) / wps0)
-            meta = tts.stretch(meta, round(factor, 3))
+            meta = tts.stretch(meta, round(factor, 3), cfg.get("pitch_semitones", {}).get(role, 0.0))
             words = tts.word_times(meta, spans)
             chk = voicecheck.check_line(ROOT / meta["wav"], sz["text"], words, ep.get("begriff"), role)
             chk["stretch"] = factor
@@ -138,6 +138,7 @@ def voice_report(ep, lines, model, cfg, path: Path):
           "korrigiert (höchstens −12 % / +15 %); lange Pausen zwischen Wörtern werden vorher anhand des Pegels gekürzt.",
           "- Jede Zeile endet mit einem `[pause]`-Tag; ohne ihn schneidet eleven_v3 das letzte Wort teils hart ab. "
           "Die Stille danach wird weggeschnitten.",
+          f"- Tonhöhen-Anpassung (Formanten erhalten): {cfg.get('pitch_semitones', {}) or 'keine'} Halbtöne.",
           "- Emotions-Tags (nicht gesprochen, nicht im Untertitel): Kalle `[excited]` bei Jubel, `[shocked]` bei Schock.",
           "- Byte wurde von Jessica auf Alice umgestellt: Jessica sprach „Helfer“/„Mehl“ in Tests als „Hefa“/„mir“; "
           "Alice sprach beide in 2 von 2 Testläufen korrekt.",

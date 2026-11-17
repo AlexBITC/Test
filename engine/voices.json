@@ -38,5 +38,8 @@
       "Hellfer"
     ]
   },
-  "hinweis": "eleven_v3 ignoriert 'speed'; Tempo wird per Rubberband-Time-Stretch (tonhoehenerhaltend) korrigiert."
+  "hinweis": "eleven_v3 ignoriert 'speed'; Tempo wird per Rubberband-Time-Stretch korrigiert. pitch_semitones hebt/senkt eine Stimme mit Rubberband (Formanten erhalten).",
+  "pitch_semitones": {
+    "byte": 3.0
+  }
 }

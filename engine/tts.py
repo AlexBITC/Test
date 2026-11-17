@@ -397,21 +397,24 @@ def tighten(meta: dict, lead: float = 0.04, tail: float = 0.16) -> dict:
     return m
 
 
-def stretch(meta: dict, factor: float) -> dict:
-    """Tonhoehenerhaltender Time-Stretch (Rubberband). factor>1 = schneller."""
-    if abs(factor - 1) < 0.01:
+def stretch(meta: dict, factor: float, pitch_st: float = 0.0) -> dict:
+    """Rubberband in einem Durchgang: Tempo (factor>1 = schneller, Tonhoehe bleibt) und optional
+    Tonhoehe in Halbtoenen (Formanten bleiben erhalten -> hoeher, aber kein Micky-Maus-Klang)."""
+    if abs(factor - 1) < 0.01 and abs(pitch_st) < 0.01:
         return meta
     src = ROOT / meta["wav"]
-    dst = src.with_name(src.stem + f"_t{factor:.3f}.wav")
+    dst = src.with_name(src.stem + f"_t{factor:.3f}" + (f"_p{pitch_st:+.1f}" if pitch_st else "") + ".wav")
     if not dst.exists():
         subprocess.run([_ffmpeg(), "-y", "-v", "error", "-i", str(src), "-af",
-                        f"rubberband=tempo={factor:.4f}:pitchq=quality:formant=preserved:transients=smooth",
+                        f"rubberband=tempo={factor:.4f}:pitch={2 ** (pitch_st / 12):.5f}:pitchq=quality:"
+                        f"formant=preserved:transients=smooth",
                         "-ar", "48000", "-ac", "1", str(dst)], check=True)
     m = dict(meta)
     m["wav"] = str(dst.relative_to(ROOT))
     m["starts"] = [t / factor for t in meta["starts"]]
     m["ends"] = [t / factor for t in meta["ends"]]
     m["stretch"] = factor
+    m["pitch_st"] = pitch_st
     return m
 
 
