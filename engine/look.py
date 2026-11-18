@@ -68,6 +68,8 @@ def mat(name, color, rough=0.6, emit=None, strength=0.0, metallic=0.0, alpha=Non
         e = srgb(emit) if isinstance(emit, str) else emit
         k = min(1.0, 0.45 + 0.12 * strength)
         base = tuple(min(1.0, (b * (1 - k) + c * k) * (1.0 + 0.25 * k)) for b, c in zip(base[:3], e[:3])) + (1.0,)
+    if alpha is not None:          # Workbench: Transparenz kommt aus dem Alpha der Objektfarbe
+        base = tuple(base[:3]) + (alpha,)
     m.diffuse_color = base
     _MATS[key] = m
     return m

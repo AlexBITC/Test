@@ -516,7 +516,7 @@ def piper_voice(cfg: dict, role: str, stimmung: str, take: int = 0) -> dict:
     return v
 
 
-def _trim_and_compress(src: Path, dst: Path, edge: float = 0.0, max_pause: float = 0.35, keep_pause: float = 0.28):
+def _trim_and_compress(src: Path, dst: Path, edge: float = 0.0, max_pause: float = 0.26, keep_pause: float = 0.2):
     """Stille am Anfang/Ende entfernen (Rest <= 0,08 s) und Pausen in der Zeile auf keep_pause kuerzen."""
     import numpy as np
     import soundfile as sf
@@ -569,7 +569,7 @@ def _trim_and_compress(src: Path, dst: Path, edge: float = 0.0, max_pause: float
 def piper_synth(speech_text: str, voice: dict) -> dict:
     """Piper-Synthese mit Cache (Hash aus tts, Stimme, Modell, Einstellungen, Seed/Take)."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    key = json.dumps([speech_text, voice, "piper", "schnitt-v2"], sort_keys=True, ensure_ascii=False)
+    key = json.dumps([speech_text, voice, "piper", "schnitt-v3"], sort_keys=True, ensure_ascii=False)
     h = hashlib.sha256(key.encode()).hexdigest()[:20]
     wav = CACHE / f"{h}.wav"
     meta_p = CACHE / f"{h}.json"

@@ -146,10 +146,10 @@ def direct(W):
     T.set(drawer, "location", lambda f: (0, -0.3 * drawer_d(f), 0), 0, N - 1)
 
     # =================================================================== SZENE 1 – Hook
-    f0, f1 = S[0]
-    A1 = (TH.p(-0.12, -3.55, 2.2), TH.p(-0.12, 0.0, 1.62), 50.0)
+    f0_1, f1_1 = S[0]
+    A1 = (TH.p(-0.2, -4.6, 1.75), TH.p(-0.2, 0.3, 1.47), 50.0)
     geld = wd(0, "Geld")
-    face_z = (face_w() + V(0, -2.3, 0.08), face_w() + V(0, 0, 0.05), 85.0)
+    face_z = (face_w() + V(0, -4.1, 0.05), face_w() + V(0, 0, -0.18), 85.0)
 
     def shot1(f):
         pos, tgt = A1[0], A1[1]
@@ -158,7 +158,7 @@ def direct(W):
             t = ease_out((f - (geld - 1)) / 4)
             pos, tgt, lens = pos.lerp(face_z[0], t), tgt.lerp(face_z[1], t), lerp(lens, 85.0, t)
         return (pos, tgt, lens)
-    cam.add_shot(f0, f1, shot1)
+    cam.add_shot(f0_1, f1_1, shot1)
     T.set(b.root, "location", lambda f: tuple(OUT_R), 0, S[2][0])
     T.set(b.root, "scale", lambda f: (0, 0, 0), 0, 1)
     # 'verkauft': linke Hand zeigt auf die Vitrine (4 Frames Antizipation, 6 Frames Nachschwingen)
@@ -208,16 +208,16 @@ def direct(W):
     T.set(sweat, "scale", lambda f: (0, 0, 0), 0, 1)
 
     # =================================================================== SZENE 2
-    f0, f1 = S[1]
+    f0_2, f1_2 = S[1]
     A2 = (face_z[0], face_z[1], 85.0)
-    B2a = (face_w() + V(0.05, -2.9, 0.0), face_w() + V(0.05, 0, -0.12), 70.0)
-    B2b = (face_w() + V(-0.15, -2.9, 0.0), face_w() + V(-0.15, 0, -0.12), 70.0)
+    B2a = (face_w() + V(0.15, -4.4, 0.0), face_w() + V(0.15, 0, -0.3), 70.0)
+    B2b = (face_w() + V(-0.05, -4.4, 0.0), face_w() + V(-0.05, 0, -0.3), 70.0)
 
     def shot2(f):
-        if f < f0 + 8:
-            return shot_lerp(f0, f0 + 8, A2, B2a, ease_out)(f)
-        return shot_lerp(f0 + 8, f1, B2a, B2b, ease_in_out)(f)
-    cam.add_shot(f0, f1, shot2)
+        if f < f0_2 + 8:
+            return shot_lerp(f0_2, f0_2 + 8, A2, B2a, ease_out)(f)
+        return shot_lerp(f0_2 + 8, f1_2, B2a, B2b, ease_in_out)(f)
+    cam.add_shot(f0_2, f1_2, shot2)
     # 'Buero': Daumen ueber die Schulter zur Ladentuer, Buerofenster gegenueber leuchtet auf
     bb_ = bt(1, "Büro")
     thumb = {"sh_R": (-2.1, 0.9, 0.3), "el_R": (-1.6, 0, 0.3), "head": (0, 0, -0.2), "hips": (0, 0, -0.08)}
@@ -267,12 +267,12 @@ def direct(W):
                                                            if 0 <= f - kn - 2 * ri <= 5 else 0), kn, kn + 18)
 
     # =================================================================== SZENE 3 – Byte kommt
-    f0, f1 = S[2]
+    f0_3, f1_3 = S[2]
     bh = bt(2, "hol")
     arr = bh + 14
     bpath = path([(bh, OUT_R), (bh + 7, TH.p(1.0, -0.9, 2.55)), (arr, B_TH)], ease_out)
-    T.set(b.root, "location", lambda f: bpath(f), f0, f1)
-    T.set(b.root, "scale", lambda f: (1, 1, 1) if f >= bh else (0, 0, 0), f0, bh + 1)
+    T.set(b.root, "location", lambda f: bpath(f), f0_3, f1_3)
+    T.set(b.root, "scale", lambda f: (1, 1, 1) if f >= bh else (0, 0, 0), f0_3, bh + 1)
     T.mul(b.body, "scale", lambda f: (1 + 0.15 * window(f, arr - 2, arr + 8, 2, 6), 1,
                                       1 - 0.15 * window(f, arr - 2, arr + 8, 2, 6)), arr - 2, arr + 8)
     C.trail(T, coll, "s3trail", lambda f: bpath(f), bh, arr + 4, n=8, size=0.06)
@@ -283,14 +283,14 @@ def direct(W):
     bz = bt(2, "zurück")
     T.add(L.bsdf(b.m_shell).inputs["Emission Strength"], "default_value",
           lambda f: 2.6 * window(f, bz, bz + 16, 3, 10), bz, bz + 16)
-    T.add(k.head, "rotation_euler", lambda f: (0, 0, -0.32 * window(f, bz, f1 + 2, 8, 6)), bz, f1 + 2)
+    T.add(k.head, "rotation_euler", lambda f: (0, 0, -0.32 * window(f, bz, f1_3 + 2, 8, 6)), bz, f1_3 + 2)
     A3 = B2b
-    B3 = (V(K) + V(0.25, -3.6, 2.1), V(K) + V(0.25, 0.0, 1.7), 50.0)
-    cam.add_shot(f0, f1, lambda f: shot_lerp(f0, f0 + 12, A3, B3, ease_out)(f))
+    B3 = (V(K) + V(0.3, -4.9, 1.85), V(K) + V(0.3, 0.0, 1.62), 50.0)
+    cam.add_shot(f0_3, f1_3, lambda f: shot_lerp(f0_3, f0_3 + 12, A3, B3, ease_out)(f))
     cam.whips.append((S[3][0], 1))
 
     # =================================================================== SZENE 4 – Buero, Rechnungen
-    f0, f1 = S[3]
+    f0_4, f1_4 = S[3]
     KB = BU.p(-0.05, 0.62, 0)
     set_kalle(S[3][0], S[5][0], KB, 0.12)
     desk_z = 0.98
@@ -300,7 +300,8 @@ def direct(W):
     clk = BU.objs["clock"]
     clk.root.scale = (0, 0, 0)
     # Wand-Monitor mit Screen-Texturen
-    mon = L.empty("buero_monitor", None, BU.p(0.85, 2.3, 2.38), coll)
+    mon = L.empty("buero_monitor", None, BU.p(0.95, 1.6, 2.3), coll)
+    mon.scale = (1.15, 1.15, 1.15)
     L.box("mon_frame", (1.36, 0.06, 0.8), L.mat("screen_frame", L.NAVY2, 0.5), mon, (0, 0, 0), coll, bevel=0.03)
     L.box("mon_edge", (1.4, 0.04, 0.84), L.mat("screen_edge", L.TURQ, 0.5, emit=L.TURQ, strength=2.0), mon,
           (0, 0.02, 0), coll, bevel=0.03)
@@ -319,7 +320,7 @@ def direct(W):
     L.box("folder_spine", (0.04, 0.37, 0.03), L.mat("folder_spine", "#14857C", 0.55), fold, (0, 0, 0.015), coll)
     L.box("folder_paper", (0.26, 0.32, 0.02), L.mat("invoice_paper", PR.PAPER, 0.7), fold, (0.16, 0, 0.022), coll)
     B_BU = BU.p(0.78, -0.25, 1.62)
-    T.set(b.root, "location", lambda f: tuple(B_BU), f0, S[4][0])
+    T.set(b.root, "location", lambda f: tuple(B_BU), f0_4, S[4][0])
     br_ = bt(3, "Rechnungen")
     invs = []
     for q in range(3):
@@ -366,14 +367,14 @@ def direct(W):
         T.set(cn, "scale", lambda f, tc=tc: (min(1.0, ease_out((f - tc) / 4)),) * 3, tc - 1, tc + 5)
         T.set(cn, "scale", lambda f: (0, 0, 0), 0, 1)
     T.set(stack.root, "scale", lambda f: (unpop(f, S[5][0] + 2, 4),) * 3, S[5][0], S[5][0] + 8)
-    A4 = (BU.p(0.35, -3.6, 1.95), BU.p(0.35, 0.3, 1.62), 50.0)
-    B4 = (BU.p(0.35, -3.6, 2.1), BU.p(0.35, 0.3, 1.47), 50.0)
-    cam.add_shot(f0, f1, shot_lerp(f0, f1, A4, B4, ease_in_out))
+    A4 = (BU.p(0.42, -5.0, 1.9), BU.p(0.42, 0.3, 1.75), 50.0)
+    B4 = (BU.p(0.42, -5.0, 2.05), BU.p(0.42, 0.3, 1.66), 50.0)
+    cam.add_shot(f0_4, f1_4, shot_lerp(f0_4, f1_4, A4, B4, ease_in_out))
 
     # =================================================================== SZENE 5 – Stoppuhr
-    f0, f1 = S[4]
+    f0_5, f1_5 = S[4]
     B5 = V(KB) + V(0.55, -0.25, 2.05)
-    T.set(b.root, "location", lambda f: tuple(B_BU.lerp(B5, ease_in_out((f - f0) / 10))), f0, S[5][0])
+    T.set(b.root, "location", lambda f: tuple(B_BU.lerp(B5, ease_in_out((f - f0_5) / 10))), f0_5, S[5][0])
     sw = PR.stopwatch(coll, "stopwatch")
     sw.root.location = B5 + V(0.32, -0.05, 0.08)
     b2 = bt(4, "2")
@@ -381,15 +382,15 @@ def direct(W):
     T.set(sw.hand, "rotation_euler", lambda f: (0, 2 * math.pi * (2 / 60) * ease_out_back(min(1, max(0, (f - b2 - 3) / 6)),
                                                                                         2.5), 0), b2, b2 + 10)
     bs = bt(4, "Sekunden")
-    C.reaction(T, coll, k, "staunen", bs + 3, hold=f1 - bs + 4, speaking=True, seed=5)
+    C.reaction(T, coll, k, "staunen", bs + 3, hold=f1_5 - bs + 4, speaking=True, seed=5)
     PR.burst(T, coll, "bang5", "bang", tuple(V(KB) + V(0, -0.2, 2.5)), bs + 3, 4, 551, speed=(0.8, 1.2), up=1.2,
              spread=0.9, gravity=-1.5, life=(16, 22), spin=1.0, drag=2.0)
-    A5 = (V(KB) + V(0.2, -2.9, 2.0), V(KB) + V(0.2, 0, 1.82), 70.0)
-    cam.add_shot(f0, f1, lambda f: (A5[0], A5[1], 70.0 * (1 + 0.06 * ease_out((f - f0) / 8))))
+    A5 = (V(KB) + V(0.3, -4.6, 2.0), V(KB) + V(0.3, 0, 1.72), 70.0)
+    cam.add_shot(f0_5, f1_5, lambda f: (A5[0], A5[1], 70.0 * (1 + 0.06 * ease_out((f - f0_5) / 8))))
     cam.whips.append((S[5][0], 1))
 
     # =================================================================== SZENE 6 – Kontoglas
-    f0, f1 = S[5]
+    f0_6, f1_6 = S[5]
     KS = ST.p(-0.75, -0.35, 0)
     set_kalle(S[5][0], S[10][0], KS, 0.25)
     GL = ST.p(0.35, 1.0, 1.35)
@@ -406,8 +407,8 @@ def direct(W):
         return TH.p(0.98, -0.45, top)
     T.set(gl.root, "location", lambda f: tuple(gl_pos(f)), S[5][0], N)
     T.set(ped, "location", lambda f: tuple(gl_pos(f) - V(0, 0, 0.675)), S[5][0], S[10][0])
-    vis(T, gl.root, f0, None, dur_in=8)
-    vis(T, ped, f0, None, dur_in=8)
+    vis(T, gl.root, f0_6, None, dur_in=8)
+    vis(T, ped, f0_6, None, dur_in=8)
     mill = bt(5, "Mühle")
     sack = PR.flour_sack(coll, "sack6", label=True, scale=0.42)
     zet = PR.muehlrad_zettel(coll, "zettel")
@@ -417,7 +418,7 @@ def direct(W):
     zet.root.scale = (1 / 0.42 * 0.9,) * 3
     S6SACK = ST.p(0.95, 0.85, 1.35)
     ped2 = L.cyl("sack_ped", 0.3, 1.35, 16, L.mat("pedestal", "#2B2750", 0.5), None, ST.p(0.95, 0.85, 0.675), coll)
-    vis(T, ped2, f0, S[10][0] - 4)
+    vis(T, ped2, f0_6, S[10][0] - 4)
 
     def sack_pos(f):
         if f < S[10][0]:
@@ -476,32 +477,32 @@ def direct(W):
           lambda f: -0.35 * window(f, b600, b600 + 18, 3, 8), b600, b600 + 18)
     A6 = (ST.p(0.15, -5.4, 2.35), ST.p(0.25, 1.0, 2.25), 35.0)
     B6c = (ST.p(0.25, -5.0, 2.3), ST.p(0.3, 1.0, 2.15), 50.0)
-    cam.add_shot(f0, f1, shot_lerp(f0, f1, A6, B6c, ease_in_out))
+    cam.add_shot(f0_6, f1_6, shot_lerp(f0_6, f1_6, A6, B6c, ease_in_out))
 
     # =================================================================== SZENE 7
-    f0, f1 = S[6]
+    f0_7, f1_7 = S[6]
     bv = bt(6, "verkauft")
-    C.reaction(T, coll, k, "zweifel", bv + 3, hold=f1 - bv, speaking=True, seed=7)
-    C.pose(T, k, "scratch", bv - 2, f1 - 4, 6, 8)
+    C.reaction(T, coll, k, "zweifel", bv + 3, hold=f1_7 - bv, speaking=True, seed=7)
+    C.pose(T, k, "scratch", bv - 2, f1_7 - 4, 6, 8)
     T.add(k.hat, "rotation_euler", lambda f: (0, 0.26 * window(f, bv, bv + 24, 4, 10) *
                                               (1 + 0.15 * math.sin((f - bv) * 0.9)), 0), bv, bv + 26)
-    T.add(k.towel, "location", lambda f: (0, 0, -0.03 * window(f, bv + 2, f1 + 30, 3, 20)), bv, f1 + 30)
-    C.kalle_look(T, k, lambda f: gl_pos(f) + V(0, 0, 0.3), f0, bv, 0.8)
+    T.add(k.towel, "location", lambda f: (0, 0, -0.03 * window(f, bv + 2, f1_7 + 30, 3, 20)), bv, f1_7 + 30)
+    C.kalle_look(T, k, lambda f: gl_pos(f) + V(0, 0, 0.3), f0_7, bv, 0.8)
     face_s = V(KS) + V(0, -0.25, 1.95)
-    A7 = (face_s + V(0.1, -2.9, 0.05), face_s + V(0.1, 0, -0.1), 70.0)
+    A7 = (face_s + V(0.25, -4.4, 0.05), face_s + V(0.25, 0, -0.25), 70.0)
 
     def shot7(f):
-        a = math.radians(8) * ease_in_out((f - f0) / (f1 - f0))
-        return (face_s + rotz(V(0.1, -2.9, 0.05), a), face_s + V(0.1, 0, -0.1), 70.0)
-    cam.add_shot(f0, f1, shot7)
-    T.set(b.root, "location", lambda f: tuple(V(KS) + V(0.6, -0.3, 2.1)), f0, S[7][0])
+        a = math.radians(8) * ease_in_out((f - f0_7) / (f1_7 - f0_7))
+        return (face_s + rotz(V(0.25, -4.4, 0.05), a), face_s + V(0.25, 0, -0.25), 70.0)
+    cam.add_shot(f0_7, f1_7, shot7)
+    T.set(b.root, "location", lambda f: tuple(V(KS) + V(0.6, -0.3, 2.1)), f0_7, S[7][0])
 
     # =================================================================== SZENE 8 – Erinnerung
-    f0, f1 = S[7]
+    f0_8, f1_8 = S[7]
     SCR = ST.objs["screen"].location
     B8a, B8 = V(KS) + V(0.6, -0.3, 2.1), ST.p(1.7, 1.6, 3.0)
-    T.set(b.root, "location", lambda f: tuple(path([(f0, B8a), (f0 + 8, ST.p(1.0, 0.2, 3.3)), (f0 + 16, B8)], ease_out)(f)),
-          f0, f1)
+    T.set(b.root, "location", lambda f: tuple(path([(f0_8, B8a), (f0_8 + 8, ST.p(1.0, 0.2, 3.3)), (f0_8 + 16, B8)], ease_out)(f)),
+          f0_8, f1_8)
     b3 = bt(7, "3")
     for q, (iv, slot) in enumerate(invs):
         ta = b3 + 3 * q
@@ -535,20 +536,20 @@ def direct(W):
     T.set(env.flap, "rotation_euler", lambda f: (2.6 * (1 - ease_out((f - bta - 6) / 6)), 0, 0), bta + 5, bta + 13)
     PR.burst(T, coll, "envspark", "sparkt", tuple(mc + V(0.6, -0.3, 0.4)), bta + 12, 8, 801, speed=(0.3, 0.7), up=0.3,
              gravity=-0.5, life=(10, 16), size=(0.8, 1.2))
-    A8 = (SCR + V(-0.05, -6.4, -1.15), SCR + V(-0.05, 0, -0.7), 50.0)
+    A8 = (SCR + V(0.1, -8.6, -1.5), SCR + V(0.1, 0, -0.95), 50.0)
 
     def shot8(f):
-        lens = 50.0 * (1 + 0.05 * ease_out((f - f0) / (f1 - f0)))
+        lens = 50.0 * (1 + 0.05 * ease_out((f - f0_8) / (f1_8 - f0_8)))
         tilt = math.radians(6) * ease_in_out((f - (bta + 4)) / 18) if f > bta + 4 else 0
-        tgt = A8[1] + V(0, 0, 6.4 * math.tan(tilt))
+        tgt = A8[1] + V(0, 0, 8.6 * math.tan(tilt))
         return (A8[0], tgt, lens)
-    cam.add_shot(f0, f1, shot8)
+    cam.add_shot(f0_8, f1_8, shot8)
 
     # =================================================================== SZENE 9
-    f0, f1 = S[8]
+    f0_9, f1_9 = S[8]
     B9 = V(KS) + V(0.6, -0.3, 2.1)
-    T.set(b.root, "location", lambda f: tuple(path([(f0, B8), (f0 + 6, ST.p(0.6, 0.4, 3.0)), (f0 + 12, B9)],
-                                                    ease_in_out)(f)), f0, f1)
+    T.set(b.root, "location", lambda f: tuple(path([(f0_9, B8), (f0_9 + 6, ST.p(0.6, 0.4, 3.0)), (f0_9 + 12, B9)],
+                                                    ease_in_out)(f)), f0_9, f1_9)
     bk_ = bt(8, "klar")
     T.add(k.head, "rotation_euler", lambda f: (0.12 * max(0, math.sin(math.pi * (f - bk_) / 6)) if bk_ <= f < bk_ + 12
                                                else 0, 0, 0), bk_, bk_ + 12)
@@ -557,19 +558,19 @@ def direct(W):
     C.pose(T, k, thumbs, bk_, bt(8, "nie") - 2, 6, 8, overshoot=0.2)
     T.set(k.finger["R"], "scale", lambda f: (1, 1, 0.35), 0, 1)
     bnie = bt(8, "nie")
-    C.reaction(T, coll, k, "staunen", bnie + 3, hold=f1 - bnie + 4, speaking=True, seed=9)
+    C.reaction(T, coll, k, "staunen", bnie + 3, hold=f1_9 - bnie + 4, speaking=True, seed=9)
     PR.burst(T, coll, "bang9", "bang", tuple(V(KS) + V(0, -0.2, 2.5)), bnie + 3, 5, 901, speed=(0.8, 1.2), up=1.2,
              spread=0.9, gravity=-1.5, life=(16, 22), spin=1.0, drag=2.0)
     heart = {"sh_L": (-1.05, -0.95, -0.2), "el_L": (-1.7, 0, -0.4)}
-    C.pose(T, k, heart, bnie + 2, f1 + 4, 6, 6)
+    C.pose(T, k, heart, bnie + 2, f1_9 + 4, 6, 6)
     face9 = V(KS) + V(0, -0.25, 1.95)
-    A9 = (face9 + V(0.2, -2.9, 0.05), face9 + V(0.2, 0, -0.1), 70.0)
-    cam.add_shot(f0, f1, lambda f: (A9[0], A9[1], 70.0 * (1 + 0.04 * ease_out((f - f0) / 10))))
+    A9 = (face9 + V(0.28, -4.4, 0.05), face9 + V(0.28, 0, -0.25), 70.0)
+    cam.add_shot(f0_9, f1_9, lambda f: (A9[0], A9[1], 70.0 * (1 + 0.04 * ease_out((f - f0_9) / 10))))
 
     # =================================================================== SZENE 10 – Liquiditaet
-    f0, f1 = S[9]
+    f0_10, f1_10 = S[9]
     B10 = gl_pos(S[9][0] + 20) + V(0.6, -0.2, 0.95)
-    T.set(b.root, "location", lambda f: tuple(B9.lerp(B10, ease_in_out((f - f0) / 14))), f0, S[10][0])
+    T.set(b.root, "location", lambda f: tuple(B9.lerp(B10, ease_in_out((f - f0_10) / 14))), f0_10, S[10][0])
     bl = bt(9, "Liquidität")
     T.set(gl.rim, "scale", lambda f: (ease_out((f - bl) / 8),) * 3 if f < S[10][0] else (0, 0, 0), bl - 1, S[10][0] + 1)
     T.add(L.bsdf(b.m_shell).inputs["Emission Strength"], "default_value", lambda f: 2.6 * window(f, bl, bl + 16, 3, 10),
@@ -603,15 +604,15 @@ def direct(W):
     C10 = GL + V(0.1, 0, 0.3)
 
     def shot10(f):
-        a = math.radians(-6 + 12 * ease_in_out((f - f0) / (f1 - f0)))
+        a = math.radians(-6 + 12 * ease_in_out((f - f0_10) / (f1_10 - f0_10)))
         return (C10 + rotz(V(0, -5.7, 0.95), a), C10 + rotz(V(0, 0, 0.85), a), 35.0)
-    cam.add_shot(f0, f1, shot10)
+    cam.add_shot(f0_10, f1_10, shot10)
     cam.whips.append((S[10][0], -1))
 
     # =================================================================== SZENE 11 – Geld da
-    f0, f1 = S[10]
+    f0_11, f1_11 = S[10]
     B11 = B_TH
-    T.set(b.root, "location", lambda f: tuple(B11), f0, S[12][0])
+    T.set(b.root, "location", lambda f: tuple(B11), f0_11, S[12][0])
     bgeld = bt(10, "Geld")
     bm = bt(10, "Mühle")
     b1260 = bt(10, "1.260")
@@ -660,13 +661,13 @@ def direct(W):
     T.set(gl.ring, "scale", lambda f: (ease_out((f - b1260) / 8),) * 3, b1260 - 1, b1260 + 9)
     T.set(gl.mark_g, "scale", lambda f: (ease_out((f - b1260) / 6),) * 3, b1260 - 1, b1260 + 7)
     T.set(gl.mark, "scale", lambda f: (1 - ease_out((f - b1260) / 6),) * 3, b1260 - 1, b1260 + 7)
-    C.reaction(T, coll, k, "staunen", b1260 + 3, hold=f1 - b1260, seed=11)
-    A11 = (TH.p(0.3, -3.6, 2.1), TH.p(0.3, 0.0, 1.55), 50.0)
-    B11c = (TH.p(0.3, -3.6, 2.3), TH.p(0.3, 0.0, 1.75), 50.0)
-    cam.add_shot(f0, f1, shot_lerp(f0, bm, A11, B11c, ease_out))
+    C.reaction(T, coll, k, "staunen", b1260 + 3, hold=f1_11 - b1260, seed=11)
+    A11 = (TH.p(0.25, -4.9, 1.75), TH.p(0.25, 0.3, 1.5), 50.0)
+    B11c = (TH.p(0.25, -4.9, 1.95), TH.p(0.25, 0.3, 1.62), 50.0)
+    cam.add_shot(f0_11, f1_11, shot_lerp(f0_11, bm, A11, B11c, ease_out))
 
     # =================================================================== SZENE 12 – Jubel
-    f0, f1 = S[11]
+    f0_12, f1_12 = S[11]
     bha = bt(11, "Ha")
     clap = {"sh_R": (-1.2, 0.55, 0.35), "sh_L": (-1.2, -0.55, -0.35), "el_R": (-0.9, 0, 0.4), "el_L": (-0.9, 0, -0.4)}
     C.pose(T, k, {kk: (v[0], v[1] * 1.35, v[2]) for kk, v in clap.items()}, bha - 4, bha, 3, 2, settle=False)
@@ -683,22 +684,22 @@ def direct(W):
     T.set(b.root, "location", loop_b, bgo + 2, bgo + 22)
     T.set(b.root, "location", lambda f: tuple(B11), bgo + 22, S[12][0])
     T.add(b.body, "rotation_euler", lambda f: (-2 * math.pi * ease_in_out((f - bgo - 3) / 18), 0, 0), bgo + 3, bgo + 21)
-    A12 = (TH.p(0.0, -4.6, 2.2), TH.p(0.0, 0.0, 1.65), 35.0)
+    A12 = (TH.p(0.1, -5.2, 1.8), TH.p(0.1, 0.3, 1.55), 35.0)
 
     def shot12(f):
-        pb = 1 + 0.10 * ease_out((f - f0) / 8)
-        bounce = 0.015 * math.sin((f - f0) * 0.55) * window(f, f0 + 8, f1, 4, 4)
+        pb = 1 + 0.10 * ease_out((f - f0_12) / 8)
+        bounce = 0.015 * math.sin((f - f0_12) * 0.55) * window(f, f0_12 + 8, f1_12, 4, 4)
         pos = A12[1] + (A12[0] - A12[1]) * pb + V(0, 0, bounce)
         return (pos, A12[1] + V(0, 0, bounce * 0.5), 35.0)
-    cam.add_shot(f0, f1, shot12)
+    cam.add_shot(f0_12, f1_12, shot12)
 
     # =================================================================== SZENE 13 – Loop
-    f0, f1 = S[12]
+    f0_13, f1_13 = S[12]
     bmk = bt(12, "Merk")
     bvk = bt(12, "verkauft")
     bni = bt(12, "nicht")
     BF = TH.p(0.62, -1.2, 2.0)                        # direkt vor der Kamera rechts
-    T.set(b.root, "location", lambda f: tuple(B11.lerp(BF, ease_in_out((f - f0) / 8))), f0, bvk)
+    T.set(b.root, "location", lambda f: tuple(B11.lerp(BF, ease_in_out((f - f0_13) / 8))), f0_13, bvk)
     T.add(b.body, "rotation_euler", lambda f: (0, 0, 0.35 * window(f, bmk, bvk, 4, 4)), bmk, bvk)
     exitp = path([(bvk, BF), (bvk + 6, BF + V(0.6, 0.0, 0.35)), (bvk + 12, OUT_R)], ease_in)
     T.set(b.root, "location", lambda f: exitp(f), bvk, N)
@@ -709,7 +710,7 @@ def direct(W):
         T.set(obj, "scale", lambda f, ts=ts, base=base: (base * (1 - ease_in_out((f - ts) / 8)),) * 3, ts - 1, ts + 9)
     A13 = A12
     S1 = (A1[0], A1[1], 50.0)
-    cam.add_shot(f0, N, shot_lerp(f0, N - 7, A13, S1, ease_in_out))
+    cam.add_shot(f0_13, N, shot_lerp(f0_13, N - 7, A13, S1, ease_in_out))
 
     # ------------------------------------------------------------ Byte-Ausdruecke
     EXP = {"neutral": "neutral", "freundlich": "happy", "ernst": "serious", "zwinkern": "wink", "besorgt": "worried"}

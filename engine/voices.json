@@ -233,6 +233,13 @@
           "length_scale": 1.05
         },
         "grund": "'Merk dir' wurde als 'Merkt ihr' verstanden"
+      },
+      "10": {
+        "tts": "Likwiditäät heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
+        "stimme": {
+          "noise_scale": 0.6
+        },
+        "grund": "'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden"
       }
     }
   }
