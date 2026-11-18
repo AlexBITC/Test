@@ -77,6 +77,15 @@ def build_mix(tl: dict, work: Path) -> Path:
     flt = (f"loudnorm=I=-14:TP=-1.5:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
            f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:"
            f"linear=true,aresample=48000")
+    tmp = work / "mix_ln.wav"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(raw), "-af", flt, "-ar", "48000", "-ac", "2",
-                    str(out)], check=True)
+                    str(tmp)], check=True)
+    # Nachkorrektur: loudnorm trifft das Ziel bei kurzen Clips mit Pausen nicht immer exakt
+    p = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(tmp), "-af",
+                        "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"],
+                       capture_output=True, text=True)
+    m2 = json.loads(re.findall(r"\{[^{}]*\}", p.stderr)[-1])
+    gain = min(-14.0 - float(m2["input_i"]), -1.5 - float(m2["input_tp"]))
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(tmp), "-af", f"volume={gain:.2f}dB", "-ar", "48000",
+                    "-ac", "2", str(out)], check=True)
     return out

@@ -62,9 +62,70 @@ def mat(name, color, rough=0.6, emit=None, strength=0.0, metallic=0.0, alpha=Non
         b.inputs["Alpha"].default_value = alpha
         m.surface_render_method = "BLENDED"
         m.use_transparency_overlap = False
-    m.diffuse_color = srgb(color) if isinstance(color, str) else color
+    base = srgb(color) if isinstance(color, str) else color
+    if emit and strength >= 1.0:
+        # Workbench kennt keine Emission: leuchtende Teile ueber helle Objektfarbe nachbilden
+        e = srgb(emit) if isinstance(emit, str) else emit
+        k = min(1.0, 0.45 + 0.12 * strength)
+        base = tuple(min(1.0, (b * (1 - k) + c * k) * (1.0 + 0.25 * k)) for b, c in zip(base[:3], e[:3])) + (1.0,)
+    m.diffuse_color = base
     _MATS[key] = m
     return m
+
+
+def img_mat(name, path, emit=0.9, alpha=True, interp="Linear"):
+    """Material mit Bildtextur (Website-Screenshot, Code-Zeile). Leuchtet leicht (Screen-Look);
+    in Workbench (Farbmodus TEXTURE) wird das aktive Bild-Node direkt angezeigt."""
+    if name in _MATS:
+        return _MATS[name]
+    m = bpy.data.materials.new(name)
+    nt = m.node_tree
+    b = nt.nodes["Principled BSDF"]
+    t = nt.nodes.new("ShaderNodeTexImage")
+    t.image = bpy.data.images.load(str(path), check_existing=True)
+    t.interpolation = interp
+    t.extension = "CLIP"
+    nt.links.new(t.outputs["Color"], b.inputs["Base Color"])
+    if emit:
+        nt.links.new(t.outputs["Color"], b.inputs["Emission Color"])
+        b.inputs["Emission Strength"].default_value = emit
+    b.inputs["Roughness"].default_value = 0.6
+    if alpha:
+        nt.links.new(t.outputs["Alpha"], b.inputs["Alpha"])
+        m.surface_render_method = "BLENDED"
+    nt.nodes.active = t
+    m.diffuse_color = (1, 1, 1, 1)
+    _MATS[name] = m
+    return m
+
+
+def img_size(path):
+    im = bpy.data.images.load(str(path), check_existing=True)
+    return im.size[0], im.size[1]
+
+
+def tplane(name, path, height=None, width=None, parent=None, loc=(0, 0, 0), coll=None, emit=0.9, alpha=True,
+           origin="center", mat=None):
+    """Flache Ebene (XZ, Vorderseite -Y) mit Bild im richtigen Seitenverhaeltnis. origin: center|top|bottom|left."""
+    w_px, h_px = img_size(path)
+    asp = w_px / max(1, h_px)
+    if height is None:
+        height = width / asp
+    if width is None:
+        width = height * asp
+    bm = bmesh.new()
+    oz = {"center": 0.0, "top": -height / 2, "bottom": height / 2, "left": 0.0}[origin]
+    ox = width / 2 if origin == "left" else 0.0
+    vs = [bm.verts.new((ox - width / 2, 0, oz - height / 2)), bm.verts.new((ox + width / 2, 0, oz - height / 2)),
+          bm.verts.new((ox + width / 2, 0, oz + height / 2)), bm.verts.new((ox - width / 2, 0, oz + height / 2))]
+    f = bm.faces.new(vs)
+    uv = bm.loops.layers.uv.new("UVMap")
+    for lp, co in zip(f.loops, [(0, 0), (1, 0), (1, 1), (0, 1)]):
+        lp[uv].uv = co
+    f.normal_update()
+    o = _mesh_obj(name, bm, mat or img_mat(f"img_{path}", path, emit, alpha), parent, loc, coll)
+    o["w"], o["h"] = width, height
+    return o
 
 
 def unique_mat(base: bpy.types.Material, name: str):

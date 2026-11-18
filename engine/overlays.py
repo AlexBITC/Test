@@ -9,11 +9,17 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 from functools import lru_cache
 from multiprocessing import Pool
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+try:
+    from .timing import counter_window, calc_times
+except ImportError:
+    from timing import counter_window, calc_times
 
 FONT = Path(__file__).resolve().parent / "fonts" / "LilitaOne-Regular.ttf"
 FALLBACK = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -32,7 +38,8 @@ GREY = (120, 116, 150)
 # Layout (Safe Zone: oben 220, rechts 160, unten 420)
 X0, X1 = 60, 920
 TOP = 236
-SUB_Y = 1350          # Mitte der Untertitel (Band 1250-1450)
+SUB_Y = 1330          # Mitte der Untertitel (Band 1250-1450)
+BAR_Y = 1436          # Kapitel-Leiste unten, ueber der Safe Zone (endet bei 1492 < 1500)
 SUB_X = (60 + 900) // 2
 
 
@@ -190,13 +197,18 @@ def draw_hook(img, tl, f):
     if a <= 0:
         return
     dy = -160 * (1 - a)
-    hook = tl["hook"]
-    parts = hook.split(". ", 1)
-    lines = [parts[0] + "." if len(parts) > 1 else parts[0]] + ([parts[1]] if len(parts) > 1 else [])
+    m = re.search(r"Hook-Text[^']*'([^']+)'", tl["scenes"][0].get("visual", ""))
+    hook = m.group(1) if m else tl["hook"]
+    if " – " in hook:
+        a1, a2 = hook.split(" – ", 1)
+        lines = [a1 + " –", a2]
+    else:
+        parts = hook.split(". ", 1)
+        lines = [parts[0] + "." if len(parts) > 1 else parts[0]] + ([parts[1]] if len(parts) > 1 else [])
     box = (X0, TOP + dy, X1, TOP + 60 + 92 * len(lines) + dy)
     card(img, box, a)
     for i, ln in enumerate(lines):
-        col = RED if any(ch.isdigit() for ch in ln) else (255, 255, 255)
+        col = YELLOW if i == len(lines) - 1 and len(lines) > 1 else (255, 255, 255)
         text_center(img, ((X0 + X1) / 2, TOP + 30 + 46 + 92 * i + dy), ln, BIG, col, a)
 
 
@@ -227,7 +239,9 @@ def draw_banner(img, tl, f):
         card(img, box, a)
         label = f"{k + 1} · {tl['kapitel'][k]}"
         text_center(img, (X0 + 34 + dx, TOP + 36), label, SMALL, (255, 255, 255), a, anchor="lm")
-        prog = ease_in_out((f - s["f0"] - 4) / max(1, s["f1"] - s["f0"] - 10))
+        ks = [x for x in sc if x["kapitel"] == k]
+        c0, c1 = ks[0]["f0"], ks[-1]["f1"]
+        prog = ease_in_out((f - c0 - 4) / max(1, c1 - c0 - 10))
         layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
         d = ImageDraw.Draw(layer)
         bx0, bx1, by = X0 + 34 + dx, X1 - 34 + dx, TOP + 66
@@ -247,20 +261,17 @@ def draw_chapter_bar(img, tl, f):
     show_from = next((s["f0"] for s in sc if s["kapitel"] is not None), None)
     if show_from is None:
         return
-    # Sichtbar in Kapitel-Szenen und in der Szene, die alle Kapitel abschliesst (erste Szene nach dem
-    # letzten Kapitel mit Jubel), sonst ausgeblendet.
+    # Sichtbar nur in Szenen mit Kapitel (bei kapitel null ausgeblendet)
     chap_scenes = [i for i, s in enumerate(sc) if s["kapitel"] is not None]
-    finale = next((i for i in range(chap_scenes[-1] + 1, len(sc)) if sc[i]["reaktion"] == "jubel"), None)
+    finale = None
     vis_ranges = [(sc[chap_scenes[0]]["f0"], sc[chap_scenes[-1]]["f1"])]
-    if finale is not None:
-        vis_ranges.append((sc[finale]["f0"], sc[finale]["f1"]))
     a = 0.0
     for r0, r1 in vis_ranges:
         a = max(a, slide(f, r0 + 4, r1 - 5, 8))
     if a <= 0:
         return
     in_finale = finale is not None and sc[finale]["f0"] <= f < sc[finale]["f1"]
-    y0 = TOP + 98 if cur["kapitel"] is not None else TOP
+    y0 = BAR_Y
     gap = 14
     pw = (X1 - X0 - gap * (n - 1)) / n
     layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
@@ -316,6 +327,8 @@ def draw_term(img, tl, f, anchors):
     for s in tl["scenes"]:
         b = s["beats"].get(begriff)
         if b is None:
+            b = next((w["f0"] - 3 for w in s["words"] if w["w"].strip(".,!?:").lower() == begriff.lower()), None)
+        if b is None:
             continue
         f_in, f_out = b + 1, s["f1"] - 6
         if not (f_in - 1 <= f < s["f1"] + 4):
@@ -329,6 +342,9 @@ def draw_term(img, tl, f, anchors):
         txt = s["text"]
         idx = txt.lower().find(begriff.lower())
         rest = txt[idx + len(begriff):].lstrip(":, ").split(".")[0] if idx >= 0 else ""
+        mm = re.search(r"darunter 1 Zeile: '([^']+)'", s.get("visual", ""))
+        if mm:
+            rest = mm.group(1)
         if rest:
             text_center(img, ((X0 + X1) / 2, TOP + 132 + dy), rest[0].upper() + rest[1:], SMALL, (255, 255, 255), a)
         sweep(img, box, (f - f_in - 4) / 16, 28, a)
@@ -361,8 +377,41 @@ def draw_labels(img, f, anchors):
         text_center(img, (x, y), s, BIG, GOLD, a, stroke=8, stroke_fill=NAVY, scale=pop_k)
 
 
+def draw_notification(img, tl, f, anchors):
+    """Handy-Benachrichtigung ueber dem 3D-Handy (Anker 'phone_notify')."""
+    if not anchors or "phone_notify" not in anchors.get("anchors", {}):
+        return
+    for s in tl["scenes"]:
+        m = re.search(r"Benachrichtigung über dem Handy: '([^']+)'", s.get("visual", ""))
+        if not m or not (s["f0"] <= f < s["f1"]):
+            continue
+        f_in = s["f0"] + 6
+        a = slide(f, f_in, s["f1"] - 5, 6)
+        if a <= 0:
+            return
+        x, y, z = anchors["anchors"]["phone_notify"][f]
+        txt = m.group(1)
+        title, _, body = txt.partition(": ")
+        fs = font(SMALL)
+        w = max(fs.getlength(title + ":"), font(56).getlength(body)) + 150
+        x = max(X0 + w / 2, min(X1 - w / 2, x))
+        y = max(TOP + 80, min(700, y)) + 30 * (1 - a)
+        sc_ = 0.85 + 0.15 * ease_out_back(clamp01((f - f_in) / 7), 3.0)
+        box = (x - w / 2 * sc_, y - 70 * sc_, x + w / 2 * sc_, y + 70 * sc_)
+        card(img, box, a, border=YELLOW, fill=(255, 255, 255), fill_a=0.97, radius=34)
+        lay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        d = ImageDraw.Draw(lay)
+        cx, cy = box[0] + 62 * sc_, y
+        d.ellipse((cx - 38 * sc_, cy - 38 * sc_, cx + 38 * sc_, cy + 38 * sc_), fill=(139, 74, 31, int(255 * a)))
+        img.alpha_composite(lay)
+        text_center(img, (cx, cy + 2), "!", 60, YELLOW, a, scale=sc_)
+        text_center(img, (box[0] + 120 * sc_, y - 26 * sc_), title + ":", SMALL, (139, 74, 31), a, scale=sc_, anchor="lm")
+        text_center(img, (box[0] + 120 * sc_, y + 24 * sc_), body, 56, NAVY, a, scale=sc_, anchor="lm")
+
+
 def overlay_frame(tl, f, anchors):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    draw_notification(img, tl, f, anchors)
     draw_hook(img, tl, f)
     draw_banner(img, tl, f)
     draw_chapter_bar(img, tl, f)
@@ -431,6 +480,36 @@ def screen_frame(tl, f):
         return None
     img = _screen_bg(f, flicker=max(0.0, 1 - (f - s["f0"]) / 12) if i > 0 and sc[i - 1]["set"] != "studio" else 0.0)
     b = s["beats"]
+    vis = s.get("visual", "")
+    if "Zähler zählt hoch" in vis:            # Code-Zaehler (echte Zeilenzahl)
+        n = zeilen()
+        f_a, f_b = counter_window(s)
+        v = int(round(n * ease_out(clamp01((f - f_a) / max(1, f_b - f_a)))))
+        pk = 1 + 0.12 * math.sin(math.pi * clamp01((f - f_b) / 6)) if f >= f_b else 1.0
+        _t(img, (SW / 2, 300), "index.html", 64, (170, 170, 200), anchor="mm")
+        d = ImageDraw.Draw(img)
+        d.text((SW / 2, 470), f"{v} Zeilen", font=font(int(170 * pk)), fill=(*YELLOW, 255), anchor="mm")
+        return img
+    mrech = re.search(r"Rechnung groß: '([^']+)'", vis)
+    if mrech:                                # Rechnung (hoechstens eine pro Szene)
+        expr = mrech.group(1)
+        left, _, right = expr.partition(" = ")
+        t1, t2 = calc_times(s)
+        a = ease_out((f - t1) / 7)
+        if a > 0:
+            fs_ = 150
+            while font(fs_).getlength(left) > SW - 120:
+                fs_ -= 6
+            _t(img, (SW / 2, 270 - 30 * (1 - a)), left, fs_, (255, 255, 255), a, anchor="mm")
+        a = ease_out((f - t2) / 7)
+        if a > 0:
+            total = int(re.sub(r"\D", "", right))
+            v = int(round(total * ease_out((f - t2) / 16)))
+            pk = 1 + 0.15 * math.sin(math.pi * clamp01((f - t2 - 16) / 6)) if f >= t2 + 16 else 1.0
+            d = ImageDraw.Draw(img)
+            d.text((SW / 2, 480 - 30 * (1 - a)), "= " + fmt_num(v) + " €", font=font(int(170 * pk)),
+                   fill=(*GREEN, int(255 * a)), anchor="mm")
+        return img
     # Screen-Typografie: zwei Groessen (SCR_SMALL 64, SCR_BIG 150 fuer Zahlen)
     if "18" in b and "15,50" in b:      # Szene: Angebote vergleichen
         for row, (key, lab, val, col, suf) in enumerate([("18", "Bisher:", 18.0, RED, " pro Sack"),
@@ -494,6 +573,11 @@ def screen_frame(tl, f):
             v = int(round(1800 * ease_out((f - bf) / 40)))
             _t(img, (SW / 2, 405 - 30 * (1 - a)), "= " + fmt_num(v) + " €", 150, GREEN, a, anchor="mm")
     return img
+
+
+def zeilen():
+    p = Path(__file__).resolve().parent.parent / "website" / "meta.json"
+    return int(json.loads(p.read_text())["zeilen"])
 
 
 def screen_textures(tl, outdir):

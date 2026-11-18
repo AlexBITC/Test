@@ -1,0 +1,118 @@
+{
+  "folge": 3,
+  "slug": "website",
+  "titel": "Bäcker ohne Website",
+  "hook": "Seit dreißig Jahren Bäcker – und im Internet gibt's mich net.",
+  "begriff": "Marketing",
+  "kapitel": ["CODE SCHREIBEN", "SEITE BAUEN", "JEDES GERÄT"],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "Seit dreißig Jahren Bäcker – und im Internet gibt's mich net.",
+      "highlight": ["Internet"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle hinter der Theke, vor ihm ein wackliger Stapel Bestellzettel, die im Luftzug flattern. Auf dem Laptop blinkt ein leerer Browser mit Fragezeichen. [Overlay] Hook-Text groß oben: 'Seit 30 Jahren Bäcker – online unsichtbar.' Kamera: schneller Push-in aus der Halbtotalen auf Kalle, Bewegung ab Frame 0. Diese Startposition merken: Szene 12 endet exakt hier."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Stollen-Bestellungen kommen auf Zetteln. Die Hälfte verschlamp i.",
+      "highlight": ["Zetteln"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Ein Windstoß: Die Hälfte der Zettel wirbelt hoch und segelt hinter die Theke und unter die Kasse. Kalle greift ins Leere. Kamera: Schwenk von den fliegenden Zetteln zurück auf Kalles Gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Keine Sorge. Ich schreib dir eine Website. Mit Code.",
+      "highlight": ["Code"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte schießt mit türkisem Lichtschweif aus dem Laptop und bremst neben Kalle ab. Bei 'Mit Code' wechseln seine Pixelaugen zu laufenden Code-Zeilen, die Antenne blitzt. Kamera: Rückfahrt, bis beide im Bild sind."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Code ist ein Rezept für den Computer: Jede Zeile ein Schritt.",
+      "highlight": ["Rezept"],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Links eine Low-Poly-Rezeptkarte mit 3 Zeilen '1 Mehl · 2 Wasser · 3 Backen'. Rechts erscheinen 3 echte Code-Zeilen aus index.html (Kopfzeile, Angebot, Formular), groß und scharf, syntaxfarbig. Leuchtende Linien verbinden jeden Rezeptschritt mit einer Code-Zeile. Dahinter eine weiche, unscharfe Wand aus echtem Code. Kamera: langsamer Push-in zwischen Karte und Code hindurch."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Hunderte Zeilen – fertig, bevor dein Teig aufgeht.",
+      "highlight": ["Hunderte"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Aus Byte schießen echte Code-Zeilen als dünne leuchtende Platten (Pop-Tick-Rhythmus) und stapeln sich in einer Spirale zu einem hohen Code-Turm. Daneben steht eine Teigschüssel, der Teig hebt sich nur ein kleines Stück. Der Turm ist fertig, bevor der Teig über den Rand kommt. [Screen] Zähler zählt hoch auf '<ZEILEN> Zeilen' (echte Zahl). Kalle staunt am Rand. Kamera: Fahrt am Turm entlang nach oben, oben kurzer Blick auf Kalles staunendes Gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Erst das Gerüst, dann die Farben, dann wird alles klickbar.",
+      "highlight": ["Gerüst", "Farben", "klickbar"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "HERZSTÜCK, sehr detailliert, plus 1,0 s Halt. Drei Phasen, synchron zu den drei Satzteilen: [3D] PHASE A 'Gerüst' (HTML): Der Code-Turm zerfällt in Partikel, die zu türkisen Gerüst-Ebenen werden, aus den echten Gerüst-Screenshots. Die Abschnitte schweben als Explosionsansicht gestaffelt in der Tiefe: Kopfzeile, Hero, 12 Angebotskarten (3x4, jede eine eigene Ebene), Öffnungszeiten, Formular mit 3 Feldern und Button, Fußzeile. Jede Ebene rastet mit Pop an ihre Position. PHASE B 'Farben' (CSS): Eine warme Farbwelle läuft von oben nach unten über alle Ebenen und tauscht die Gerüst-Textur gegen die gestylte Textur desselben Abschnitts. Ecken runden sich (Bevel-Animation), Schatten fallen nach unten. Die 12 Karten drehen sich um 180° nacheinander wie Dominosteine, auf jeder springt ein kleines Low-Poly-Gebäck hoch (Brötchen, Brezel, Croissant, Stollen …). PHASE C 'klickbar' (JS): Alle Ebenen fahren in der Tiefe zusammen zu einer flachen Seite (ein satter Pop) und gleiten in ein großes Low-Poly-Handy. Ein 3D-Finger tippt auf 'Stollen vorbestellen': Button federt (Scale 0.95), Felder füllen sich Buchstabe für Buchstabe (echte Playwright-Sequenz), grüner Haken. Kamera: weite Kreisfahrt (ca. 60°) um die Explosionsansicht, dann Dolly-in, während die Ebenen zusammenfahren, Ende nah auf dem Handy."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Gleicher Code auf Handy, Tablet und Laptop.",
+      "highlight": ["Code"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Drei Low-Poly-Geräte nebeneinander: Handy, Tablet, Laptop, jeweils mit der echten Seite in ihrer Breite. Ein einziges Code-Lichtband aus Byte verzweigt sich in alle drei. Das Angebotsraster ordnet sich sichtbar um: Die Karten gleiten in 3D von 1 Spalte (Handy) über 2 (Tablet) zu 4 (Laptop), echte Screenshots als Start- und Endzustand. Kamera: Schwenk von links nach rechts über die drei Geräte."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Des gibt's doch net!",
+      "highlight": ["net"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Kalle staunt maximal, die Mütze hüpft zweimal, in seinen Kugelaugen spiegeln sich die drei leuchtenden Geräte. Byte dreht eine Siegerrunde um ihn. Kamera: Zoom auf das Gesicht mit leichter Drehung."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Das ist Marketing: Leute wissen von dir, bevor sie Hunger haben.",
+      "highlight": ["Marketing"],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": null,
+      "visual": "[3D] In der Mitte ein kleiner Low-Poly-Laden mit Leuchtschild (Brezel-Symbol). Aus Handy, Tablet und Laptop laufen kleine Low-Poly-Kunden auf leuchtenden Pfaden zum Laden. [Overlay] 'MARKETING' groß, darunter 1 Zeile: 'Gefunden werden, bevor der Hunger kommt'. Kein Kapitel-Banner. Kamera: Kreisfahrt von oben über den Mini-Laden."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Nur fünf neue Kunden pro Woche, je vier Euro: über tausend Euro im Jahr.",
+      "highlight": ["tausend"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": null,
+      "visual": "[3D] Neben dem Laden stapeln sich 52 dünne Münzscheiben (eine pro Woche) schnell zu einer goldenen Säule. [Screen] Rechnung groß: '5 × 4 € × 52 = 1.040 €', die Summe zählt hoch (Pop am Ende). Kamera: Fahrt an der Münzsäule nach oben."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Oh! Erste Bestellung: zwei Stollen.",
+      "highlight": ["Bestellung"],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalles Handy auf der Theke vibriert und leuchtet, auf dem Display die echte Bestätigungsansicht der Website. [Overlay] Benachrichtigung über dem Handy: 'Neue Bestellung: 2 Stollen'. Kalle: schock, die Mütze fliegt hoch. Kamera: harter Zoom auf Kalles Gesicht."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Dreißig Jahre Bäcker – und jetzt endlich im Internet!",
+      "highlight": ["Internet"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle jubelt mit Armen hoch, Mehlwolke und Konfetti, die Mütze landet wieder auf dem Kopf. Der Zettelstapel ist weg, auf dem Laptop läuft jetzt die echte Website statt des Fragezeichens. Kamera: Rückfahrt, die exakt auf der Startposition von Szene 1 endet (Loop)."
+    }
+  ]
+}

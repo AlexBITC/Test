@@ -110,6 +110,15 @@ class Kalle:
             L.sphere(f"k_pupil_{side}", 0.045, 10, 6, (1, 0.6, 1.1), m_pupil, pp, (0, -0.066, 0), c)
             L.sphere(f"k_glint_{side}", 0.013, 6, 4, (1, 1, 1), m_glint, pp, (0.018, -0.094, 0.022), c)
             self.eye[side], self.pupil[side] = e, pp
+        # Spiegelungen in den Kugelaugen (drei leuchtende Geraete, Szene 'Des gibt's doch net!')
+        self.reflect = {}
+        m_ref = L.mat("eye_reflect", "#BFFFF8", 0.4, emit="#BFFFF8", strength=4.0)
+        for side, sx in (("R", -1), ("L", 1)):
+            rf = L.empty(f"k_reflect_{side}", self.pupil[side], (0, -0.093, 0.006), c)
+            for j, (w, h) in enumerate([(0.008, 0.015), (0.016, 0.013), (0.022, 0.012)]):
+                L.box(f"k_refl_{side}{j}", (w, 0.002, h), m_ref, rf, (-0.022 + j * 0.019, 0, 0), c)
+            rf.scale = (0, 0, 0)
+            self.reflect[side] = rf
         # Brauen
         self.brow = {}
         for side, sx in (("R", -1), ("L", 1)):
@@ -242,7 +251,7 @@ def _mouth(T, k, speaking, fn, f0, f1):
         T.set(k.mouth, "scale", lambda x: (1, 1, 0.18), f1, f1 + 1)
 
 
-def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False):
+def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False, hat=True):
     """Reaktion mit Antizipation -> Hauptbewegung -> Nachschwingen. f = Hauptakzent."""
     if kind == "neutral":
         T.add(k.head, "rotation_euler", lambda x: (0.06 * window(x, f - 4, f + 14, 4, 10), 0, 0), f - 4, f + 14)
@@ -303,10 +312,11 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False):
             if t <= 0 or t >= 1:
                 return 0.0
             return 0.9 * 4 * t * (1 - t)
-        T.add(k.hat, "location", lambda x: (0, 0, hatz(x)), f, f + 22)
-        T.add(k.hat, "rotation_euler", lambda x: (0, 0, 2 * math.pi * ease_in_out((x - f) / 22)), f, f + 22)
-        T.mul(k.hat, "scale", lambda x: (1, 1, 1 - 0.18 * spring((x - f - 22) / FPS, 4, 0.3) if x > f + 22 else 1),
-              f + 22, f + 40)
+        if hat:
+            T.add(k.hat, "location", lambda x: (0, 0, hatz(x)), f, f + 22)
+            T.add(k.hat, "rotation_euler", lambda x: (0, 0, 2 * math.pi * ease_in_out((x - f) / 22)), f, f + 22)
+            T.mul(k.hat, "scale", lambda x: (1, 1, 1 - 0.18 * spring((x - f - 22) / FPS, 4, 0.3) if x > f + 22 else 1),
+                  f + 22, f + 40)
         for side, sx in (("R", -1), ("L", 1)):
             T.add(k.sh[side], "rotation_euler", lambda x, s=sx: (0, -s * 0.5 * window(x, f, f + hold, 3, 15), 0),
                   f, f + hold)
@@ -325,12 +335,33 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False):
             return 0.28 * 4 * t * (1 - t) if 0 < t < 1 else 0
         T.add(k.body, "location", lambda x: (0, 0, jump(x) - 0.06 * window(x, a0, f + 1, 3, 1)), a0, f + 16)
         T.mul(k.torso, "scale", lambda x: (1, 1, 1 + 0.06 * spring((x - f - 14) / FPS, 3, 0.3) if x > f + 14 else 1), f + 14, f + 34)
-        T.add(k.hat, "location", lambda x: (0, 0, 0.25 * 4 * ((x - f - 2) / 16) * (1 - (x - f - 2) / 16) if 0 < x - f - 2 < 16 else 0),
-              f, f + 20)
+        if hat:
+            T.add(k.hat, "location", lambda x: (0, 0, 0.25 * 4 * ((x - f - 2) / 16) * (1 - (x - f - 2) / 16)
+                                                if 0 < x - f - 2 < 16 else 0), f, f + 20)
         _mouth(T, k, speaking, lambda x: (1.3, 1, 0.18 + 1.2 * window(x, f, f + hold, 3, 10)), f, f + hold)
         for side in ("R", "L"):
             T.add(k.brow[side], "location", lambda x: (0, 0, 0.05 * window(x, f, f + hold, 3, 12)), f, f + hold)
         return
+
+
+def reaction(T, coll, k, kind, f, hold=40, speaking=False, seed=0, hat=True):
+    """Reaktion inkl. Effekten: staunen -> '!'-Partikel, jubel -> Mehlwolke + Konfetti.
+    (schock: harter Kamera-Zoom macht die Regie)."""
+    import props as PR
+    kalle_react(T, k, kind, f, hold, speaking=speaking, hat=hat)
+    head = lambda: Vector(T.loc(k.root, f)) + Vector((0, -0.1, 2.45))  # noqa: E731
+    if kind == "staunen":
+        PR.burst(T, coll, f"bang_{f}_{seed}", "bang", tuple(head()), f + 1, 5, 900 + seed, speed=(0.8, 1.3),
+                 up=1.2, spread=0.9, gravity=-1.5, life=(16, 22), size=(0.8, 1.2), spin=1.0, drag=2.0)
+    elif kind == "jubel":
+        base = Vector(T.loc(k.root, f))
+        PR.burst(T, coll, f"jflour_{f}_{seed}", "puff", tuple(base + Vector((0, -0.2, 1.4))), f, 26, 910 + seed,
+                 speed=(1.0, 2.0), up=0.6, gravity=-0.5, life=(22, 34), size=(1.0, 2.0), drag=3.0, ring=True)
+        PR.burst(T, coll, f"jconf_{f}_{seed}", "confetti", tuple(base + Vector((0, -0.2, 2.7))), f + 2, 48,
+                 920 + seed, speed=(1.8, 3.2), up=1.4, spread=1.2, gravity=-3.0, life=(34, 48), size=(1.0, 1.5),
+                 drag=1.6, spin=10.0, flutter=0.6, wobble=0.04,
+                 kinds=["confetti_#FFE14D", "confetti_#2EE6D6", "confetti_#FF5A5F", "confetti_#3DDC84",
+                        "confetti_#F5F1E8"])
 
 
 # =================================================================== Byte
@@ -407,6 +438,23 @@ class Byte:
             _pixels(f"{name}_px_{e}", lc2 + rc2, self.m_pix, ee, c)
             ee.scale = (0, 0, 0) if e != "neutral" else (1, 1, 1)
             self.expr[e] = ee
+        # Code-Gesicht: laufende Mini-Code-Zeilen statt Pixelaugen (beim Code-Schreiben)
+        ce = L.empty(f"{name}_ex_code", self.face, (0, 0, 0), c)
+        ce.scale = (0, 0, 0)
+        self.expr["code"] = ce
+        rr = random.Random(77)
+        cols = [L.TURQ, L.YELLOW, "#FF9F43", "#FFFFFF"]
+        self.code_rows = []
+        for i in range(8):
+            row = L.empty(f"{name}_coderow{i}", ce, (0, -0.002, 0), c)
+            x = -0.11 + rr.uniform(0, 0.03)
+            for k in range(rr.randint(2, 3)):
+                w = rr.uniform(0.025, 0.07)
+                col = cols[(i + k) % 4] if k else L.TURQ
+                L.box(f"{name}_codeseg{i}_{k}", (w, 0.004, 0.014), L.mat(f"codeseg_{col}", col, 0.5, emit=col,
+                                                                          strength=4.0), row, (x + w / 2, 0, 0), c)
+                x += w + 0.014
+            self.code_rows.append(row)
         # Mund: kleiner Strich (still) und Equalizer (sprechen)
         self.mouth_idle = L.empty(f"{name}_mouthidle", self.face, (0, 0, 0), c)
         _pixels(f"{name}_px_mouth", [(-1, -3), (0, -3), (1, -3)], self.m_pix, self.mouth_idle, c)
@@ -492,6 +540,24 @@ def byte_face(T, b, schedule, f0, f1):
             s = ease_out_back(min(1, t), 2.5) if last_change(f) > schedule[0][0] - 1 else 1
             return (1, 1, max(0.05, s))
         T.set(obj, "scale", sc, f0, f1)
+
+
+def byte_code_face(T, b, f0, f1, speed=0.09):
+    """Code-Zeilen laufen nach oben ueber den Bildschirm (Endlos-Band), Breite folgt dem runden Rand."""
+    n = len(b.code_rows)
+    span = 0.26
+    r = 0.135
+
+    for i, row in enumerate(b.code_rows):
+        def z(f, i=i):
+            return ((i * span / n + speed * (f - f0) / FPS) % span) - span / 2
+
+        def scl(f, i=i):
+            zz = z(f)
+            w = math.sqrt(max(0.0, 1 - (zz / r) ** 2))
+            return (w, 1, 1 if abs(zz) < r - 0.01 else 0)
+        T.set(row, "location", lambda f, i=i: (0, -0.002, z(f, i)), f0, f1)
+        T.set(row, "scale", scl, f0, f1)
 
 
 def byte_blinks(T, b, f0, f1, seed=11):

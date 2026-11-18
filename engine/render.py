@@ -26,9 +26,10 @@ ROOT = Path(__file__).resolve().parent.parent
 ENGINE = Path(__file__).resolve().parent
 FPS = 30
 W, H = 1080, 1920
-LEAD = 0.08          # Sekunden Stille vor jeder Zeile
+LEAD = 0.0           # Szene beginnt mit der Zeile (Szenenlaenge = Audiolaenge + 0,25 s)
 TAIL = 0.25          # Pause nach jeder Zeile (Vorgabe)
 BLENDER = os.environ.get("BLENDER", "blender")
+os.environ.setdefault("EGL_PLATFORM", "surfaceless")   # Blender headless ohne GPU (Mesa llvmpipe)
 
 
 def log(*a):
@@ -49,15 +50,24 @@ def voices_stage(ep: dict, work: Path) -> list:
     lines = []
     for i, sz in enumerate(ep["szenen"]):
         role = sz["sprecher"]
-        vid = cfg["voices"][role]["voice_id"]
-        tag = tts.REACTION_TAG.get(role, {}).get(sz.get("reaktion", ""), "") if role == "kalle" and sz.get("reaktion") in ("jubel", "schock") else ""
+        vid = role if model == "piper" else cfg["voices"][role]["voice_id"]
+        tag = ""
         attempts = []
-        overrides = {}
+        overrides = {k: v for k, v in cfg.get("speech_overrides", {}).items() if k in sz["text"].split()}
         lo, hi = tts.TEMPO[role]
+        tune = cfg.get("line_tuning", {}).get(str(i + 1), {})
+        speed = tune.get("speed", tts.BASE_SETTINGS[role].get("speed", 1.0))
         for attempt in range(3):
             settings, seed = tts.line_settings(role, attempt, cfg, model)
+            if attempt == 0 and tune:
+                settings["stability"] = tune.get("stability", settings["stability"])
+                seed = tune.get("seed", seed)
             if attempts:
                 prev = attempts[-1]["check"]
+                # Tempo ueber den API-Parameter 'speed' nachregeln (0,7-1,2)
+                if any("Tempo" in x for x in prev["fails"]):
+                    target = (lo + hi) / 2
+                    speed = max(0.7, min(1.2, round(speed * target / max(0.5, prev["wps_raw"]), 2)))
                 hyp = "".join(voicecheck.normalize(prev["transcript"]))
                 # Aussprache-Alternativen fuer Woerter, die Whisper nicht erkannt hat
                 for w in tts.split_words(sz["text"]):
@@ -66,8 +76,7 @@ def voices_stage(ep: dict, work: Path) -> list:
                     if key and "".join(voicecheck.normalize(c)) not in hyp:
                         k = min(attempt - 1, len(alts[key]) - 1)
                         overrides[key] = alts[key][k]
-                if prev["long_pauses"]:
-                    tag = ""
+            settings["speed"] = speed
             speech, spans = tts.speech_mapping(sz["text"], overrides)
             meta = tts.tighten(tts.synth(speech, vid, model, settings, tag, seed=seed))
             raw_words = tts.word_times(meta, spans)
@@ -84,6 +93,7 @@ def voices_stage(ep: dict, work: Path) -> list:
             words = tts.word_times(meta, spans)
             chk = voicecheck.check_line(ROOT / meta["wav"], sz["text"], words, ep.get("begriff"), role)
             chk["stretch"] = factor
+            chk["wps_raw"] = wps0
             attempts.append({"meta": meta, "words": words, "check": chk, "settings": settings, "seed": seed,
                              "overrides": dict(overrides), "speech": speech, "tag": tag})
             log(f"Szene {i+1} Versuch {attempt+1}: {'OK' if chk['ok'] else 'FAIL'} "
@@ -134,19 +144,14 @@ def voice_report(ep, lines, model, cfg, path: Path):
                  f"{_fmt(c['utmos'])} | "
                  f"{l['n_attempts']} | {'OK' if c['ok'] else 'FAIL: ' + '; '.join(c['fails'])} |")
     r += ["", "## Hinweise", "",
-          "- eleven_v3 ignoriert den Parameter `speed`. Das Tempo wird deshalb tonhöhenerhaltend per Rubberband "
-          "korrigiert (höchstens −12 % / +15 %); lange Pausen zwischen Wörtern werden vorher anhand des Pegels gekürzt.",
-          "- Jede Zeile endet mit einem `[pause]`-Tag; ohne ihn schneidet eleven_v3 das letzte Wort teils hart ab. "
-          "Die Stille danach wird weggeschnitten.",
-          f"- Tonhöhen-Anpassung (Formanten erhalten): {cfg.get('pitch_semitones', {}) or 'keine'} Halbtöne.",
-          "- Emotions-Tags (nicht gesprochen, nicht im Untertitel): Kalle `[excited]` bei Jubel, `[shocked]` bei Schock.",
-          "- Byte wurde von Jessica auf Alice umgestellt: Jessica sprach „Helfer“/„Mehl“ in Tests als „Hefa“/„mir“; "
-          "Alice sprach beide in 2 von 2 Testläufen korrekt.",
-          "- Zeile 2: Whisper hört „Mail-Angebote“ statt „Mehl-Angebote“ (1 von 9 Wörtern → 11 % WER). In isolierten "
-          "Ausschnitten erkannte Whisper Kalles „Mehl“ teils korrekt – vermutlich teils Kontext-Bias („…im Postfach“), "
-          "teils englisch gefärbte Aussprache der Stimme. Drei Versuche mit anderen Schreibweisen brachten keine Besserung; "
-          "der beste Versuch wird verwendet. Der Untertitel zeigt den Originaltext.",
-          "- Die Ziffern in den Untertiteln bleiben unverändert; nur der Sprechtext schreibt Zahlen aus.",
+          f"- Modell `{model}` (Vorgabe). Wort-Timing der Untertitel aus dem Endpoint `/with-timestamps`"
+          if model != "piper" else "- Piper-Fallback: Wort-Timing proportional zur Zeichenanzahl.",
+          "- Stille am Zeilenanfang/-ende wird weggeschnitten, Pausen zwischen Wörtern werden auf 0,14–0,30 s begrenzt. "
+          "Liegt das Tempo außerhalb des Zielbereichs, wird tonhöhenerhaltend per Rubberband korrigiert (höchstens −12 % / +15 %).",
+          "- Schwäbische Wörter (net, i, des, verschlamp) dürfen in der Rücktranskription abweichen; Zahlwörter, "
+          "„Code“ und „Marketing“ müssen exakt erkannt werden („Code“ würde bei falscher Aussprache als „Kot“ transkribiert).",
+          "- Schreibweisen nur für die Sprachausgabe: siehe „Sprechtext“ je Zeile. Die Untertitel zeigen exakt den Episoden-Text.",
+          "- Tonhöhe: keine Verschiebung; Byte (Laura) und Kalle (Brian) sind von Natur aus klar verschieden.",
           "", "## Details pro Zeile", ""]
     for i, l in enumerate(lines):
         c = l["check"]
@@ -193,7 +198,9 @@ def build_timeline(ep: dict, lines: list) -> dict:
     scenes, f = [], 0
     for i, (sz, l) in enumerate(zip(ep["szenen"], lines)):
         dur = l["check"]["dur"]
-        n = int(round((LEAD + dur + TAIL) * FPS))
+        m = re.search(r"plus (\d+(?:,\d+)?) s Halt", sz.get("visual", ""))
+        hold = float(m.group(1).replace(",", ".")) if m else 0.0
+        n = int(round((LEAD + dur + TAIL + hold) * FPS))
         words = []
         hl = {h.lower() for h in sz.get("highlight", [])}
         for w in l["words"]:
@@ -215,7 +222,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
                        "reaktion": sz.get("reaktion", "neutral"), "set": sz["set"], "kapitel": sz.get("kapitel"),
                        "visual": sz.get("visual", ""), "f0": f, "f1": f + n, "n": n,
                        "audio_f": f + int(round(LEAD * FPS)), "audio_start": f / FPS + LEAD,
-                       "wav": l["meta"]["wav"], "dur": dur, "words": words, "beats": beats, "amp": amp, "eq": eq})
+                       "wav": l["meta"]["wav"], "dur": dur, "hold": hold, "words": words, "beats": beats, "amp": amp, "eq": eq})
         f += n
     return {"slug": ep["slug"], "titel": ep["titel"], "hook": ep.get("hook", ""), "begriff": ep.get("begriff", ""),
             "kapitel": ep.get("kapitel", []), "fps": FPS, "width": W, "height": H, "frames": f, "scenes": scenes}
@@ -245,8 +252,8 @@ def render_frames_parallel(tl_path: Path, frames: list, workers: int, scale: flo
             continue
         lst = logdir / f"frames_{k}.txt"
         lst.write_text(",".join(map(str, ch)))
-        cmd = [BLENDER, "-b", "--factory-startup", "--python", str(ENGINE / "scene.py"), "--",
-               str(tl_path), "frames", str(lst), str(outdir), str(scale)]
+        cmd = [BLENDER, "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(ENGINE / "scene.py"),
+               "--", str(tl_path), "frames", str(lst), str(outdir), str(scale)]
         lf = open(logdir / f"blender_{k}.log", "w")
         procs.append((subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT), lf))
     t0 = time.time()
@@ -259,6 +266,9 @@ def render_frames_parallel(tl_path: Path, frames: list, workers: int, scale: flo
         lf.close()
         if p.returncode != 0:
             raise RuntimeError(f"Blender-Worker fehlgeschlagen, siehe {logdir}")
+    missing = [f for f in frames if not (outdir / f"{f:05d}.png").exists()]
+    if missing:
+        raise RuntimeError(f"{len(missing)} Frames fehlen (Blender-Fehler?), siehe {logdir}/blender_*.log")
 
 
 # ------------------------------------------------------------------ Hilfen fuer Stufen
@@ -266,7 +276,8 @@ def start_anchors(tl_path: Path, work: Path):
     out = work / "anchors.json"
     if out.exists() and out.stat().st_mtime > tl_path.stat().st_mtime:
         return None
-    cmd = [BLENDER, "-b", "--factory-startup", "--python", str(ENGINE / "scene.py"), "--", str(tl_path), "anchors", str(out)]
+    cmd = [BLENDER, "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(ENGINE / "scene.py"), "--",
+           str(tl_path), "anchors", str(out)]
     return subprocess.Popen(cmd, stdout=open(work / "anchors.log", "w"), stderr=subprocess.STDOUT)
 
 
@@ -311,6 +322,77 @@ def contact_sheets(tl, work: Path, frames_dir: Path):
     return out
 
 
+# ------------------------------------------------------------------ Website (Grundlage aller Code-/Website-Bilder)
+def website_stage(force=False):
+    """Echte Zeilenzahl (wc -l) -> website/meta.json, Playwright-Aufnahmen, Code-Texturen, Geraete-Texturen."""
+    from . import codetex, textures
+    web = ROOT / "website"
+    meta_p = web / "meta.json"
+    n = int(subprocess.run(["wc", "-l", str(web / "index.html")], capture_output=True, text=True,
+                           check=True).stdout.split()[0])
+    if n < 200:
+        raise RuntimeError(f"website/index.html hat nur {n} Zeilen (mindestens 200 verlangt)")
+    meta = json.loads(meta_p.read_text()) if meta_p.exists() else {}
+    stale = force or meta.get("zeilen") != n or not (web / "shots" / "boxen.json").exists() or \
+        (web / "index.html").stat().st_mtime > (web / "shots" / "boxen.json").stat().st_mtime
+    meta.update({"datei": "index.html", "zeilen": n, "ermittelt_mit": "wc -l"})
+    meta_p.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n")
+    if stale:
+        log("Website: Playwright-Aufnahmen ...")
+        subprocess.run(["node", str(web / "capture.js")], check=True)
+    codetex.build()
+    textures.build()
+    log(f"Website: {n} Zeilen (wc -l), Playwright: {json.loads(meta_p.read_text()).get('playwright', {})}")
+    return n
+
+
+# ------------------------------------------------------------------ Render-Engine waehlen
+def choose_engine(tl_path: Path, tl: dict, work: Path, workers: int) -> dict:
+    """Vorgabe: zuerst Eevee. 10 Frames rendern, Gesamtzeit hochrechnen; > 30 min -> Workbench.
+    Laeuft Eevee nicht, Cycles (CPU, 16 Samples, Denoiser) ebenso pruefen."""
+    out = work / "engine.json"
+    forced = os.environ.get("RENDER_ENGINE")
+    if forced:
+        info = {"engine": forced, "grund": "per RENDER_ENGINE gesetzt"}
+        if out.exists():
+            old = json.loads(out.read_text())
+            info["benchmark"] = old.get("benchmark")
+        out.write_text(json.dumps(info, indent=2, ensure_ascii=False))
+        return info
+    if out.exists():
+        return json.loads(out.read_text())
+    n = tl["frames"]
+    frames = [int(i * (n - 1) / 9) for i in range(10)]
+    bench = {}
+    choice = None
+    for eng, scale in (("eevee", 0.6667), ("cycles", 0.6667)):
+        bdir = work / f"bench_{eng}"
+        bdir.mkdir(exist_ok=True)
+        lst = bdir / "frames.txt"
+        lst.write_text(",".join(map(str, frames)))
+        env = dict(os.environ, RENDER_ENGINE=eng)
+        t0 = time.time()
+        p = subprocess.run([BLENDER, "-b", "--factory-startup", "--python", str(ENGINE / "scene.py"), "--",
+                            str(tl_path), "frames", str(lst), str(bdir), str(scale)], env=env,
+                           capture_output=True, text=True, timeout=3600)
+        times = [float(m) for m in re.findall(r"\[scene\] Frame \d+ ([\d.]+)s", p.stdout)]
+        ok = p.returncode == 0 and len(times) == 10
+        per = sum(times) / len(times) if times else None
+        est = per * n / workers / 60 if per else None
+        bench[eng] = {"ok": ok, "sekunden_pro_frame": per, "hochrechnung_min": est, "wand_s": time.time() - t0,
+                      "aufloesung": scale}
+        log(f"Benchmark {eng}: {'OK' if ok else 'FEHLER'}, {per and round(per, 1)} s/Frame -> "
+            f"{est and round(est)} min fuer {n} Frames ({workers} Prozesse)")
+        if ok:
+            choice = eng if est <= 30 else "workbench"
+            break
+    info = {"engine": choice or "workbench", "benchmark": bench,
+            "grund": "Hochrechnung <= 30 min" if choice in ("eevee", "cycles") else
+                     "Hochrechnung > 30 min -> Workbench (Flat Lighting, Texturen, Kavitaet)"}
+    out.write_text(json.dumps(info, indent=2, ensure_ascii=False))
+    return info
+
+
 # ------------------------------------------------------------------ Haupt
 def main():
     ap = argparse.ArgumentParser()
@@ -333,6 +415,8 @@ def main():
             shutil.rmtree(work / d, ignore_errors=True)
         (work / "anchors.json").unlink(missing_ok=True)
 
+    # 0) echte Website (Zeilenzahl, Screenshots, Code-Texturen)
+    website_stage()
     # 1) Stimmen + Check
     lines, model, cfg = voices_stage(ep, work)
     voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
@@ -372,6 +456,11 @@ def main():
         log(f"fertig in {(time.time()-t0)/60:.1f} min")
         return
 
+    eng = choose_engine(tl_path, tl, work, args.workers)
+    os.environ["RENDER_ENGINE"] = eng["engine"]
+    if eng["engine"] == "workbench" and "RENDER_SCALE" not in os.environ:
+        args.scale = 1.0
+    log(f"Render-Engine: {eng['engine']} ({eng['grund']}), Aufloesung {args.scale:.0%}")
     frames = list(range(tl["frames"]))
     pa = start_anchors(tl_path, work)
     render_frames_parallel(tl_path, frames, args.workers, args.scale, frames_dir, work)
