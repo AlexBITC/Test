@@ -405,11 +405,15 @@ def stretch(meta: dict, factor: float, pitch_st: float = 0.0) -> dict:
     if abs(factor - 1) < 0.01 and abs(pitch_st) < 0.01:
         return meta
     src = ROOT / meta["wav"]
-    dst = src.with_name(src.stem + f"_t{factor:.3f}" + (f"_p{pitch_st:+.1f}" if pitch_st else "") + ".wav")
+    dst = src.with_name(src.stem + f"_{'a' if abs(pitch_st) < 0.01 else 't'}{factor:.3f}" +
+                        (f"_p{pitch_st:+.1f}" if pitch_st else "") + ".wav")
     if not dst.exists():
-        subprocess.run([_ffmpeg(), "-y", "-v", "error", "-i", str(src), "-af",
-                        f"rubberband=tempo={factor:.4f}:pitch={2 ** (pitch_st / 12):.5f}:pitchq=quality:"
-                        f"formant=preserved:transients=smooth",
+        # Nur Tempo: atempo (WSOLA) erhaelt Tonhoehe und Sprachmelodie; Rubberband mit transients=smooth
+        # verflachte bei kurzen Ausrufen die Melodie hoerbar (Messung: 109 Hz +-6,1 -> 81 Hz +-1,3 Halbtoene).
+        af = (f"atempo={factor:.4f}" if abs(pitch_st) < 0.01 else
+              f"rubberband=tempo={factor:.4f}:pitch={2 ** (pitch_st / 12):.5f}:pitchq=quality:"
+              f"formant=preserved:transients=smooth")
+        subprocess.run([_ffmpeg(), "-y", "-v", "error", "-i", str(src), "-af", af,
                         "-ar", "48000", "-ac", "1", str(dst)], check=True)
     m = dict(meta)
     m["wav"] = str(dst.relative_to(ROOT))

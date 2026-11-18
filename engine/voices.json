@@ -27,8 +27,7 @@
     }
   },
   "speech_overrides": {
-    "i.": "ich.",
-    "net!": "net!!"
+    "i.": "ich."
   },
   "speech_alternatives": {
     "Code": [
@@ -58,10 +57,14 @@
   "hinweis": "Schreibweisen gelten nur für die Sprachausgabe; die Untertitel bleiben exakt wie im Episoden-JSON.",
   "line_tuning": {
     "8": {
-      "speed": 0.75,
-      "stability": 0.4,
+      "speed": 0.8,
+      "stability": 0.3,
       "seed": 4300,
-      "grund": "kurzer Ausruf: langsamer und mit mehr Betonung (Casting-Test: Tonhöhen-Streuung 4,7 Halbtöne)"
+      "speech": {
+        "net!": "net!"
+      },
+      "stretch": 0.79,
+      "grund": "kurzer Ausruf: lebendigste saubere Variante (101 Hz, ±3,5 Halbtöne, 'net' erkannt); auf Zieltempo 2,6 W/s gedehnt (atempo 0,79)"
     }
   }
 }

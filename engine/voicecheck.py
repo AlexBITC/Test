@@ -93,11 +93,16 @@ def _contains(seq: list, sub: list) -> bool:
     return any(seq[i:i + n] == sub for i in range(len(seq) - n + 1))
 
 
-def pitch_stats(y16):
+def pitch_stats(path):
+    """Median-F0 und Streuung (Halbtoene) mit pYIN auf der Original-Abtastrate (48 kHz, 85-ms-Fenster).
+    Bei 16 kHz/1024 stuft pYIN kurze, kraeftige Ausrufe teils komplett als stimmlos ein."""
     import librosa
-    f0, vf, _ = librosa.pyin(y16, fmin=60, fmax=500, sr=16000, frame_length=1024)
+    y, sr = sf.read(str(path), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    f0, vf, _ = librosa.pyin(y, fmin=65, fmax=400, sr=sr, frame_length=4096)
     f = f0[~np.isnan(f0)]
-    if len(f) < 10:
+    if len(f) < 8:
         return 0.0, 0.0
     med = float(np.median(f))
     st = 12 * np.log2(f / med)
@@ -172,7 +177,7 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     rms_db = 20 * np.log10(np.sqrt(np.mean(raw ** 2)) + 1e-9)
     cut = (tail_db - rms_db) > -12 or (spoken and spoken[-1]["end"] > dur - 0.02)
 
-    med, st = pitch_stats(y16)
+    med, st = pitch_stats(wav_path)
     mos = utmos(y16)
 
     fails = []

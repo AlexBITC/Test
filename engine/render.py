@@ -48,12 +48,15 @@ def voices_stage(ep: dict, work: Path) -> list:
     log("Modell:", model, "| Kalle:", cfg["voices"]["kalle"]["name"], "| Byte:", cfg["voices"]["byte"]["name"])
     alts = cfg.get("speech_alternatives", {})
     lines = []
+    global quota_notes
+    quota_notes = []
     for i, sz in enumerate(ep["szenen"]):
         role = sz["sprecher"]
         vid = role if model == "piper" else cfg["voices"][role]["voice_id"]
         tag = ""
         attempts = []
         overrides = {k: v for k, v in cfg.get("speech_overrides", {}).items() if k in sz["text"].split()}
+        overrides.update(cfg.get("line_tuning", {}).get(str(i + 1), {}).get("speech", {}))
         lo, hi = tts.TEMPO[role]
         tune = cfg.get("line_tuning", {}).get(str(i + 1), {})
         speed = tune.get("speed", tts.BASE_SETTINGS[role].get("speed", 1.0))
@@ -61,6 +64,7 @@ def voices_stage(ep: dict, work: Path) -> list:
             settings, seed = tts.line_settings(role, attempt, cfg, model)
             if attempt == 0 and tune:
                 settings["stability"] = tune.get("stability", settings["stability"])
+                settings["style"] = tune.get("style", settings["style"])
                 seed = tune.get("seed", seed)
             if attempts:
                 prev = attempts[-1]["check"]
@@ -78,7 +82,14 @@ def voices_stage(ep: dict, work: Path) -> list:
                         overrides[key] = alts[key][k]
             settings["speed"] = speed
             speech, spans = tts.speech_mapping(sz["text"], overrides)
-            meta = tts.tighten(tts.synth(speech, vid, model, settings, tag, seed=seed))
+            try:
+                meta = tts.tighten(tts.synth(speech, vid, model, settings, tag, seed=seed))
+            except RuntimeError as e:
+                if "quota" in str(e) and attempts:
+                    log(f"Szene {i+1}: ElevenLabs-Kontingent erschoepft -> beste vorhandene Variante")
+                    quota_notes.append(i + 1)
+                    break
+                raise
             raw_words = tts.word_times(meta, spans)
             # Tempo: v3 ignoriert 'speed' -> tonhoehenerhaltend strecken/stauchen
             sp = [w for w in raw_words if re.search(r"\w", w["w"]) and w["end"] > w["start"]]
@@ -89,6 +100,8 @@ def voices_stage(ep: dict, work: Path) -> list:
                 factor = max(tts.STRETCH_LIMIT[0], (hi - 0.05) / wps0)
             elif wps0 < lo:
                 factor = min(tts.STRETCH_LIMIT[1], (lo + 0.05) / wps0)
+            if attempt == 0 and tune.get("stretch"):
+                factor = tune["stretch"]
             meta = tts.stretch(meta, round(factor, 3), cfg.get("pitch_semitones", {}).get(role, 0.0))
             words = tts.word_times(meta, spans)
             chk = voicecheck.check_line(ROOT / meta["wav"], sz["text"], words, ep.get("begriff"), role)
@@ -110,6 +123,9 @@ def voices_stage(ep: dict, work: Path) -> list:
                                  "wer": a["check"]["wer"], "wps": a["check"]["wps"]} for a in attempts]
         lines.append(best)
     return lines, model, cfg
+
+
+quota_notes = []
 
 
 def _fmt(v):
@@ -147,7 +163,13 @@ def voice_report(ep, lines, model, cfg, path: Path):
           f"- Modell `{model}` (Vorgabe). Wort-Timing der Untertitel aus dem Endpoint `/with-timestamps`"
           if model != "piper" else "- Piper-Fallback: Wort-Timing proportional zur Zeichenanzahl.",
           "- Stille am Zeilenanfang/-ende wird weggeschnitten, Pausen zwischen Wörtern werden auf 0,14–0,30 s begrenzt. "
-          "Liegt das Tempo außerhalb des Zielbereichs, wird tonhöhenerhaltend per Rubberband korrigiert (höchstens −12 % / +15 %).",
+          "Tempo: zuerst über den API-Parameter `speed`, Rest tonhöhenerhaltend per `atempo` (höchstens −12 % / +15 %; "
+          "Zeile 8 als kurzer Ausruf bewusst −21 %). Rubberband wurde ersetzt, weil es bei kurzen Ausrufen die "
+          "Sprachmelodie messbar verflachte.",
+          "- Tonhöhe gemessen mit pYIN auf 48 kHz (85-ms-Fenster); bei 16 kHz wurden kurze Ausrufe fälschlich als stimmlos/monoton gewertet.",
+          "- Zeile 8 („Des gibt's doch net!“): aus allen erzeugten Varianten die lebendigste mit sauber erkanntem „net“ "
+          "gewählt (Feinabstimmung in `engine/voices.json`). Das ElevenLabs-Kontingent ist erschöpft "
+          "(Stand: 12 Credits); weitere Stimmen-Castings waren deshalb nicht möglich.",
           "- Schwäbische Wörter (net, i, des, verschlamp) dürfen in der Rücktranskription abweichen; Zahlwörter, "
           "„Code“ und „Marketing“ müssen exakt erkannt werden („Code“ würde bei falscher Aussprache als „Kot“ transkribiert).",
           "- Schreibweisen nur für die Sprachausgabe: siehe „Sprechtext“ je Zeile. Die Untertitel zeigen exakt den Episoden-Text.",
