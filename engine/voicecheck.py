@@ -15,6 +15,8 @@ _UTMOS = None
 _UTMOS_ERR = None
 
 # Dialekt/Umgangssprache: Whisper schreibt Standarddeutsch, beide Seiten werden angeglichen
+# Eigennamen als Vokabelhinweis fuer Whisper (kein Satzinhalt)
+NAMES = "Kalle, Byte."
 # Schwaebische Woerter duerfen abweichen (zaehlen nicht als Wortfehler)
 DIALECT = {"net", "nicht", "i", "ich", "des", "das", "verschlamp", "verschlampe"}
 DIALECT_REF = {"net", "i", "des", "verschlamp"}
@@ -22,7 +24,7 @@ DIALECT_REF = {"net", "i", "des", "verschlamp"}
 NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun",
                 "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
 MUST = {"code", "marketing"}
-EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schreib": "schreibe", "gibt's": "gibts",
+EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schreib": "schreibe", "hol": "hole", "merk": "merke", "ah": "ha", "haha": "ha", "gibt's": "gibts",
          "eintausend": "tausend",}
 
 
@@ -126,13 +128,14 @@ def utmos(y16):
         return None
 
 
-def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: str) -> dict:
+def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: str, n_words: int | None = None,
+               tempo=(2.0, 2.8), pause_limit: float = 0.7) -> dict:
     """words: [{'w','start','end'}] aus den API-Zeitstempeln."""
     y16 = load16k(wav_path)
     raw, sr = sf.read(str(wav_path), dtype="float32")
     dur = len(raw) / sr
     segs, _ = whisper().transcribe(y16, language="de", beam_size=5, vad_filter=False,
-                                   condition_on_previous_text=False)
+                                   condition_on_previous_text=False, initial_prompt=NAMES)
     hyp_text = " ".join(s.text.strip() for s in segs).strip()
     ref_n = normalize(text)
     hyp_n = split_compounds(ref_n, normalize(hyp_text))
@@ -157,7 +160,8 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
 
     # Tempo: Woerter pro Sekunde ueber die gesprochene Spanne
     spoken = [w for w in words if re.search(r"\w", w["w"]) and w["end"] > w["start"]]
-    n_words = len([w for w in split_words(text) if re.search(r"\w", w)])
+    if n_words is None:
+        n_words = len([w for w in split_words(text) if re.search(r"\w", w)])
     span = (spoken[-1]["end"] - spoken[0]["start"]) if spoken else dur
     wps = n_words / max(0.1, span)
 
@@ -166,7 +170,8 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     for a, b in zip(spoken, spoken[1:]):
         gaps.append((b["start"] - a["end"], a["w"]))
     max_gap = max(gaps, default=(0.0, ""))
-    gap_limit = lambda after: 1.0 if after.endswith("…") or after == "…" else 0.7  # noqa: E731
+    gap_limit = lambda after: (1.0 if after.endswith("…") or after == "…" else 0.7) if pause_limit >= 0.7 \
+        else pause_limit  # noqa: E731
     long_pauses = [(round(g, 2), w) for g, w in gaps if g > gap_limit(w)]
 
     # Clipping / abgeschnitten
@@ -175,7 +180,9 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     tail = raw[-int(0.03 * sr):]
     tail_db = 20 * np.log10(np.sqrt(np.mean(tail ** 2)) + 1e-9) if len(tail) else -99
     rms_db = 20 * np.log10(np.sqrt(np.mean(raw ** 2)) + 1e-9)
-    cut = (tail_db - rms_db) > -12 or (spoken and spoken[-1]["end"] > dur - 0.02)
+    # Ende abgeschnitten: nur ueber den Pegel (letzte 30 ms gegen den Zeilen-Durchschnitt). Der Whisper-
+    # Zeitstempel des letzten Worts reicht bei knapp geschnittenem Ausklang (<= 0,08 s) fast immer bis zum Dateiende.
+    cut = (tail_db - rms_db) > -12
 
     med, st = pitch_stats(wav_path)
     mos = utmos(y16)
@@ -186,8 +193,8 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     for core, ok in exact:
         if not ok:
             fails.append(f"'{core}' nicht exakt erkannt")
-    if not (2.0 <= wps <= 2.8):
-        fails.append(f"Tempo {wps:.2f} W/s ausserhalb 2,0–2,8")
+    if not (tempo[0] <= wps <= tempo[1]):
+        fails.append(f"Tempo {wps:.2f} W/s ausserhalb {tempo[0]:.1f}–{tempo[1]:.1f}".replace(".", ","))
     if st < 1.5:
         fails.append(f"monoton (Tonhoehen-Streuung {st:.1f} Halbtoene)")
     if clip_frac > 0.001:

@@ -291,6 +291,17 @@ def _proto(kind, coll):
         bpy.data.objects.remove(o)
         _PMESH[kind] = me
         return me
+    elif kind == "crumb":
+        o = L.ico("p_crumb", 0.008, 0, (1, 1, 0.7), L.mat("crumb", "#B8702E", 0.7), None, (0, 0, 0), coll)
+    elif kind == "pix":
+        o = L.box("p_pix", (0.02, 0.02, 0.02), L.mat("pix", "#BFFFF8", 0.4, emit="#BFFFF8", strength=4.0), None,
+                  (0, 0, 0), coll)
+    elif kind == "sweat":
+        o = L.sphere("p_sweat", 0.02, 8, 5, (0.8, 0.8, 1.3), L.mat("sweat", "#BFFFF8", 0.2, emit="#BFFFF8",
+                                                                  strength=1.0), None, (0, 0, 0), coll)
+    elif kind == "flourdust":
+        o = L.ico("p_flourdust", 0.03, 1, (1, 1, 1), L.mat("puff", L.FLOUR, 0.9, emit=L.FLOUR, strength=0.35,
+                                                            alpha=0.45), None, (0, 0, 0), coll)
     elif kind == "coinp":
         o = L.cyl("p_coin", 0.06, 0.018, 12, L.mat("coin", L.GOLD, 0.42, metallic=0.75), None, (0, 0, 0), coll)
     else:
@@ -798,3 +809,244 @@ def customer_walk(T, cu, path_fn, f0, f1, f_arrive):
         T.set(lg, "rotation_euler", lambda f, k=k: (0.6 * walking(f) * math.sin(0.9 * (f - f0) + k * math.pi), 0, 0),
               f0, f1)
     T.set(cu.body, "location", lambda f: (0, 0, 0.02 * walking(f) * abs(math.sin(0.9 * (f - f0)))), f0, f1)
+
+
+# =================================================================== Folge "Viel verkauft, kein Geld"
+PAPER = "#F5F1E8"
+
+
+def moth(coll, name):
+    """Low-Poly-Motte: Spannweite 0,12 BU, 2 Fluegelpaare #F5F1E8 (Pivots fuer Fluegelschlag),
+    Koerper #3A2A22, 2 Fuehler."""
+    root = L.empty(name, coll=coll)
+    m_w = L.mat("moth_wing", PAPER, 0.8)
+    m_b = L.mat("moth_body", "#3A2A22", 0.7)
+    L.sphere(f"{name}_body", 0.012, 8, 5, (1, 2.2, 1), m_b, root, (0, 0, 0), coll)
+    L.sphere(f"{name}_head", 0.008, 6, 4, (1, 1, 1), m_b, root, (0, -0.026, 0.002), coll)
+    wings = []
+    for sx in (-1, 1):
+        for k, (ln, wd, y) in enumerate([(0.06, 0.035, -0.006), (0.045, 0.028, 0.014)]):
+            piv = L.empty(f"{name}_wpiv{sx}{k}", root, (sx * 0.006, y, 0.004), coll)
+            L.poly_flat(f"{name}_wing{sx}{k}", [(0, -wd / 2), (sx * ln, -wd * 0.3), (sx * ln * 0.9, wd * 0.45),
+                                                (0, wd / 2)], 0.002, m_w, piv, (0, 0, 0), coll, plane="XY")
+            wings.append((piv, sx))
+    for sx in (-1, 1):
+        o = L.cyl(f"{name}_ant{sx}", 0.0015, 0.03, 4, m_b, root, (sx * 0.006, -0.04, 0.01), coll)
+        o.rotation_euler = (math.radians(-60), sx * 0.4, 0)
+    return P(root=root, wings=wings)
+
+
+def moth_flap(T, mo, f0, f1, hz=12.0):
+    """Fluegelschlag 12 Hz (Fluegel um die Laengsachse, +-60 Grad)."""
+    for piv, sx in mo.wings:
+        T.set(piv, "rotation_euler", lambda f, sx=sx: (0, sx * 1.05 * math.sin(2 * math.pi * hz * f / FPS), 0), f0, f1)
+
+
+def invoice(coll, name, stamp=True):
+    """Rechnungsblatt 0,21 x 0,30 x 0,003 BU, #F5F1E8, Textzeilen als graue Balken #8A8580.
+    Oberes Drittel und Rest als zwei Teile (Pivot) -> kann einrollen/falten. Stempel 'OFFEN' separat."""
+    root = L.empty(name, coll=coll)
+    m_p = L.mat("invoice_paper", PAPER, 0.7)
+    m_l = L.mat("invoice_line", "#8A8580", 0.7)
+    lower = L.empty(f"{name}_lower", root, (0, 0, 0), coll)
+    L.box(f"{name}_sheetlo", (0.21, 0.003, 0.18), m_p, lower, (0, 0, -0.06), coll)
+    upper = L.empty(f"{name}_upper", root, (0, 0, 0.03), coll)       # Faltkante
+    L.box(f"{name}_sheetup", (0.21, 0.003, 0.12), m_p, upper, (0, 0, 0.06), coll)
+    L.box(f"{name}_head", (0.09, 0.002, 0.02), L.mat("invoice_head", "#19A99D", 0.6), upper, (-0.05, -0.002, 0.095),
+          coll)
+    for k in range(3):
+        L.box(f"{name}_lu{k}", (0.16 - 0.03 * (k == 2), 0.002, 0.008), m_l, upper, (-0.005, -0.002, 0.06 - k * 0.02),
+              coll)
+    for k in range(6):
+        L.box(f"{name}_ll{k}", (0.17 - 0.04 * (k % 3 == 2), 0.002, 0.008), m_l, lower,
+              (-0.005, -0.002, -0.01 - k * 0.022), coll)
+    L.box(f"{name}_sum", (0.06, 0.002, 0.012), L.mat("invoice_sum", "#3A2A22", 0.6), lower, (0.06, -0.002, -0.14),
+          coll)
+    st = None
+    if stamp:
+        st = L.empty(f"{name}_stamppiv", root, (0.02, -0.006, -0.03), coll)
+        st.rotation_euler = (0, math.radians(-12), 0)
+        m_s = L.mat("stamp_red", "#FF5A5F", 0.55, emit="#FF5A5F", strength=0.4)
+        fr = L.empty(f"{name}_stamp", st, (0, 0, 0), coll)
+        for k_, (w, h, x, z) in enumerate([(0.15, 0.008, 0, 0.03), (0.15, 0.008, 0, -0.03), (0.008, 0.068, -0.071, 0),
+                                           (0.008, 0.068, 0.071, 0)]):
+            L.box(f"{name}_stfr{k_}", (w, 0.002, h), m_s, fr, (x, 0, z), coll)
+        L.text(f"{name}_sttxt", "OFFEN", 0.042, m_s, fr, (0, -0.001, -0.002), coll, extrude=0.001, font=L.font())
+        st.scale = (0, 0, 0)
+    return P(root=root, upper=upper, lower=lower, stamp=st)
+
+
+def coin_small(coll, name, parent=None, loc=(0, 0, 0)):
+    """Muenze r 0,04 BU, Hoehe 0,012 BU, #F2B45A mit Rand #B8702E, 12 Segmente (gemeinsames Mesh)."""
+    if "small" not in _COIN_MESH:
+        a = L.cyl("coin_s_proto", 0.04, 0.012, 12, L.mat("coin_s", "#F2B45A", 0.42, metallic=0.75, emit="#F2B45A",
+                                                          strength=0.15), None, (0, 0, 0), coll)
+        b = L.torus("coin_s_rim_proto", 0.037, 0.0055, 12, 4, L.mat("coin_s_rim", "#B8702E", 0.45, metallic=0.6),
+                    None, (0, 0, 0), coll)
+        _COIN_MESH["small"] = (a.data, b.data)
+        bpy.data.objects.remove(a)
+        bpy.data.objects.remove(b)
+    root = L.empty(name, parent, loc, coll)
+    for k, me in enumerate(_COIN_MESH["small"]):
+        o = bpy.data.objects.new(f"{name}_{k}", me)
+        L.link(o, coll)
+        o.parent = root
+    return root
+
+
+def coin_stack(coll, name, n):
+    """Muenzsaeule aus n kleinen Muenzen (Stagger-Animation in der Regie)."""
+    root = L.empty(name, coll=coll)
+    coins = [coin_small(coll, f"{name}_c{i}", root, (0, 0, 0.006 + i * 0.012)) for i in range(n)]
+    return P(root=root, coins=coins)
+
+
+def konto_glas(coll, name):
+    """Kontoglas: Zylinder r 0,25 BU, Hoehe 0,6 BU (100 % = 1.500 EUR), getoent #BFFFF8, Roughness 0,1.
+    Fuellstand per Parameter (fill-Pivot, Scale-Z = Fuellstand), Markierungslinie oben (rot/gruen umschaltbar),
+    rote Luecke, tuerkise Randkante, gruener Bodenring."""
+    root = L.empty(name, coll=coll)
+    H, R = 0.6, 0.25
+    m_g = L.mat("glass", "#BFFFF8", 0.1, alpha=0.22, spec=0.6)
+    L.cyl(f"{name}_wall", R, H, 24, m_g, root, (0, 0, H / 2), coll, cap=False)
+    L.cyl(f"{name}_base", R + 0.01, 0.02, 24, L.mat("glass_base", "#9FD9D3", 0.1, alpha=0.6), root, (0, 0, 0.01), coll)
+    L.torus(f"{name}_lip", R, 0.008, 28, 4, L.mat("glass_lip", "#DFFFFB", 0.1, alpha=0.7), root, (0, 0, H), coll)
+    fill = L.empty(f"{name}_fill", root, (0, 0, 0.02), coll)
+    m_gold = L.mat("glass_gold", "#F2B45A", 0.4, metallic=0.7, emit="#F2B45A", strength=0.2)
+    L.cyl(f"{name}_goldm", R - 0.025, 1.0, 20, m_gold, fill, (0, 0, 0.5), coll)
+    ridge = L.mat("glass_gold_ridge", "#B8702E", 0.45, metallic=0.6)
+    for k in range(10):
+        L.torus(f"{name}_ridge{k}", R - 0.025, 0.004, 20, 3, ridge, fill, (0, 0, 0.1 * k + 0.05), coll)
+    top = L.empty(f"{name}_filltop", root, (0, 0, 0.02), coll)        # Muenzen obenauf (folgt Fuellstand)
+    for k in range(6):
+        a = k * 1.1
+        coin_small(coll, f"{name}_topcoin{k}", top, (0.12 * math.cos(a), 0.12 * math.sin(a), 0.006))
+    fill.scale = (1, 1, 0.0001)
+    m_red = L.unique_mat(L.mat("mark_red", "#FF5A5F", 0.5, emit="#FF5A5F", strength=0.0), f"{name}_markmat")
+    mark = L.torus(f"{name}_mark", R + 0.004, 0.009, 28, 4, m_red, root, (0, 0, H - 0.01), coll)
+    m_grn = L.mat("mark_green", "#3DDC84", 0.5, emit="#3DDC84", strength=2.0)
+    mark_g = L.torus(f"{name}_markg", R + 0.006, 0.0095, 28, 4, m_grn, root, (0, 0, H - 0.01), coll)
+    mark_g.scale = (0, 0, 0)
+    gap = L.empty(f"{name}_gappiv", root, (0, 0, 0.02 + 0.6 * (H - 0.02)), coll)
+    L.cyl(f"{name}_gap", R - 0.02, 1.0, 20, L.mat("gap_red", "#FF5A5F", 0.5, emit="#FF5A5F", strength=2.0, alpha=0.5),
+          gap, (0, 0, 0.5), coll)
+    gap.scale = (0, 0, 0)
+    rim = L.empty(f"{name}_rimpiv", root, (0, 0, 0), coll)
+    m_t = L.mat("glass_rim", L.TURQ, 0.4, emit=L.TURQ, strength=4.0)
+    for z in (0.02, H):
+        L.torus(f"{name}_rim{z}", R + 0.012, 0.007, 28, 4, m_t, rim, (0, 0, z), coll)
+    for k in range(4):
+        a = k * math.pi / 2 + 0.4
+        L.box(f"{name}_rimv{k}", (0.008, 0.008, H), m_t, rim, ((R + 0.012) * math.cos(a), (R + 0.012) * math.sin(a), H / 2),
+              coll)
+    rim.scale = (0, 0, 0)
+    ring = L.torus(f"{name}_greenring", R + 0.07, 0.016, 32, 4, L.mat("ring_green", "#3DDC84", 0.5, emit="#3DDC84",
+                                                                       strength=4.0), root, (0, 0, 0.01), coll)
+    ring.scale = (0, 0, 0)
+    return P(root=root, fill=fill, top=top, mark=mark, mark_mat=m_red, mark_g=mark_g, gap=gap, rim=rim, ring=ring,
+             H=H, R=R)
+
+
+def glas_level(T, g, fn, f0, f1):
+    """Fuellstand (Anteil von 100 %, darf > 1 sein) als Funktion der Zeit."""
+    span = g.H - 0.02
+    T.set(g.fill, "scale", lambda f: (1, 1, max(0.0001, fn(f) * span)), f0, f1)
+    T.set(g.top, "location", lambda f: (0, 0, 0.02 + max(0.0, fn(f)) * span), f0, f1)
+    T.set(g.top, "scale", lambda f: (1, 1, 1) if fn(f) > 0.01 else (0, 0, 0), f0, f1)
+
+
+def calendar_sheet(coll, name):
+    """Kalenderblatt 0,08 x 0,10 BU, #F5F1E8, oberer Rand #FF5A5F."""
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_p", (0.08, 0.002, 0.1), L.mat("cal_paper", PAPER, 0.7), root, (0, 0, 0), coll)
+    L.box(f"{name}_top", (0.08, 0.003, 0.02), L.mat("cal_red", "#FF5A5F", 0.6), root, (0, -0.001, 0.04), coll)
+    for k in range(3):
+        L.box(f"{name}_d{k}", (0.05, 0.002, 0.006), L.mat("invoice_line", "#8A8580", 0.7), root,
+              (0, -0.002, 0.01 - k * 0.018), coll)
+    return root
+
+
+def stopwatch(coll, name):
+    """Stoppuhr: Durchmesser 0,15 BU, Gehaeuse #8FA3B0, Zifferblatt #F5F1E8, Zeiger #FF5A5F (Pivot)."""
+    root = L.empty(name, coll=coll)
+    m_c = L.mat("sw_case", "#8FA3B0", 0.4, metallic=0.4)
+    L.cyl(f"{name}_case", 0.075, 0.03, 20, m_c, root, (0, 0, 0), coll, axis="Y")
+    L.cyl(f"{name}_face", 0.064, 0.032, 20, L.mat("sw_face", PAPER, 0.6), root, (0, -0.002, 0), coll, axis="Y")
+    L.cyl(f"{name}_crown", 0.012, 0.025, 8, m_c, root, (0, 0, 0.088), coll)
+    L.cyl(f"{name}_btn", 0.018, 0.012, 8, m_c, root, (0, 0, 0.104), coll)
+    for i in range(12):
+        a = 2 * math.pi * i / 12
+        L.box(f"{name}_tick{i}", (0.005, 0.004, 0.012), L.mat("ink", L.NAVY2, 0.6), root,
+              (0.052 * math.sin(a), -0.019, 0.052 * math.cos(a)), coll).rotation_euler = (0, a, 0)
+    hand = L.empty(f"{name}_hand", root, (0, -0.021, 0), coll)
+    L.box(f"{name}_handm", (0.006, 0.004, 0.055), L.mat("sw_hand", "#FF5A5F", 0.5, emit="#FF5A5F", strength=0.5),
+          hand, (0, 0, 0.024), coll)
+    L.cyl(f"{name}_hub", 0.008, 0.01, 8, L.mat("sw_hand", "#FF5A5F", 0.5), root, (0, -0.022, 0), coll, axis="Y")
+    return P(root=root, hand=hand)
+
+
+def envelope_mail(coll, name):
+    """Briefumschlag 0,30 x 0,20 BU, #F5F1E8, Kante #2EE6D6, Klappe animierbar (Pivot an der Oberkante)."""
+    root = L.empty(name, coll=coll)
+    m_p = L.mat("env_paper", PAPER, 0.62)
+    m_e = L.mat("env_edge", L.TURQ, 0.5, emit=L.TURQ, strength=3.0)
+    L.box(f"{name}_body", (0.3, 0.012, 0.2), m_p, root, (0, 0, 0), coll, bevel=0.004)
+    for k_, (w, h, x, z) in enumerate([(0.31, 0.006, 0, 0.1), (0.31, 0.006, 0, -0.1), (0.006, 0.2, -0.152, 0),
+                                       (0.006, 0.2, 0.152, 0)]):
+        L.box(f"{name}_edge{k_}", (w, 0.014, h), m_e, root, (x, 0, z), coll)
+    L.poly_flat(f"{name}_fold", [(-0.15, -0.1), (0.0, 0.01), (0.15, -0.1)], 0.003, L.mat("env_in", "#E6DFD0", 0.65),
+                root, (0, -0.008, 0), coll)
+    flap = L.empty(f"{name}_flappiv", root, (0, -0.008, 0.1), coll)
+    L.poly_flat(f"{name}_flap", [(-0.15, 0.0), (0.0, -0.12), (0.15, 0.0)], 0.004, m_p, flap, (0, 0, 0), coll)
+    L.poly_flat(f"{name}_flapedge", [(-0.15, 0.0), (0.0, -0.12), (0.01, -0.11), (-0.14, 0.0)], 0.005, m_e, flap,
+                (0, -0.001, 0), coll)
+    return P(root=root, flap=flap)
+
+
+def muehlrad_zettel(coll, name):
+    """Muehlrad-Zettel 0,10 x 0,12 BU, #F5F1E8, Muehlrad-Symbol #B8702E, Haken #3DDC84 einblendbar."""
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_p", (0.1, 0.003, 0.12), L.mat("note_paper", PAPER, 0.7), root, (0, 0, 0), coll)
+    m_w = L.mat("wheel_brown", "#B8702E", 0.6)
+    L.torus(f"{name}_wheel", 0.03, 0.005, 14, 4, m_w, root, (0, -0.003, 0.012), coll, axis="Y")
+    for k in range(4):
+        o = L.box(f"{name}_spoke{k}", (0.004, 0.003, 0.06), m_w, root, (0, -0.003, 0.012), coll)
+        o.rotation_euler = (0, k * math.pi / 4, 0)
+    for k in range(8):
+        a = k * math.pi / 4
+        L.box(f"{name}_pad{k}", (0.012, 0.003, 0.008), m_w, root, (0.036 * math.sin(a), -0.003, 0.012 + 0.036 * math.cos(a)),
+              coll).rotation_euler = (0, a, 0)
+    L.box(f"{name}_line", (0.06, 0.003, 0.006), L.mat("invoice_line", "#8A8580", 0.7), root, (0, -0.003, -0.04), coll)
+    chk = L.empty(f"{name}_checkpiv", root, (0.025, -0.006, -0.03), coll)
+    L.poly_flat(f"{name}_check", [(-0.03, 0.0), (-0.012, -0.02), (0.03, 0.025), (0.024, 0.031), (-0.012, -0.006),
+                                  (-0.024, 0.006)], 0.006, L.mat("check_green", "#3DDC84", 0.5, emit="#3DDC84",
+                                                                  strength=2.0), chk, (0, 0, 0), coll)
+    chk.scale = (0, 0, 0)
+    return P(root=root, check=chk)
+
+
+def vitrine(coll, name):
+    """Glasvitrine auf der Theke, nur noch 20 % gefuellt: 2 Broetchen, 1 Brezel, halber Hefezopf, Kruemel #B8702E."""
+    root = L.empty(name, coll=coll)
+    m_g = L.mat("vitrine_glass", "#D8F4F0", 0.1, alpha=0.18, spec=0.6)
+    m_f = L.mat("wood_dark", L.WOOD_DARK, 0.65)
+    W, D, Hh = 0.62, 0.36, 0.3
+    L.box(f"{name}_floor", (W, D, 0.03), L.mat("vitrine_floor", "#E9DFCC", 0.6), root, (0, 0, 0.015), coll)
+    L.box(f"{name}_glass", (W, D, Hh), m_g, root, (0, 0, 0.03 + Hh / 2), coll)
+    for x in (-W / 2, W / 2):
+        for y in (-D / 2, D / 2):
+            L.box(f"{name}_post{x}{y}", (0.018, 0.018, Hh), m_f, root, (x, y, 0.03 + Hh / 2), coll)
+    L.box(f"{name}_top", (W + 0.03, D + 0.03, 0.02), m_f, root, (0, 0, 0.04 + Hh), coll)
+    pastry(coll, f"{name}_r1", "broetchen", root, (-0.2, 0.05, 0.03), 0.8)
+    pastry(coll, f"{name}_r2", "broetchen", root, (-0.06, 0.07, 0.03), 0.8)
+    pastry(coll, f"{name}_br", "brezel", root, (0.1, 0.04, 0.03), 0.75)
+    zopf = L.empty(f"{name}_zopf", root, (0.2, 0.05, 0.03), coll)
+    for k in range(3):
+        L.sphere(f"{name}_zopf{k}", 0.045, 8, 5, (1.2, 0.8, 0.7), L.mat("p_zopf", "#D9A866", 0.6), zopf,
+                 (k * 0.05 - 0.05, 0.012 * (-1) ** k, 0.035), coll)
+    m_c = L.mat("crumb", "#B8702E", 0.7)
+    rr = random.Random(41)
+    for k in range(9):
+        L.ico(f"{name}_crumb{k}", 0.007, 0, (1, 1, 0.7), m_c, root, (rr.uniform(-0.27, 0.27), rr.uniform(-0.14, 0.14), 0.035),
+              coll)
+    return P(root=root, H=Hh + 0.05, W=W, D=D)

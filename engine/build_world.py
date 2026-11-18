@@ -493,8 +493,11 @@ def build(tl, screen_dir):
     W.coll = coll
     W.sets = {"theke": build_theke(coll), "buero": build_buero(coll),
               "studio": build_studio(coll, screen_dir, W.n)}
-    W.kalle = C.Kalle(coll)
+    extras = tl["slug"] not in ("drei-helfer", "website")     # neue Merkmale ab dieser Folge
+    W.kalle = C.Kalle(coll, extras=extras)
     W.byte = C.Byte(coll, light_energy=26.0)
+    if extras:
+        W.byte.add_ear_rings()
     W.helpers = [C.Helper(coll, 1, "scan"), C.Helper(coll, 2, "digits"), C.Helper(coll, 3, "feather")] \
         if tl["slug"] == "drei-helfer" else []
     W.cam = CamRig(sc, W.n)

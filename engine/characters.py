@@ -18,8 +18,9 @@ FPS = 30
 
 # =================================================================== Kalle
 class Kalle:
-    def __init__(self, coll):
+    def __init__(self, coll, extras=False):
         self.coll = coll
+        self.extras = extras
         m_skin = L.mat("skin", L.SKIN, 0.62)
         m_skin2 = L.mat("skin_dark", L.SKIN_DARK, 0.62)
         m_cheek = L.mat("cheek", L.CHEEK, 0.7)
@@ -149,6 +150,31 @@ class Kalle:
         self.cloth = L.box("k_cloth", (0.2, 0.16, 0.035), L.mat("cloth", "#8FA6C7", 0.8), self.hand["R"],
                            (0, -0.02, -0.08), c, bevel=0.012)
         self.glasses = None
+        if extras:
+            self._extras(c, m_white)
+
+    def _extras(self, c, m_white):
+        """Merkmale fuer neuere Folgen (zuschaltbar, aeltere Folgen bleiben unveraendert):
+        6. Mueztzen-Puff + Neigung 5 Grad nach rechts (Bildsicht), graue Schlaefen, 2 Knoepfe,
+        kariertes Geschirrtuch an der Schuerze."""
+        L.sphere("k_hatpuff5", 0.13, 10, 7, (1, 1, 0.75), m_white, self.hat, (0.09, -0.1, 0.3), c)
+        self.hat.rotation_euler = (0, math.radians(5), 0)
+        m_grey = L.mat("temple_grey", "#A9A5A0", 0.7)
+        for side, sx in (("R", -1), ("L", 1)):
+            o = L.sphere(f"k_temple_{side}", 0.058, 8, 6, (0.5, 0.85, 1.15), m_grey, self.head,
+                         (sx * 0.288, -0.04, 0.38), c)
+            o.rotation_euler = (0, sx * 0.25, 0)
+        m_btn = L.mat("button", "#5E3E2B", 0.5)
+        for k, z in enumerate((0.58, 0.47)):
+            L.cyl(f"k_button{k}", 0.024, 0.02, 10, m_btn, self.torso, (0, -0.372 - 0.012 * k, z), c, axis="Y")
+        self.towel = L.empty("k_towelpiv", self.hips, (0.3, -0.25, 0.06), c)
+        import os
+        tex = os.path.join(os.path.dirname(__file__), "fonts", "..", "textures", "geschirrtuch.png")
+        L.tplane("k_towel", tex, height=0.3, parent=self.towel, loc=(0, -0.004, -0.15), coll=c, emit=0.0,
+                 alpha=False)
+        L.box("k_towel_back", (0.14, 0.006, 0.3), L.mat("towel_back", "#E8E2D6", 0.8), self.towel,
+              (0, 0.002, -0.15), c)
+        self.towel.rotation_euler = (0, 0, -0.25)
 
     # ---------------------------------------------------------- Hilfen
     def scale_all(self, s):
@@ -396,12 +422,14 @@ def _eye_cells(kind):
         return [(0, -1), (1, -1), (-1, 0), (2, 0), (-1, 1), (2, 1), (0, 2), (1, 2)]
     if kind == "blink":
         return [(-1, 0), (0, 0), (1, 0), (2, 0)]
+    if kind == "worried":    # schraeg nach aussen abfallend
+        return [(-1, 2), (0, 1), (1, 1), (2, 0)]
     if kind == "curious":    # gross, Punkt oben
         return [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)]
     return []
 
 
-EXPRS = ["neutral", "happy", "serious", "surprised", "wink", "curious"]
+EXPRS = ["neutral", "happy", "serious", "surprised", "wink", "curious", "worried"]
 
 
 class Byte:
@@ -474,6 +502,17 @@ class Byte:
         self.light = L.light(f"{name}_light", "POINT", light_energy, L.TURQ, (0, -0.25, 0), size=0.25,
                              parent=self.body, coll=c, shadow=False, cutoff=4.0)
         self.extra = L.empty(f"{name}_extra", self.body, (0, 0, 0), c)
+        self.ears = []
+
+    def add_ear_rings(self):
+        """Ohr-Ringe links/rechts (neuere Folgen)."""
+        m = L.mat("byte_earring", L.NAVY2, 0.45, emit=L.TURQ, strength=0.6)
+        m2 = L.mat("byte_earglow", L.TURQ, 0.4, emit=L.TURQ, strength=4.0)
+        for sx in (-1, 1):
+            e = L.torus(f"{self.name}_earring{sx}", 0.075, 0.018, 16, 5, m, self.body, (sx * 0.215, 0, 0.0),
+                        self.coll, axis="X")
+            L.torus(f"{self.name}_earglow{sx}", 0.05, 0.008, 14, 4, m2, e, (sx * 0.012, 0, 0), self.coll, axis="X")
+            self.ears.append(e)
 
 
 def byte_idle(T, b, f0, f1, seed=3, amp=0.03):

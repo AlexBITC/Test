@@ -190,6 +190,8 @@ def draw_subtitles(img, tl, f):
 
 # ------------------------------------------------------------------ Elemente
 def draw_hook(img, tl, f):
+    if isinstance(tl.get("hook"), dict):
+        return draw_hook_card(img, tl, f)
     f_in, f_out = 0, 60
     if f > f_out + 10:
         return
@@ -210,6 +212,41 @@ def draw_hook(img, tl, f):
     for i, ln in enumerate(lines):
         col = YELLOW if i == len(lines) - 1 and len(lines) > 1 else (255, 255, 255)
         text_center(img, ((X0 + X1) / 2, TOP + 30 + 46 + 92 * i + dy), ln, BIG, col, a)
+
+
+
+
+def draw_hook_card(img, tl, f):
+    """Hook-Karte ab Frame 1 (sofort sichtbar, kleiner Pop) bei y 230-520, gelbes Teilstueck, mind. 1,5 s."""
+    hk = tl["hook"]
+    f_out = 56                     # 1,87 s sichtbar, dann Slide nach oben
+    if f > f_out + 10:
+        return
+    a = 1.0 if f < f_out else 1 - ease_in_out((f - f_out) / 8)
+    if a <= 0:
+        return
+    dy = -120 * (1 - a)
+    sc = 0.94 + 0.06 * ease_out_back(clamp01((f + 1) / 6), 2.5)
+    y0, y1 = 230, 520
+    card(img, (X0, y0 + dy, X1, y1 + dy), a)
+    txt = hk["text_oben"]
+    parts = [p.strip() + ("." if not p.strip().endswith(".") else "") for p in txt.split(". ") if p.strip()]
+    gelb = hk.get("gelb", "")
+    size = 104
+    fnt = font(int(size * sc))
+    for i, ln in enumerate(parts):
+        cy = y0 + (y1 - y0) * (i + 1) / (len(parts) + 1) + dy
+        if gelb and gelb in ln:
+            pre, post = ln.split(gelb, 1)
+            segs = [(pre, (255, 255, 255)), (gelb, YELLOW), (post, (255, 255, 255))]
+        else:
+            segs = [(ln, (255, 255, 255))]
+        total = sum(fnt.getlength(t) for t, _ in segs)
+        x = (X0 + X1) / 2 - total / 2
+        for t, col in segs:
+            if t:
+                text_center(img, (x, cy), t, int(size * sc), col, a, stroke=4, stroke_fill=NAVY, anchor="lm")
+                x += fnt.getlength(t)
 
 
 def chapter_state(tl, f):
@@ -264,7 +301,12 @@ def draw_chapter_bar(img, tl, f):
     # Sichtbar nur in Szenen mit Kapitel (bei kapitel null ausgeblendet)
     chap_scenes = [i for i, s in enumerate(sc) if s["kapitel"] is not None]
     finale = None
-    vis_ranges = [(sc[chap_scenes[0]]["f0"], sc[chap_scenes[-1]]["f1"])]
+    last = chap_scenes[-1]
+    for i, s_ in enumerate(sc):
+        if i > last and "Kapitel-Leiste" in (s_.get("visual", "") + str(s_.get("start", ""))):
+            last = i
+            finale = i
+    vis_ranges = [(sc[chap_scenes[0]]["f0"], sc[last]["f1"])]
     a = 0.0
     for r0, r1 in vis_ranges:
         a = max(a, slide(f, r0 + 4, r1 - 5, 8))
@@ -335,6 +377,12 @@ def draw_term(img, tl, f, anchors):
             continue
         a = slide(f, f_in, f_out, 8)
         dy = -60 * (1 - a)
+        if isinstance(tl.get("hook"), dict):            # neues Format: Karte y 230-380, nur der Begriff
+            box = (X0, 230 + dy, X1, 380 + dy)
+            card(img, box, a, border=YELLOW)
+            text_center(img, ((X0 + X1) / 2, 305 + dy), begriff.upper(), 96, YELLOW, a)
+            sweep(img, box, (f - f_in - 4) / 16, 28, a)
+            continue
         box = (X0, TOP + dy, X1, TOP + 172 + dy)
         card(img, box, a, border=YELLOW)
         text_center(img, ((X0 + X1) / 2, TOP + 66 + dy), begriff.upper(), BIG, YELLOW, a)
@@ -476,11 +524,13 @@ def screen_frame(tl, f):
     sc = tl["scenes"]
     s = chapter_state(tl, f)
     i = sc.index(s)
-    if s["set"] != "studio":
+    if s["set"] != "studio" and not s.get("screen"):
         return None
     img = _screen_bg(f, flicker=max(0.0, 1 - (f - s["f0"]) / 12) if i > 0 and sc[i - 1]["set"] != "studio" else 0.0)
     b = s["beats"]
     vis = s.get("visual", "")
+    if s.get("screen"):
+        return screen_lines(img, s, f)
     if "Zähler zählt hoch" in vis:            # Code-Zaehler (echte Zeilenzahl)
         n = zeilen()
         f_a, f_b = counter_window(s)
@@ -572,6 +622,75 @@ def screen_frame(tl, f):
         if a > 0:
             v = int(round(1800 * ease_out((f - bf) / 40)))
             _t(img, (SW / 2, 405 - 30 * (1 - a)), "= " + fmt_num(v) + " €", 150, GREEN, a, anchor="mm")
+    return img
+
+
+_NUMRE = re.compile(r"\d{1,3}(?:\.\d{3})+|\d+")
+
+
+def _count_text(line, t):
+    """Alle Zahlen einer Zeile zaehlen mit ease-out hoch (t 0..1); Format bleibt (Tausenderpunkt)."""
+    k = ease_out(t)
+
+    def rep(m):
+        v = int(m.group(0).replace(".", ""))
+        return fmt_num(int(round(v * k)))
+    return _NUMRE.sub(rep, line)
+
+
+def _split_long(lines):
+    out = []
+    for ln in lines:
+        if len(ln) > 26 and " = " in ln:
+            l1, l2 = ln.split(" = ", 1)
+            out += [l1, "= " + l2]
+        else:
+            out.append(ln)
+    return out
+
+
+def screen_lines(img, s, f):
+    """Screen-Zeilen aus dem Episoden-JSON: jede Zeile erscheint (Slide von links + Fade 6 Frames),
+    Zahlen zaehlen mit ease-out hoch (18 Frames). Zeitpunkt: Beat, dessen Wort in der Zeile vorkommt,
+    sonst gestaffelt. Mail-Fenster (Betreff) erscheint beim ersten Beat mit Stagger 4 Frames."""
+    lines = _split_long(s["screen"])
+    beats = s.get("beat_list", [])
+    mail = lines[0].startswith("Betreff")
+    t_prev = s["f0"] + 4
+    starts = []
+    for k, ln in enumerate(lines):
+        if mail:
+            t = (beats[0]["f_beat"] if beats else s["f0"] + 6) + 4 * k
+        else:
+            hit = next((bt["f_beat"] for bt in beats if bt["wort"] in ln), None)
+            if k == 0 and hit is None and beats:
+                hit = beats[0]["f_beat"]
+            t = hit if hit is not None and hit >= t_prev - 2 else t_prev + (12 if k else 0)
+        starts.append(t)
+        t_prev = t
+    d = ImageDraw.Draw(img)
+    if mail:
+        d.rounded_rectangle((60, 130, SW - 60, SH - 40), 26, fill=(245, 241, 232, 255))
+        d.rectangle((60, 130, SW - 60, 200), fill=(46, 230, 214, 255))
+        d.text((100, 165), "Neue Nachricht", font=font(48), fill=(*NAVY, 255), anchor="lm")
+    n = len(lines)
+    top, bot = (250, SH - 120) if mail else (170, SH - 60)
+    for k, ln in enumerate(lines):
+        a = ease_out((f - starts[k]) / 6)
+        if a <= 0:
+            continue
+        txt = _count_text(ln, (f - starts[k]) / 18) if not mail else ln
+        size = 120 if not mail else 76
+        while font(size).getlength(ln) > SW - 140:
+            size -= 4
+        y = top + (bot - top) * (k + 0.5) / n
+        x = (SW / 2 if not mail else 100) - 60 * (1 - a)
+        col = (255, 255, 255) if not mail else NAVY
+        if not mail and ("= " in ln or k == n - 1 and n > 1 and "=" in ln):
+            col = GREEN if not any(w in ln for w in ("600 €",)) else RED
+        if not mail and ln.startswith("Nur versprochen"):
+            col = (170, 170, 200)
+        _t(img, (x, y), txt, size, col, a, anchor="mm" if not mail else "lm")
     return img
 
 

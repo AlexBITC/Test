@@ -493,3 +493,170 @@ if __name__ == "__main__":
         m = pick_model()
         print("Modell:", m)
         print(json.dumps(load_voices(m)["voices"], indent=2, ensure_ascii=False))
+
+
+# ================================================================ Piper-Stimmen (ohne ElevenLabs)
+def strip_tags(text: str) -> str:
+    """Audio-Tags wie [laughs] entfernen (Piper unterstuetzt keine Tags)."""
+    return re.sub(r"\s*\[[^\]]+\]\s*", " ", text).strip()
+
+
+def piper_voice(cfg: dict, role: str, stimmung: str, take: int = 0) -> dict:
+    """Stimmen-Parameter aus voices.json['piper'] nach Rolle und Stimmung (Schluesselwoerter)."""
+    pc = cfg["piper"][role]
+    v = dict(pc["basis"])
+    for rule in pc.get("stimmungen", []):
+        if any(k in stimmung.lower() for k in rule["woerter"]):
+            v.update(rule["stimme"])
+            break
+    takes = pc.get("takes", [])
+    if take and takes:
+        v.update(takes[(take - 1) % len(takes)])
+    return v
+
+
+def _trim_and_compress(src: Path, dst: Path, edge: float = 0.0, max_pause: float = 0.35, keep_pause: float = 0.28):
+    """Stille am Anfang/Ende entfernen (Rest <= 0,08 s) und Pausen in der Zeile auf keep_pause kuerzen."""
+    import numpy as np
+    import soundfile as sf
+    y, sr = sf.read(str(src), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    hop = int(0.01 * sr)
+    rms = np.array([np.sqrt(np.mean(y[i:i + hop] ** 2)) for i in range(0, len(y), hop)])
+    loud = rms > max(rms.max() * 10 ** (-30 / 20), 2e-4)      # Atmer/Rauschen zaehlen als Pause
+    idx = np.nonzero(loud)[0]
+    a, b = idx[0], idx[-1] + 1
+    segs, run = [], None
+    keep = []
+    i = a
+    out = []
+    cur0 = a
+    while i < b:
+        if not loud[i]:
+            j = i
+            while j < b and not loud[j]:
+                j += 1
+            if (j - i) * 0.01 > max_pause:
+                out.append((cur0, i + int(keep_pause / 2 / 0.01)))
+                cur0 = j - int(keep_pause / 2 / 0.01)
+            i = j
+        else:
+            i += 1
+    out.append((cur0, b))
+    xf = int(0.008 * sr)
+    res = np.zeros(int(edge * sr), np.float32)
+    for s0, s1 in out:
+        seg = y[s0 * hop:min(len(y), s1 * hop + int(0.03 * sr))].copy()
+        if len(res) >= xf and len(seg) > xf:
+            fade = np.linspace(0, 1, xf, dtype=np.float32)
+            res[-xf:] = res[-xf:] * (1 - fade) + seg[:xf] * fade
+            seg = seg[xf:]
+        res = np.concatenate([res, seg])
+    # Ausklang: 0,07 s nach dem letzten hoerbaren Laut behalten (Stille > 0,08 s wird abgeschnitten)
+    tail = y[min(len(y), b * hop + int(0.03 * sr)):min(len(y), b * hop + int(0.07 * sr))]
+    res = np.concatenate([res, tail.astype(np.float32)])
+    n = min(int(0.05 * sr), len(res))
+    res[-n:] *= np.linspace(1, 0, n) ** 2
+    res[:int(0.004 * sr)] *= np.linspace(0, 1, int(0.004 * sr))
+    pk = np.max(np.abs(res))
+    if pk > 0.89:
+        res *= 0.89 / pk
+    sf.write(str(dst), res, sr, subtype="PCM_16")
+
+
+def piper_synth(speech_text: str, voice: dict) -> dict:
+    """Piper-Synthese mit Cache (Hash aus tts, Stimme, Modell, Einstellungen, Seed/Take)."""
+    CACHE.mkdir(parents=True, exist_ok=True)
+    key = json.dumps([speech_text, voice, "piper", "schnitt-v2"], sort_keys=True, ensure_ascii=False)
+    h = hashlib.sha256(key.encode()).hexdigest()[:20]
+    wav = CACHE / f"{h}.wav"
+    meta_p = CACHE / f"{h}.json"
+    if wav.exists() and meta_p.exists():
+        m = json.loads(meta_p.read_text())
+        m["cached"] = True
+        return m
+    onnx = PIPER_DIR / f"{voice['model']}.onnx"
+    for suf in (".onnx", ".onnx.json"):
+        p = PIPER_DIR / (voice["model"] + suf)
+        if not p.exists():
+            sub = voice.get("url_sub")
+            urllib.request.urlretrieve(PIPER_URL_BASE + sub + voice["model"] + suf, p)
+    raw = CACHE / f"{h}_piper.wav"
+    cmd = [sys.executable, "-m", "piper", "-m", str(onnx), "-f", str(raw),
+           "--length-scale", str(voice.get("length_scale", 1.0)),
+           "--noise-scale", str(voice.get("noise_scale", 0.667)),
+           "--noise-w-scale", str(voice.get("noise_w", 0.8))]
+    if voice.get("speaker") is not None:
+        cmd += ["-s", str(voice["speaker"])]
+    subprocess.run(cmd, input=speech_text.encode(), check=True, capture_output=True)
+    r48 = CACHE / f"{h}_48k.wav"
+    af = "aresample=48000:resampler=soxr" + (f",rubberband=pitch={2 ** (voice['pitch'] / 12):.5f}:formant=preserved"
+                                             if voice.get("pitch") else "")
+    subprocess.run([_ffmpeg(), "-y", "-v", "error", "-i", str(raw), "-af", af, "-ac", "1", "-ar", "48000", str(r48)],
+                   check=True)
+    _trim_and_compress(r48, wav)
+    m = {"hash": h, "speech_text": speech_text, "voice": voice, "model": "piper", "wav": str(wav.relative_to(ROOT)),
+         "cached": False}
+    meta_p.write_text(json.dumps(m, ensure_ascii=False))
+    return m
+
+
+PIPER_URL_BASE = "https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/"
+
+
+def whisper_words(wav: Path):
+    """Woerter mit Zeitstempeln (faster-whisper, word_timestamps)."""
+    from . import voicecheck
+    y = voicecheck.load16k(wav)
+    segs, _ = voicecheck.whisper().transcribe(y, language="de", beam_size=5, word_timestamps=True,
+                                              condition_on_previous_text=False, initial_prompt=voicecheck.NAMES)
+    words, text = [], []
+    for s in segs:
+        text.append(s.text.strip())
+        for w in s.words:
+            words.append({"w": w.word.strip(), "start": float(w.start), "end": float(w.end)})
+    return words, " ".join(text)
+
+
+def align_text_words(text: str, tts_text: str, wwords: list, dur: float) -> list:
+    """Untertitel-Woerter (text) auf Whisper-Wortzeiten abbilden: beide Seiten normalisiert (Zahlen
+    ausgeschrieben, Dialekt angeglichen), sequenziell zugeordnet; Rest proportional."""
+    from . import voicecheck
+    import difflib
+    tw = split_words(text)
+    t_norm = [voicecheck.normalize(w) for w in tw]
+    flat, owner = [], []
+    for i, ns in enumerate(t_norm):
+        for n in ns:
+            flat.append(n)
+            owner.append(i)
+    h_norm, h_idx = [], []
+    for j, w in enumerate(wwords):
+        for n in voicecheck.normalize(w["w"]):
+            h_norm.append(n)
+            h_idx.append(j)
+    sm = difflib.SequenceMatcher(a=flat, b=h_norm, autojunk=False)
+    t2h = {}
+    for a0, b0, n in sm.get_matching_blocks():
+        for k in range(n):
+            t2h[a0 + k] = h_idx[b0 + k]
+    res = []
+    for i, w in enumerate(tw):
+        ks = [k for k, o in enumerate(owner) if o == i and k in t2h]
+        if ks:
+            st, en = wwords[t2h[ks[0]]]["start"], wwords[t2h[ks[-1]]]["end"]
+        else:
+            st = en = None
+        res.append({"w": w, "start": st, "end": en})
+    # Luecken (nicht erkannte oder Satzzeichen-Woerter) interpolieren
+    n = len(res)
+    for i, r in enumerate(res):
+        if r["start"] is None:
+            prev = next((res[k]["end"] for k in range(i - 1, -1, -1) if res[k]["end"] is not None), 0.0)
+            nxt = next((res[k]["start"] for k in range(i + 1, n) if res[k]["start"] is not None), dur)
+            if not any(ch.isalnum() for ch in r["w"]):
+                r["start"] = r["end"] = prev
+            else:
+                r["start"], r["end"] = prev, max(prev, min(nxt, prev + 0.35))
+    return res

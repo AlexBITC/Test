@@ -57,7 +57,7 @@ def setup_render(sc, scale):
         sh.curvature_valley_factor = 1.2
         sh.use_dof = True
         sh.show_object_outline = False
-        sc.display.render_aa = "8"
+        sc.display.render_aa = "5" if MB_SUB >= 2 else "8"   # 2 Unterbilder x 5 Samples
     elif ENGINE_NAME == "cycles":
         sc.render.engine = "CYCLES"
         sc.cycles.device = "CPU"
@@ -159,19 +159,26 @@ def cull(W, f):
     return n
 
 
+MB_SUB = int(os.environ.get("MB_SUBFRAMES", "0"))
+
+
 def render_frames(W, frames, outdir):
+    """Rendert Frames. Mit MB_SUBFRAMES=2 (Motion Blur, 180-Grad-Verschluss): zwei Unterbilder bei -1/4 und +1/4
+    Frame -> <f>.png und <f>_b.png; das Compositing mittelt sie (Workbench hat kein eigenes Motion Blur)."""
     sc = W.sc
     os.makedirs(outdir, exist_ok=True)
     for f in frames:
         p = os.path.join(outdir, f"{f:05d}.png")
         if os.path.exists(p):
             continue
-        sc.frame_set(f)
-        cull(W, f)
-        sc.render.filepath = p + ".tmp.png"
         t = time.time()
-        bpy.ops.render.render(write_still=True)
-        os.replace(p + ".tmp.png", p)
+        subs = [(f, 0.0, p)] if MB_SUB < 2 else [(f - 1, 0.75, p.replace(".png", "_b.png")), (f, 0.25, p)]
+        for fr, sub, out in subs:
+            sc.frame_set(max(0, fr) if fr >= 0 else 0, subframe=sub if fr >= 0 else 0.0)
+            cull(W, f)
+            sc.render.filepath = out + ".tmp.png"
+            bpy.ops.render.render(write_still=True)
+            os.replace(out + ".tmp.png", out)
         print(f"[scene] Frame {f} {time.time()-t:.1f}s", flush=True)
 
 

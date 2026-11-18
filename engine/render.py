@@ -190,6 +190,136 @@ def voice_report(ep, lines, model, cfg, path: Path):
     path.write_text("\n".join(r) + "\n")
 
 
+# ------------------------------------------------------------------ Stimmen aus dem Feld "tts" (Piper)
+def rms_db(wav) -> float:
+    y, sr = sf.read(str(wav), dtype="float32")
+    return float(20 * np.log10(np.sqrt(np.mean(y ** 2)) + 1e-9))
+
+
+def _check_tts_line(sz, i, meta, ep):
+    from . import voicecheck
+    wav = ROOT / meta["wav"]
+    wwords, _ = tts.whisper_words(wav)
+    dur = sf.info(str(wav)).duration
+    words = tts.align_text_words(sz["text"], tts.strip_tags(sz["tts"]), wwords, dur)
+    n_sp = len([w for w in tts.strip_tags(sz["tts"]).split() if re.search(r"\w", w)])
+    chk = voicecheck.check_line(wav, sz["text"], words, ep.get("begriff"), sz["sprecher"], n_words=n_sp,
+                                tempo=(2.0, 3.0) if i == 0 else (2.0, 2.8), pause_limit=0.4)
+    chk["rms_db"] = rms_db(wav)
+    return words, chk
+
+
+def voices_stage_tts(ep: dict, work: Path):
+    """Stimmen fuer Episoden mit Feld 'tts' (Untertitel = 'text'). Ohne ElevenLabs-Kontingent: Piper.
+    Hook-Zeile: 3 Takes, bester (bestanden, hoechste Energie). Sonst bis zu 3 Versuche."""
+    cfg = tts.load_voices.__wrapped__() if hasattr(tts.load_voices, "__wrapped__") else \
+        json.loads(tts.VOICES_FILE.read_text())
+    lines = []
+    for i, sz in enumerate(ep["szenen"]):
+        role, mood = sz["sprecher"], sz.get("stimmung", "")
+        fix = cfg["piper"].get("zeilen", {}).get(str(sz.get("id", i + 1)), {})
+        speech = tts.strip_tags(fix.get("tts", sz["tts"]))
+        tag_removed = tts.strip_tags(sz["tts"]) != sz["tts"].strip()
+        best_fix = fix.get("grund")
+        attempts = []
+        n_try = 3
+        for attempt in range(n_try):
+            if i == 0:
+                voice = tts.piper_voice(cfg, role, mood, take=attempt)
+            else:
+                voice = tts.piper_voice(cfg, role, mood)
+                voice.update(fix.get("stimme", {}))
+                if attempt >= 1 and attempts:
+                    prev = attempts[-1]["check"]
+                    voice = dict(attempts[-1]["voice"])
+                    if any("Tempo" in f for f in prev["fails"]):
+                        lo, hi = (2.0, 2.8)
+                        target = (lo + hi) / 2
+                        voice["length_scale"] = round(voice.get("length_scale", 1.0) * prev["wps"] / target, 3)
+                    else:
+                        voice["noise_scale"] = 0.5 if attempt == 1 else 0.9
+            meta = tts.piper_synth(speech, voice)
+            words, chk = _check_tts_line(sz, i, meta, ep)
+            attempts.append({"meta": meta, "words": words, "check": chk, "voice": voice, "speech": speech})
+            log(f"Szene {i+1} Versuch {attempt+1}: {'OK' if chk['ok'] else 'FAIL'} WER={chk['wer']:.0%} "
+                f"{chk['wps']:.2f}W/s F0={chk['f0_median']:.0f}Hz ±{chk['f0_std_st']:.1f}st {chk['rms_db']:.1f}dB "
+                f"{'(Cache)' if meta.get('cached') else ''}| {chk['transcript']} | {chk['fails']}")
+            if chk["ok"] and i != 0:
+                break
+        ok = [a for a in attempts if a["check"]["ok"]]
+        if i == 0 and ok:
+            # hoechste Energie; bei Gleichstand (< 1 dB) der Take naeher an Kalles ueblicher Stimmlage (~120 Hz),
+            # damit Kalle in der Hook-Zeile nicht wie eine andere Person klingt
+            top_db = max(a["check"]["rms_db"] for a in ok)
+            near = [a for a in ok if a["check"]["rms_db"] >= top_db - 1.0]
+            best = min(near, key=lambda a: abs(math.log2(max(1.0, a["check"]["f0_median"]) / 120.0)))
+        else:
+            best = min(attempts, key=lambda a: (len(a["check"]["fails"]), a["check"]["wer"]))
+        best["n_attempts"] = len(attempts)
+        best["tag_removed"] = tag_removed
+        best["fix"] = best_fix
+        best["settings"] = best["voice"]
+        best["seed"] = None
+        best["tag"] = ""
+        best["all_attempts"] = [{"voice": a["voice"], "fails": a["check"]["fails"], "transcript": a["check"]["transcript"],
+                                 "wer": a["check"]["wer"], "wps": a["check"]["wps"], "rms_db": a["check"]["rms_db"],
+                                 "f0": a["check"]["f0_median"], "f0_std": a["check"]["f0_std_st"]} for a in attempts]
+        lines.append(best)
+    return lines, "piper", cfg
+
+
+def voice_report_tts(ep, lines, path: Path):
+    from . import voicecheck
+    kal = [l["check"]["f0_median"] for l in lines if l["check"]["speaker"] == "kalle"]
+    byt = [l["check"]["f0_median"] for l in lines if l["check"]["speaker"] == "byte"]
+    dist = 12 * math.log2(np.median(byt) / np.median(kal)) if kal and byt else 0
+    ok_all = all(l["check"]["ok"] for l in lines)
+    r = [f"# Stimmen-Check: {ep['titel']}", "",
+         f"**Ergebnis:** {'alle Zeilen bestanden' if ok_all else 'nicht alle Zeilen bestanden (siehe unten)'}  ",
+         "**Modell:** Piper (lokal, ONNX) – ElevenLabs nicht nutzbar: Kontingent des Free-Tarifs erschöpft "
+         "(9.988 von 10.000 Zeichen, Reset am 13.12.2026); nötig wären mindestens 755 Zeichen.  ",
+         "**Kalle:** Thorsten (`de_DE-thorsten-high`) bzw. derselbe Sprecher im Emotions-Modell "
+         "(`de_DE-thorsten_emotional-medium`: surprised/amused/angry)  ",
+         "**Byte:** Kerstin (`de_DE-kerstin-low`), Tempo 1,075 (length_scale 0,93)  ",
+         f"**Stimmabstand:** Median-F0 Kalle {np.median(kal):.0f} Hz, Byte {np.median(byt):.0f} Hz → {dist:.1f} Halbtöne "
+         f"({'klar unterschiedlich' if abs(dist) >= 4 else 'zu ähnlich'})  ",
+         "**Whisper:** faster-whisper `medium` (int8, CPU), Sprache de, Wort-Zeitstempel für Lippensync und Untertitel  ",
+         f"**Natürlichkeit (UTMOS):** nicht installiert/ladbar ({voicecheck.utmos_status() or 'Modell nicht vorhanden'})",
+         "", "Grenzwerte: WER ≤ 10 % (Dialekt net/des frei), Zahlen und „Liquidität“ exakt, 2,0–2,8 Wörter/s "
+         "(Hook bis 3,0; gezählt werden gesprochene tts-Wörter), Tonhöhen-Streuung ≥ 1,5 Halbtöne, kein Clipping, "
+         "nicht abgeschnitten, keine Pause > 0,4 s.", "",
+         "| # | Sprecher | Stimmung | WER | Zahlen/Begriff | W/s | F0 | Streuung | Pegel | Peak | Pause | Versuche | Status |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for i, (l, sz) in enumerate(zip(lines, ep["szenen"])):
+        c = l["check"]
+        ex = ", ".join(f"{k} {'✓' if ok else '✗'}" for k, ok in c["exact"]) or "–"
+        r.append(f"| {i+1} | {c['speaker']} | {sz.get('stimmung','')} | {c['wer']:.0%} | {ex} | {c['wps']:.2f} | "
+                 f"{c['f0_median']:.0f} Hz | {c['f0_std_st']:.1f} st | {c['rms_db']:.1f} dB | {c['peak']:.2f} | "
+                 f"{c['max_gap']:.2f} s | {l['n_attempts']} | {'OK' if c['ok'] else 'FAIL: ' + '; '.join(c['fails'])} |")
+    r += ["", "## Hinweise", "",
+          "- Eingabe der Sprachausgabe ist das Feld `tts`; Untertitel und Bildzahlen nutzen `text` unverändert.",
+          "- Audio-Tags (`[laughs]` in Szene 12) unterstützt Piper nicht; sie werden vor der Synthese entfernt.",
+          "- Stille am Anfang/Ende wird abgeschnitten (Hook beginnt bei 0,00 s), Pausen in der Zeile auf 0,28 s gekürzt.",
+          "- Hook-Zeile: 3 Takes (Thorsten high, Thorsten emotional „surprised“, „angry“); gewählt: bestandener Take "
+          "mit der höchsten Energie.",
+          "- Wort-Zeitstempel: Whisper-Wortzeiten, auf die Untertitel-Wörter abgebildet (Zahlen ausgeschrieben verglichen).",
+          "- Cache: `out/cache/<hash>.wav/.json`, Hash aus tts, Stimme, Modell und Einstellungen.", "",
+          "## Details pro Zeile", ""]
+    for i, (l, sz) in enumerate(zip(lines, ep["szenen"])):
+        c = l["check"]
+        r += [f"**{i+1}. {c['speaker']}:** „{sz['text']}“  ", f"tts: „{l['speech']}“"
+              f"{' (Tag entfernt)' if l.get('tag_removed') else ''}"
+              f"{' – Schreibweise angepasst: ' + l['fix'] if l.get('fix') else ''}  ", f"Whisper: „{c['transcript']}“  ",
+              f"Stimme: `{json.dumps({k: v for k, v in l['voice'].items() if k != 'url_sub'})}`  "]
+        if l["n_attempts"] > 1:
+            for k, a in enumerate(l["all_attempts"]):
+                r.append(f"- Versuch/Take {k+1}: {a['voice'].get('model')} Sprecher {a['voice'].get('speaker')}, "
+                         f"WER {a['wer']:.0%}, {a['wps']:.2f} W/s, F0 {a['f0']:.0f} Hz ±{a['f0_std']:.1f}, "
+                         f"{a['rms_db']:.1f} dB, Fehler: {'; '.join(a['fails']) or 'keine'} – „{a['transcript']}“")
+        r.append("")
+    path.write_text("\n".join(r) + "\n")
+
+
 # ------------------------------------------------------------------ Timeline
 def _envelopes(wav: Path, n_frames: int, lead_s: float):
     y, sr = sf.read(str(wav), dtype="float32")
@@ -240,14 +370,42 @@ def build_timeline(ep: dict, lines: list) -> dict:
             else:
                 log(f"WARN Szene {i+1}: Beat-Wort '{phrase}' nicht gefunden")
         amp, eq = _envelopes(ROOT / l["meta"]["wav"], n, LEAD)
+        beat_list = []
+        for bt in sz.get("beats", []) if isinstance(sz.get("beats"), list) else []:
+            core = _core(bt["wort"])
+            fw = next((w["f0"] for w in words if _core(w["w"]) == core), None)
+            if fw is None:
+                log(f"WARN Szene {i+1}: Beat-Wort '{bt['wort']}' nicht gefunden")
+                fw = f + 6
+            beats[bt["wort"]] = fw - 3          # Aktion startet 3 Frames vor dem Wort
+            beat_list.append({"wort": bt["wort"], "f_word": fw, "f_beat": fw - 3, "sound": bt.get("sound", "none"),
+                              "aktion": bt.get("aktion", "")})
         scenes.append({"i": i, "sprecher": sz["sprecher"], "text": sz["text"], "highlight": sz.get("highlight", []),
-                       "reaktion": sz.get("reaktion", "neutral"), "set": sz["set"], "kapitel": sz.get("kapitel"),
+                       "beat_list": beat_list, "reaktion_kalle": sz.get("reaktion_kalle"), "start": sz.get("start", ""),
+                       "ausdruck_byte": sz.get("ausdruck_byte"), "screen": sz.get("screen"),
+                       "overlay": sz.get("overlay"), "kamera": sz.get("kamera"), "stimmung": sz.get("stimmung"),
+                       "reaktion": sz.get("reaktion", sz.get("reaktion_kalle", "neutral")), "set": sz["set"], "kapitel": sz.get("kapitel"),
                        "visual": sz.get("visual", ""), "f0": f, "f1": f + n, "n": n,
                        "audio_f": f + int(round(LEAD * FPS)), "audio_start": f / FPS + LEAD,
                        "wav": l["meta"]["wav"], "dur": dur, "hold": hold, "words": words, "beats": beats, "amp": amp, "eq": eq})
         f += n
-    return {"slug": ep["slug"], "titel": ep["titel"], "hook": ep.get("hook", ""), "begriff": ep.get("begriff", ""),
+    return {"slug": ep["slug"], "titel": ep["titel"], "hook": ep.get("hook", ""), "loop": ep.get("loop"), "begriff": ep.get("begriff", ""),
             "kapitel": ep.get("kapitel", []), "fps": FPS, "width": W, "height": H, "frames": f, "scenes": scenes}
+
+
+def write_timing(tl, path: Path):
+    r = [f"# Timing: {tl['titel']}", "", f"{tl['frames']} Frames = {tl['frames']/FPS:.2f} s bei {FPS} fps. "
+         "Beat-Aktion startet 3 Frames vor dem Wort, Sound exakt auf dem Wort.", "",
+         "| Szene | Start | Ende | Dauer | Sprecher | Text |", "|---|---|---|---|---|---|"]
+    for s in tl["scenes"]:
+        r.append(f"| {s['i']+1} | {s['f0']/FPS:.2f} s (F{s['f0']}) | {s['f1']/FPS:.2f} s (F{s['f1']}) | "
+                 f"{s['n']/FPS:.2f} s | {s['sprecher']} | {s['text']} |")
+    r += ["", "## Beats", "", "| Szene | Wort | Wort hörbar | Aktion startet | Sound | Aktion |", "|---|---|---|---|---|---|"]
+    for s in tl["scenes"]:
+        for b in s.get("beat_list", []):
+            r.append(f"| {s['i']+1} | {b['wort']} | {b['f_word']/FPS:.2f} s (F{b['f_word']}) | "
+                     f"{b['f_beat']/FPS:.2f} s (F{b['f_beat']}) | {b['sound']} | {b['aktion'][:90]}… |")
+    path.write_text("\n".join(r) + "\n")
 
 
 # ------------------------------------------------------------------ Blender
@@ -438,10 +596,15 @@ def main():
         (work / "anchors.json").unlink(missing_ok=True)
 
     # 0) echte Website (Zeilenzahl, Screenshots, Code-Texturen)
-    website_stage()
+    if ep["slug"] == "website":
+        website_stage()
     # 1) Stimmen + Check
-    lines, model, cfg = voices_stage(ep, work)
-    voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
+    if any("tts" in sz for sz in ep["szenen"]):
+        lines, model, cfg = voices_stage_tts(ep, work)
+        voice_report_tts(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md")
+    else:
+        lines, model, cfg = voices_stage(ep, work)
+        voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
     tl = build_timeline(ep, lines)
     tl["model"] = model
     tl_path = work / "timeline.json"
@@ -450,6 +613,8 @@ def main():
     if old != new:
         tl_path.write_text(new)
     log(f"Timeline: {tl['frames']} Frames = {tl['frames']/FPS:.2f} s")
+    if any(s_.get("beat_list") for s_ in tl["scenes"]):
+        write_timing(tl, ROOT / "out" / f"{slug}_timing.md")
     for s in tl["scenes"]:
         log(f"  Szene {s['i']+1}: {s['f0']}-{s['f1']} ({s['n']/FPS:.2f}s) Beats {s['beats']}")
     if args.stage in ("voices", "timeline"):
@@ -482,7 +647,10 @@ def main():
     os.environ["RENDER_ENGINE"] = eng["engine"]
     if eng["engine"] == "workbench" and "RENDER_SCALE" not in os.environ:
         args.scale = 1.0
-    log(f"Render-Engine: {eng['engine']} ({eng['grund']}), Aufloesung {args.scale:.0%}")
+    if eng["engine"] == "workbench" and "MB_SUBFRAMES" not in os.environ and ep["slug"] not in ("website", "drei-helfer"):
+        os.environ["MB_SUBFRAMES"] = "2"       # Motion Blur an (2 Unterbilder, 180 Grad)
+    log(f"Render-Engine: {eng['engine']} ({eng['grund']}), Aufloesung {args.scale:.0%}, "
+        f"Motion Blur: {'an (2 Unterbilder)' if os.environ.get('MB_SUBFRAMES') == '2' else 'aus'}")
     frames = list(range(tl["frames"]))
     pa = start_anchors(tl_path, work)
     render_frames_parallel(tl_path, frames, args.workers, args.scale, frames_dir, work)

@@ -60,8 +60,14 @@ def build_mix(tl: dict, work: Path) -> Path:
         y = _load(ROOT / s["wav"])
         a = int(round(s["audio_start"] * SR))
         mix[a:a + len(y)] += y[: max(0, n - a)]
+    new_fmt = any(s.get("beat_list") for s in tl["scenes"])
+    speech_peak = float(np.max(np.abs(mix))) if len(mix) else 1.0
     for f, kind, gain in cues:
-        y = sfx[kind] * SFX_GAIN[kind] * gain
+        if new_fmt:
+            # Soundeffekte 6 dB unter der Sprache: Effekt-Spitze = halbe Sprach-Spitze
+            y = sfx[kind] / (np.max(np.abs(sfx[kind])) + 1e-9) * 0.5 * speech_peak * min(1.0, gain)
+        else:
+            y = sfx[kind] * SFX_GAIN[kind] * gain
         a = int(round(f / FPS * SR))
         if 0 <= a < n:
             mix[a:a + len(y)] += y[: n - a]
