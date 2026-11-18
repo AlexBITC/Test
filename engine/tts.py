@@ -506,7 +506,8 @@ def piper_voice(cfg: dict, role: str, stimmung: str, take: int = 0) -> dict:
     pc = cfg["piper"][role]
     v = dict(pc["basis"])
     for rule in pc.get("stimmungen", []):
-        if any(k in stimmung.lower() for k in rule["woerter"]):
+        moods = re.findall(r"[\wäöüß]+", stimmung.lower())
+        if any(k in moods or (" " in k and k in stimmung.lower()) for k in rule["woerter"]):
             v.update(rule["stimme"])
             break
     takes = pc.get("takes", [])
