@@ -317,7 +317,7 @@ def direct(W):
     f0_6, f1_6 = S[5]
     A0 = f0_6
     B0 = wf(5, "Farben") - 5
-    C0 = wf(5, "dann", 2) - 3
+    C0 = wf(5, "klickbar") - 6
     P0 = ST.p(0.15, 1.15, 0)
     VIEWZ = 3.28
     th0, th1 = math.radians(-28), math.radians(30)
@@ -419,7 +419,7 @@ def direct(W):
 
     # PHASE B: Farbwelle von oben nach unten
     wave = PR.color_wave(coll, "wave", 2.6)
-    w_dur = 26
+    w_dur = 24
     top_z, bot_z = span_top - mid + 0.1, span_bot - mid - 0.1
     T.set(wave, "location", lambda f: tuple(page.location + V(0, -0.75, lerp(top_z, bot_z, ease_in_out((f - B0) / w_dur)))),
           B0, B0 + w_dur)
@@ -472,7 +472,7 @@ def direct(W):
           glide0 - 1, N)
     T.set(page, "rotation_euler", lambda f: (0, 0, th1 * ease_in_out((f - glide0) / (glide1 - glide0))), glide0 - 1, glide1 + 1)
     # Display-Sequenz (echte Playwright-Frames)
-    seq = [glide1, glide1 + 5, glide1 + 8, glide1 + 11, glide1 + 14, glide1 + 18, glide1 + 22, glide1 + 31, glide1 + 37]
+    seq = [glide1, glide1 + 3, glide1 + 5, glide1 + 7, glide1 + 9, glide1 + 12, glide1 + 15, glide1 + 22, glide1 + 27]
     for i, d in enumerate(phone.displays):
         nxt = seq[i + 1] if i + 1 < len(seq) else 10 ** 6
         T.set(d, "scale", lambda f, a=seq[i], nb=nxt: (1, 1, 1) if a <= f < nb else (0, 0, 0), 0, N)
