@@ -173,6 +173,19 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     gap_limit = lambda after: (1.0 if after.endswith("…") or after == "…" else 0.7) if pause_limit >= 0.7 \
         else pause_limit  # noqa: E731
     long_pauses = [(round(g, 2), w) for g, w in gaps if g > gap_limit(w)]
+    if pause_limit < 0.7:
+        # Pausen am Signal messen (laengste Stille zwischen erstem und letztem Laut, -30 dB): Whisper-Wortgrenzen
+        # sind bei Piper-Stimmen um 0,2-0,4 s ungenau.
+        hop = int(0.01 * sr)
+        rr = np.array([np.sqrt(np.mean(raw[i:i + hop] ** 2)) for i in range(0, len(raw), hop)])
+        loud = np.nonzero(rr > rr.max() * 10 ** (-30 / 20))[0]
+        run = best = 0
+        for v_ in (rr[loud[0]:loud[-1]] <= rr.max() * 10 ** (-30 / 20)) if len(loud) else []:
+            run = run + 1 if v_ else 0
+            best = max(best, run)
+        sig_gap = best * 0.01
+        max_gap = (sig_gap, "Signal")
+        long_pauses = [(round(sig_gap, 2), "Signal")] if sig_gap > pause_limit else []
 
     # Clipping / abgeschnitten
     peak = float(np.max(np.abs(raw))) if len(raw) else 0.0

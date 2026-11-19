@@ -238,9 +238,11 @@ def voices_stage_tts(ep: dict, work: Path):
                         voice["length_scale"] = round(voice.get("length_scale", 1.0) * prev["wps"] / target, 3)
                     else:
                         voice["noise_scale"] = 0.5 if attempt == 1 else 0.9
-            meta = tts.piper_synth(speech, voice)
+            alts = fix.get("alternativen", [])
+            speech_k = tts.strip_tags(alts[attempt - 1]) if attempt >= 1 and len(alts) >= attempt else speech
+            meta = tts.piper_synth(speech_k, voice)
             words, chk = _check_tts_line(sz, i, meta, ep)
-            attempts.append({"meta": meta, "words": words, "check": chk, "voice": voice, "speech": speech})
+            attempts.append({"meta": meta, "words": words, "check": chk, "voice": voice, "speech": speech_k})
             log(f"Szene {i+1} Versuch {attempt+1}: {'OK' if chk['ok'] else 'FAIL'} WER={chk['wer']:.0%} "
                 f"{chk['wps']:.2f}W/s F0={chk['f0_median']:.0f}Hz ±{chk['f0_std_st']:.1f}st {chk['rms_db']:.1f}dB "
                 f"{'(Cache)' if meta.get('cached') else ''}| {chk['transcript']} | {chk['fails']}")

@@ -239,7 +239,11 @@
         "stimme": {
           "noise_scale": 0.6
         },
-        "grund": "'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden"
+        "grund": "'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden",
+        "alternativen": [
+          "Li-quidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
+          "Likwiditäät heißt, Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld."
+        ]
       }
     }
   }
