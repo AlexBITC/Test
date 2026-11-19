@@ -784,8 +784,8 @@ def screen_bon(img, s, f, vis):
         hl = next((w["f0"] for w in s["words"] if w["hl"]), s["f0"] + 30)
         v = int(round(n * ease_out((f - s["f0"] - 4) / max(1, hl - s["f0"] + 6))))
         pk = 1 + 0.12 * math.sin(math.pi * clamp01((f - hl - 2) / 6)) if v >= n else 1.0
-        d.text((SW / 2, 440), "BREZELN IM MÜLL", font=font(58), fill=(170, 170, 200, 255), anchor="mm")
-        d.text((SW / 2, 590), str(v), font=font(int(210 * pk)), fill=(*RED, 255), anchor="mm")
+        d.text((SW / 2, 505), "BREZELN IM MÜLL", font=font(50), fill=(170, 170, 200, 255), anchor="mm")
+        d.text((SW / 2, 622), str(v), font=font(int(170 * pk)), fill=(*RED, 255), anchor="mm")
         return img
     rows = []                                       # (Text, Farbe, gross?)
     if "Kassenbon rollt ins Bild" in vis:

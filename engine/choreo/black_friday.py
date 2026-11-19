@@ -99,29 +99,23 @@ def direct(W):
         sk.root.location = TH.p(x, 0.95, 0.9)
         sk.root.rotation_euler = (0, 0, 0.2 - 0.4 * q)
     # Neonschild '−30 % AUF ALLES' (Running Gag)
-    sign = PR.neonschild(coll, "neon30", "−30 % AUF ALLES", color="#FF3B6B", width=1.0, height=0.34, size=0.115)
-    SIGN = TH.p(-0.36, -0.62, top + 0.2)
+    sign = PR.neonschild(coll, "neon30", "−30 % AUF ALLES", color="#FF3B6B", width=0.86, height=0.3, size=0.098)
+    SIGN = TH.p(-0.8, -0.35, 2.3)                     # haengt links neben Kalles Kopf
     sign.root.rotation_euler = (math.radians(-8), 0, 0)
     hand0 = K + V(-0.45, -0.7, 1.75)
     slam1 = S[0][0] + 7
-    grab14, slam14 = S[13][0] + 6, hl(13) - 2
+    grab14 = S[13][0] + 6                                  # Szene 14: Kalle schnappt sich das Schild (Loop)
 
     def sign_pos(f):
         if f < slam1:                                    # fliegt in Frame 0 schon
             t = ease_in((f + 4) / (slam1 + 4))
             return hand0.lerp(SIGN, t) + V(0, 0, 0.35 * math.sin(math.pi * t))
-        if grab14 <= f < slam14:
-            t = ease_out((f - grab14) / 6)
-            return SIGN.lerp(hand0, t) if f < grab14 + 6 else hand0
-        if slam14 <= f < slam14 + 6:
-            return hand0.lerp(SIGN, ease_in((f - slam14) / 5))
+        if f >= grab14:
+            return SIGN.lerp(hand0, ease_in_out((f - grab14) / 8))
         return SIGN
     T.set(sign.root, "location", lambda f: tuple(sign_pos(f)), 0, N - 1)
     T.set(sign.root, "scale", lambda f: (1 + 0.12 * spring((f - slam1) / FPS, 4, 0.3), 1, 1 - 0.12 * spring((f - slam1) / FPS, 4, 0.3))
           if f >= slam1 else (1, 1, 1), 0, slam1 + 20)
-    T.mul(sign.root, "scale", lambda f: (1 + 0.12 * spring((f - slam14 - 5) / FPS, 4, 0.3), 1,
-                                         1 - 0.12 * spring((f - slam14 - 5) / FPS, 4, 0.3)) if f >= slam14 + 5 else (1, 1, 1),
-          slam14, slam14 + 25)
     aus2 = (hl(1) - 2, hl(1) + 16)
     PR.neon_flacker(T, sign, 0, N - 1, seed=30, aus=aus2)
     # Brezeln mit Preisschildern auf der Theke (huepfen)
@@ -142,7 +136,7 @@ def direct(W):
 
     # =================================================================== SZENE 1 – Black Friday (push_in, schnell)
     f0_1, f1_1 = S[0]
-    S1A = (TH.p(0.15, -4.7, 1.85), TH.p(0.1, 0.2, 1.42), 38.0)
+    S1A = (TH.p(-0.12, -4.7, 1.9), TH.p(-0.15, 0.2, 1.5), 38.0)
     s1 = push_in(f0_1, f1_1, S1A, k=0.22)
     cam.add_shot(f0_1, f1_1, s1)
     slap = {"sh_R": (-1.3, 0.3, 0.2), "el_R": (-0.3, 0, 0), "hips": (0.08, 0, 0.05)}
@@ -374,8 +368,8 @@ def direct(W):
             cue(tq + 12, "pop", 0.5)
     cue(f0_9 + 2, "whoosh", 0.9)
     C.reaction(T, coll, k, "staunen", hl(8), hold=f1_9 - hl(8), seed=9)
-    cam.add_shot(f0_9, f1_9, schwenk(f0_9, f1_9, (ST.p(-0.6, -4.2, 2.3), BIN + V(0, 0, 1.7), 40.0),
-                                 (ST.p(0.6, -4.2, 2.3), PILE + V(0, 0, 1.6), 40.0)))
+    cam.add_shot(f0_9, f1_9, schwenk(f0_9, f1_9, (ST.p(-0.6, -4.2, 2.45), BIN + V(0, 0, 1.85), 40.0),
+                                 (ST.p(0.6, -4.2, 2.45), PILE + V(0, 0, 1.75), 40.0)))
     T.set(b.root, "location", lambda f: tuple(ST.p(0.0, -0.3, 2.2)), f0_9, S[10][0])
 
     # =================================================================== SZENE 10 – 17:00, halber Preis (fahrt)
@@ -437,7 +431,7 @@ def direct(W):
              gravity=-6.0, life=(16, 22), size=(1.2, 1.6))
     PR.neon_flacker(T, sign, f0_12, f1_12, seed=77, strength=0.5)
     cam.add_shot(f0_12, f1_12, zoom_gesicht(f0_12, f1_12, (TH.p(-0.2, -4.4, 1.85), TH.p(-0.2, 0.0, 1.45), 40.0),
-                                      (face + V(-0.05, -3.3, 0.0), face + V(-0.05, 0, -0.4), 50.0)))
+                                      (face + V(-0.38, -3.7, 0.05), face + V(-0.4, 0, -0.3), 44.0)))
     cam.whips.append((f0_12, -1))
 
     # =================================================================== SZENE 13 – Neon-Plakat (schwenk)
@@ -463,8 +457,8 @@ def direct(W):
     # =================================================================== SZENE 14 – Schild behalt i (Loop)
     f0_14, f1_14 = S[13]
     grabp = {"sh_R": (-1.3, 0.35, 0.2), "el_R": (-0.35, 0, 0)}
-    C.pose(T, k, grabp, grab14 - 2, slam14 + 8, 4, 8)
-    C.reaction(T, coll, k, "jubel", slam14 + 4, hold=f1_14 - slam14 - 8, speaking=True, seed=14)
+    C.pose(T, k, grabp, grab14 - 2, N + 10, 4, 8)
+    C.reaction(T, coll, k, "jubel", hl(13), hold=f1_14 - hl(13) - 4, speaking=True, seed=14)
     T.add(b.body, "rotation_euler", lambda f: (0.6 * window(f, f0_14 + 4, N - 18, 5, 6), 0, 0), f0_14, N - 16)
     back = N - 16
     T.set(b.root, "location", lambda f: tuple(B_TH.lerp(lap_pos, ease_in((f - back) / 10)) if f > back else B_TH), f0_14, N)
