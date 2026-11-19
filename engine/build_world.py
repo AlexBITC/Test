@@ -1,4 +1,6 @@
-"""Sets: theke, buero, studio. Jedes Set liegt an einem eigenen Ursprung in derselben Welt
+"""Welt-Aufbau: Sets (theke, buero, studio) und die komplette Welt (Figuren, Kamera-Rig, Regie).
+
+Sets: theke, buero, studio. Jedes Set liegt an einem eigenen Ursprung in derselben Welt
 (Whip-Pans schwenken zwischen echten Orten). Licht pro Set: warmes Key, kuehles Fill,
 tuerkis-violettes Rim, weiche Schatten. Lichter haben eine Cutoff-Distanz."""
 import math
@@ -7,8 +9,18 @@ import random
 import bpy
 from mathutils import Vector
 
+import importlib
+import time
+
+from mathutils import Quaternion
+
+import anim
+import characters as C
 import look as L
 import props as PR
+from anim import ease_in, ease_out, window, Noise
+
+FPS = 30
 
 ORIGIN = {"theke": Vector((0, 0, 0)), "buero": Vector((40, 0, 0)), "studio": Vector((80, 0, 0))}
 
@@ -34,6 +46,7 @@ def tile_mat(name, c1, c2, mortar, scale=6.0, mortar_size=0.02, rough=0.6, brick
     nt.links.new(br.outputs["Color"], b.inputs["Base Color"])
     b.inputs["Roughness"].default_value = rough
     b.inputs["Specular IOR Level"].default_value = 0.3
+    m.diffuse_color = L.srgb(c1)
     L._MATS[name] = m
     return m
 
@@ -305,10 +318,12 @@ def build_studio(coll, screen_dir=None, n_frames=1):
     c = coll
     m_floor = L.mat("studio_floor", "#17142C", 0.32, spec=0.5)
     L.cyl("studio_floor", 9.0, 0.04, 48, m_floor, None, S.p(0, 0.5, -0.02), c)
-    L.torus("studio_ring", 2.4, 0.025, 64, 4, L.mat("studio_ring", L.TURQ, 0.5, emit=L.TURQ, strength=1.6), None,
-            S.p(0.3, 0.6, 0.005), c)
-    L.torus("studio_ring2", 3.4, 0.015, 64, 4, L.mat("studio_ring2", L.VIOLET, 0.5, emit=L.VIOLET, strength=1.2), None,
-            S.p(0.3, 0.6, 0.005), c)
+    # Boden mit dezentem tuerkisem Gitter
+    m_grid = L.mat("studio_grid", "#1E5A63", 0.5, emit=L.TURQ, strength=0.35)
+    for k in range(-9, 10):
+        L.box(f"studio_gx{k}", (0.012, 12.0, 0.004), m_grid, None, S.p(k * 0.5, 1.0, 0.002), c)
+    for k in range(-10, 14):
+        L.box(f"studio_gy{k}", (9.0, 0.012, 0.004), m_grid, None, S.p(0, k * 0.5, 0.002), c)
     # Rueckwand: dunkel mit leuchtenden Lamellen (Tiefe, kein leerer Hintergrund)
     L.box("studio_back", (16, 0.1, 8), L.mat("studio_back", "#1F1B3A", 0.7), None, S.p(0, 5.0, 3.5), c)
     for i in range(9):
@@ -366,3 +381,139 @@ def build_studio(coll, screen_dir=None, n_frames=1):
     S.kalle = S.p(-0.42, -0.6, 0.0)
     S.byte = S.p(0.0, -0.6, 2.2)
     return S
+
+
+# ------------------------------------------------------------------ Kamera
+class CamRig:
+    """Kamera aus Shot-Funktionen: shot(f) -> (pos, ziel, brennweite). Dazu Handheld-Drift (Seed),
+    Punch-ins (3 %, 6 Frames), Shakes und Whip-Pans (8 Frames, Gierwinkel)."""
+
+    def __init__(self, sc, n_frames):
+        cd = bpy.data.cameras.new("cam")
+        cd.sensor_fit = "VERTICAL"
+        cd.sensor_height = 36
+        cd.clip_start = 0.05
+        cd.clip_end = 80
+        cd.dof.use_dof = True
+        cd.dof.aperture_fstop = 2.2
+        self.cam = bpy.data.objects.new("cam", cd)
+        sc.collection.objects.link(self.cam)
+        sc.camera = self.cam
+        self.cam.rotation_mode = "QUATERNION"
+        self.focus = L.empty("cam_focus")
+        cd.dof.focus_object = self.focus
+        self.n = n_frames
+        self.shots = []      # (f0, f1, fn)
+        self.punch = []      # frames
+        self.shakes = []     # (f, amp, dur)
+        self.whips = []      # (frame_boundary, direction)
+        self.focus_fn = None
+        self.drift = (Noise(101, 3, 0.25), Noise(202, 3, 0.22), Noise(303, 3, 0.2), Noise(404, 2, 0.3))
+        self.drift_amp = 1.0
+        self._cache = {}
+
+    def add_shot(self, f0, f1, fn):
+        self.shots.append((f0, f1, fn))
+
+    def base(self, f):
+        for f0, f1, fn in self.shots:
+            if f0 <= f < f1:
+                return fn(f)
+        f0, f1, fn = self.shots[-1] if f >= self.shots[-1][1] else self.shots[0]
+        return fn(min(max(f, f0), f1 - 1))
+
+    def state(self, f):
+        if f in self._cache:
+            return self._cache[f]
+        b = self.base(f)
+        pos, tgt, lens = b[0], b[1], b[2]
+        roll_extra = b[3] if len(b) > 3 else 0.0
+        pos, tgt = Vector(pos), Vector(tgt)
+        t = f / FPS
+        d = self.drift
+        env = self.drift_env(f) if getattr(self, "drift_env", None) else 1.0
+        a = 0.022 * self.drift_amp * env
+        pos = pos + Vector((a * d[0](t), a * 0.5 * d[1](t), a * d[2](t)))
+        tgt = tgt + Vector((a * 0.6 * d[1](t + 3), 0, a * 0.6 * d[0](t + 7)))
+        roll = 0.012 * self.drift_amp * env * d[3](t) + roll_extra
+        # Punch-ins (3 %, 6 Frames)
+        for pf in self.punch:
+            lens *= 1 + 0.03 * window(f, pf - 1, pf + 6, 2, 4)
+        # Shakes
+        for sf, amp, dur in self.shakes:
+            if sf <= f <= sf + dur:
+                k = 1 - (f - sf) / dur
+                pos = pos + Vector((amp * k * math.sin(f * 2.7), 0, amp * k * math.cos(f * 3.3)))
+        fwd = (tgt - pos).normalized()
+        q = fwd.to_track_quat("-Z", "Y")
+        # Whip-Pans: Gier-Offset um die Hochachse
+        yaw = 0.0
+        for wb, dirn in self.whips:
+            if wb - 4 <= f < wb:
+                yaw = dirn * 0.95 * ease_in((f - (wb - 4) + 1) / 4)
+            elif wb <= f < wb + 4:
+                yaw = -dirn * 0.95 * (1 - ease_out((f - wb + 1) / 4))
+        if yaw:
+            q = Quaternion((0, 0, 1), -yaw) @ q
+        q = q @ Quaternion((0, 0, 1), roll)
+        self._cache[f] = (pos, q, lens, tgt)
+        return self._cache[f]
+
+    def register(self, T):
+        quats = {}
+        prev = None
+        for f in range(0, self.n):
+            p, q, ln, tg = self.state(f)
+            if prev is not None and prev.dot(q) < 0:
+                q = -q
+            quats[f] = q
+            prev = q
+        T.set(self.cam, "location", lambda f: tuple(self.state(int(f))[0]), 0, self.n - 1)
+        T.set(self.cam, "rotation_quaternion", lambda f: tuple(quats[int(min(max(f, 0), self.n - 1))]), 0, self.n - 1)
+        T.set(self.cam.data, "lens", lambda f: self.state(int(f))[2], 0, self.n - 1)
+        if self.focus_fn:
+            T.set(self.focus, "location", lambda f: tuple(self.focus_fn(int(f))), 0, self.n - 1)
+
+
+# ------------------------------------------------------------------ Welt bauen
+class World:
+    pass
+
+
+def build(tl, screen_dir):
+    for o in list(bpy.data.objects):
+        bpy.data.objects.remove(o)
+    sc = bpy.context.scene
+    W = World()
+    W.tl = tl
+    W.sc = sc
+    W.n = tl["frames"]
+    W.T = anim.Tracks(FPS)
+    coll = sc.collection
+    W.coll = coll
+    W.sets = {"theke": build_theke(coll), "buero": build_buero(coll),
+              "studio": build_studio(coll, screen_dir, W.n)}
+    extras = tl["slug"] not in ("drei-helfer", "website")     # neue Merkmale ab dieser Folge
+    W.kalle = C.Kalle(coll, extras=extras)
+    W.byte = C.Byte(coll, light_energy=26.0)
+    if extras:
+        W.byte.add_ear_rings()
+    W.helpers = [C.Helper(coll, 1, "scan"), C.Helper(coll, 2, "digits"), C.Helper(coll, 3, "feather")] \
+        if tl["slug"] == "drei-helfer" else []
+    W.cam = CamRig(sc, W.n)
+    W.cues = []        # Soundeffekte: (frame, art)
+    W.anchors = {}     # Name -> Objekt (fuer Overlay-Projektion)
+    W.labels = []      # 3D-verankerte Overlay-Zahlen
+    slug = tl["slug"].replace("-", "_")
+    try:
+        mod = importlib.import_module(f"choreo.{slug}")
+    except ModuleNotFoundError:
+        mod = importlib.import_module("choreo.generic")
+    mod.direct(W)
+    W.cam.register(W.T)
+    t0 = time.time()
+    n = W.T.bake(0, W.n - 1, loop_frames=getattr(W, "loop_frames", 0))
+    print(f"[scene] {n} Keys gebacken in {time.time()-t0:.1f}s", flush=True)
+    return W
+
+

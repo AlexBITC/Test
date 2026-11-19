@@ -1,0 +1,6 @@
+{
+  "stimme": "keine",
+  "hinweis": "Ohne Stimme: Wortzeiten im Lesetempo, Mund aus Silben-Hüllkurve, Tonspur nur Soundeffekte.",
+  "woerter_pro_sekunde": {"kalle": 2.8, "byte": 2.6},
+  "pause_vor_szene": {"8": 0.3, "11": 0.3}
+}

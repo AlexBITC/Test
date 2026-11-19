@@ -1,0 +1,13 @@
+{
+  "datei": "index.html",
+  "zeilen": 327,
+  "ermittelt_mit": "wc -l",
+  "playwright": {
+    "konsolenfehler": [],
+    "formular_test": {
+      "bestaetigung_sichtbar": true,
+      "text": "Danke! Deine Bestellung ist da.",
+      "leer_fehlermeldung": "Bitte gib deinen Namen ein."
+    }
+  }
+}

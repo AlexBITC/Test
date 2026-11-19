@@ -1,0 +1,1 @@
+{"hash": "8d5fb2d4dafc969b65e9", "speech_text": "Ha! Bait, du bist Gold wert!", "voice": {"model": "de_DE-thorsten-high", "url_sub": "thorsten/high/", "speaker": null, "length_scale": 1.704, "noise_scale": 0.7, "noise_w": 0.85}, "model": "piper", "wav": "out/cache/8d5fb2d4dafc969b65e9.wav", "cached": false}

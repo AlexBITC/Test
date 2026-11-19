@@ -46,6 +46,9 @@ def hblur(a, radius):
 
 def compose_one(tl, f, frames_dir, overlay_dir, out_path=None, scale=None, whips=()):
     img = Image.open(Path(frames_dir) / f"{f:05d}.png").convert("RGB")
+    sub = Path(frames_dir) / f"{f:05d}_b.png"
+    if sub.exists():                                   # Motion Blur: Unterbilder mitteln
+        img = Image.blend(img, Image.open(sub).convert("RGB"), 0.5)
     if img.size != (W, H):
         img = img.resize((W, H), Image.LANCZOS).filter(ImageFilter.UnsharpMask(radius=1.6, percent=55, threshold=2))
     a = np.asarray(img, dtype=np.float32)
