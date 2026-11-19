@@ -1,6 +1,6 @@
 # Timing: Viel verkauft, kein Geld
 
-1435 Frames = 47.83 s bei 30 fps. Beat-Aktion startet 3 Frames vor dem Wort, Sound exakt auf dem Wort.
+1441 Frames = 48.03 s bei 30 fps. Beat-Aktion startet 3 Frames vor dem Wort, Sound exakt auf dem Wort.
 
 | Szene | Start | Ende | Dauer | Sprecher | Text |
 |---|---|---|---|---|---|
@@ -13,10 +13,10 @@
 | 7 | 21.23 s (F637) | 23.67 s (F710) | 2.43 s | kalle | Obwohl ich so viel verkauft hab? |
 | 8 | 23.67 s (F710) | 28.63 s (F859) | 4.97 s | byte | Ich schreib eine höfliche Erinnerung: alle 3 Rechnungen, Zahlung in 7 Tagen. |
 | 9 | 28.63 s (F859) | 32.03 s (F961) | 3.40 s | kalle | Höflich und klar. So schreib ich des nie! |
-| 10 | 32.03 s (F961) | 37.13 s (F1114) | 5.10 s | byte | Liquidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld. |
-| 11 | 37.13 s (F1114) | 42.60 s (F1278) | 5.47 s | byte | 2 Tage später: Geld da, Mühle bezahlt, 1.260 Euro übrig. |
-| 12 | 42.60 s (F1278) | 45.27 s (F1358) | 2.67 s | kalle | Ha! Byte, du bist Gold wert! |
-| 13 | 45.27 s (F1358) | 47.83 s (F1435) | 2.57 s | byte | Merk dir: Viel verkauft heißt nicht … |
+| 10 | 32.03 s (F961) | 37.33 s (F1120) | 5.30 s | byte | Liquidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld. |
+| 11 | 37.33 s (F1120) | 42.80 s (F1284) | 5.47 s | byte | 2 Tage später: Geld da, Mühle bezahlt, 1.260 Euro übrig. |
+| 12 | 42.80 s (F1284) | 45.47 s (F1364) | 2.67 s | kalle | Ha! Byte, du bist Gold wert! |
+| 13 | 45.47 s (F1364) | 48.03 s (F1441) | 2.57 s | byte | Merk dir: Viel verkauft heißt nicht … |
 
 ## Beats
 
@@ -46,13 +46,13 @@
 | 9 | klar | 29.87 s (F896) | 29.77 s (F893) | none | Kalle nickt zweimal anerkennend (je 6 Frames) und zeigt Daumen hoch mit der rechten Hand (… |
 | 9 | nie | 31.43 s (F943) | 31.33 s (F940) | ding | staunen: Augen ×1,6 mit Overshoot, Kinnlade fällt, beide Brauen hoch, Mütze hüpft zweimal,… |
 | 10 | Liquidität | 32.03 s (F961) | 31.93 s (F958) | ding | Das Glas bekommt eine türkise Randkante (Rim #2EE6D6, 8 Frames Fade-in), Byte-Leuchten pul… |
-| 10 | jetzt | 34.07 s (F1022) | 33.97 s (F1019) | pop | Die 900-€-Münzen im Glas hüpfen einmal 0,03 BU (Stagger 2 Frames, Squash beim Landen)… |
-| 10 | versprochenes | 35.77 s (F1073) | 35.67 s (F1070) | buzz | Neben dem Glas erscheint per Fade eine halbtransparente 'Geister-Münzsäule' (1.860 €, #F2B… |
-| 11 | Geld | 38.60 s (F1158) | 38.50 s (F1155) | ding | Durch die Ladentür fliegt der Briefumschlag aus Szene 8 zurück, öffnet sich über dem Glas,… |
-| 11 | Mühle | 39.17 s (F1175) | 39.07 s (F1172) | pop | Ein Münzstrom fliegt im Bogen vom Glas in den Mehlsack (15 Frames, ease-in-out), die Füllu… |
-| 11 | 1.260 | 40.27 s (F1208) | 40.17 s (F1205) | ding | Grüner Lichtring #3DDC84 um den Glasboden (Fade 8 Frames), die rote Linie wird grün. Kalle… |
-| 12 | Ha | 42.60 s (F1278) | 42.50 s (F1275) | pop | Kalle klatscht in die Hände (4 Frames Antizipation, Hände prallen mit Squash), 6 Mehlstaub… |
-| 12 | Gold | 44.37 s (F1331) | 44.27 s (F1328) | ding | jubel: beide Arme hoch, Sprung 0,1 BU mit Squash beim Landen, breites Grinsen, Mehlwolke u… |
-| 13 | Merk | 45.27 s (F1358) | 45.17 s (F1355) | none | Byte dreht sich zur Kamera und zwinkert (^ —), die Antenne federt 2× nach… |
-| 13 | verkauft | 46.40 s (F1392) | 46.30 s (F1389) | whoosh | Byte fliegt im Bogen nach rechts aus dem Bild (x > 1080 px, 12 Frames ease-in). Kontoglas,… |
-| 13 | nicht | 47.23 s (F1417) | 47.13 s (F1414) | none | Kalle kehrt in die Ausgangspose hinter der Kasse zurück: neutral, rechte Hand auf der Kass… |
+| 10 | jetzt | 34.20 s (F1026) | 34.10 s (F1023) | pop | Die 900-€-Münzen im Glas hüpfen einmal 0,03 BU (Stagger 2 Frames, Squash beim Landen)… |
+| 10 | versprochenes | 35.90 s (F1077) | 35.80 s (F1074) | buzz | Neben dem Glas erscheint per Fade eine halbtransparente 'Geister-Münzsäule' (1.860 €, #F2B… |
+| 11 | Geld | 38.80 s (F1164) | 38.70 s (F1161) | ding | Durch die Ladentür fliegt der Briefumschlag aus Szene 8 zurück, öffnet sich über dem Glas,… |
+| 11 | Mühle | 39.37 s (F1181) | 39.27 s (F1178) | pop | Ein Münzstrom fliegt im Bogen vom Glas in den Mehlsack (15 Frames, ease-in-out), die Füllu… |
+| 11 | 1.260 | 40.47 s (F1214) | 40.37 s (F1211) | ding | Grüner Lichtring #3DDC84 um den Glasboden (Fade 8 Frames), die rote Linie wird grün. Kalle… |
+| 12 | Ha | 42.80 s (F1284) | 42.70 s (F1281) | pop | Kalle klatscht in die Hände (4 Frames Antizipation, Hände prallen mit Squash), 6 Mehlstaub… |
+| 12 | Gold | 44.57 s (F1337) | 44.47 s (F1334) | ding | jubel: beide Arme hoch, Sprung 0,1 BU mit Squash beim Landen, breites Grinsen, Mehlwolke u… |
+| 13 | Merk | 45.47 s (F1364) | 45.37 s (F1361) | none | Byte dreht sich zur Kamera und zwinkert (^ —), die Antenne federt 2× nach… |
+| 13 | verkauft | 46.60 s (F1398) | 46.50 s (F1395) | whoosh | Byte fliegt im Bogen nach rechts aus dem Bild (x > 1080 px, 12 Frames ease-in). Kontoglas,… |
+| 13 | nicht | 47.43 s (F1423) | 47.33 s (F1420) | none | Kalle kehrt in die Ausgangspose hinter der Kasse zurück: neutral, rechte Hand auf der Kass… |

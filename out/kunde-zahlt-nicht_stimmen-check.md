@@ -1,6 +1,6 @@
 # Stimmen-Check: Viel verkauft, kein Geld
 
-**Ergebnis:** nicht alle Zeilen bestanden (siehe unten)  
+**Ergebnis:** alle Zeilen bestanden  
 **Modell:** Piper (lokal, ONNX) – ElevenLabs nicht nutzbar: Kontingent des Free-Tarifs erschöpft (9.988 von 10.000 Zeichen, Reset am 13.12.2026); nötig wären mindestens 755 Zeichen.  
 **Kalle:** Thorsten (`de_DE-thorsten-high`) bzw. derselbe Sprecher im Emotions-Modell (`de_DE-thorsten_emotional-medium`: surprised/amused/angry)  
 **Byte:** Kerstin (`de_DE-kerstin-low`), Tempo 1,075 (length_scale 0,93)  
@@ -12,19 +12,19 @@ Grenzwerte: WER ≤ 10 % (Dialekt net/des frei), Zahlen und „Liquidität“ ex
 
 | # | Sprecher | Stimmung | WER | Zahlen/Begriff | W/s | F0 | Streuung | Pegel | Peak | Pause | Versuche | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | kalle | verzweifelt, laut | 0% | – | 2.75 | 240 Hz | 2.6 st | -13.7 dB | 0.89 | 0.22 s | 3 | OK |
-| 2 | kalle | empört, ratlos | 0% | 6 ✓ | 2.67 | 117 Hz | 3.4 st | -16.9 dB | 0.89 | 0.00 s | 2 | OK |
-| 3 | byte | selbstsicher, frech | 0% | – | 2.63 | 177 Hz | 2.9 st | -17.1 dB | 0.89 | 0.00 s | 3 | OK |
-| 4 | byte | präzise, zügig | 0% | 3 ✓, 620 ✓, 1.860 ✓ | 2.02 | 163 Hz | 2.1 st | -20.8 dB | 0.89 | 0.28 s | 2 | OK |
-| 5 | kalle | ungläubig, baff | 0% | 2 ✓ | 2.30 | 143 Hz | 2.7 st | -13.8 dB | 0.89 | 0.00 s | 2 | OK |
-| 6 | byte | ernst, ruhig | 0% | 1.500 ✓, 900 ✓, 600 ✓ | 2.21 | 177 Hz | 2.6 st | -18.5 dB | 0.89 | 0.30 s | 1 | OK |
-| 7 | kalle | verwirrt, kleinlaut | 0% | – | 2.78 | 120 Hz | 3.7 st | -18.1 dB | 0.89 | 0.00 s | 2 | OK |
-| 8 | byte | flink, gut gelaunt | 8% | 3 ✓, 7 ✓, eine ✓ | 2.61 | 161 Hz | 2.2 st | -21.2 dB | 0.89 | 0.16 s | 2 | OK |
-| 9 | kalle | beeindruckt, herzlich | 0% | – | 2.63 | 123 Hz | 3.5 st | -17.3 dB | 0.89 | 0.06 s | 2 | OK |
-| 10 | byte | klar, erklärend | 9% | Liquidität ✗ | 2.33 | 174 Hz | 2.1 st | -20.7 dB | 0.89 | 0.48 s | 3 | FAIL: 'Liquidität' nicht exakt erkannt; lange Pause(n) [(0.48, 'kannst.')] |
-| 11 | byte | triumphierend, frech | 0% | 2 ✓, 1.260 ✓ | 2.00 | 155 Hz | 2.3 st | -22.8 dB | 0.89 | 0.34 s | 1 | OK |
-| 12 | kalle | überglücklich, lachend | 0% | – | 2.56 | 117 Hz | 2.6 st | -16.9 dB | 0.89 | 0.30 s | 3 | OK |
-| 13 | byte | verschmitzt, leise | 0% | – | 2.70 | 161 Hz | 2.2 st | -19.1 dB | 0.89 | 0.18 s | 1 | OK |
+| 1 | kalle | verzweifelt, laut | 0% | – | 2.75 | 240 Hz | 2.6 st | -13.7 dB | 0.89 | 0.09 s | 3 | OK |
+| 2 | kalle | empört, ratlos | 0% | 6 ✓ | 2.67 | 117 Hz | 3.4 st | -16.9 dB | 0.89 | 0.14 s | 2 | OK |
+| 3 | byte | selbstsicher, frech | 0% | – | 2.63 | 177 Hz | 2.9 st | -17.1 dB | 0.89 | 0.16 s | 3 | OK |
+| 4 | byte | präzise, zügig | 0% | 3 ✓, 620 ✓, 1.860 ✓ | 2.02 | 163 Hz | 2.1 st | -20.8 dB | 0.89 | 0.22 s | 2 | OK |
+| 5 | kalle | ungläubig, baff | 0% | 2 ✓ | 2.30 | 143 Hz | 2.7 st | -13.8 dB | 0.89 | 0.12 s | 2 | OK |
+| 6 | byte | ernst, ruhig | 0% | 1.500 ✓, 900 ✓, 600 ✓ | 2.21 | 177 Hz | 2.6 st | -18.5 dB | 0.89 | 0.23 s | 1 | OK |
+| 7 | kalle | verwirrt, kleinlaut | 0% | – | 2.78 | 120 Hz | 3.7 st | -18.1 dB | 0.89 | 0.14 s | 2 | OK |
+| 8 | byte | flink, gut gelaunt | 8% | 3 ✓, 7 ✓, eine ✓ | 2.61 | 161 Hz | 2.2 st | -21.2 dB | 0.89 | 0.21 s | 2 | OK |
+| 9 | kalle | beeindruckt, herzlich | 0% | – | 2.63 | 123 Hz | 3.5 st | -17.3 dB | 0.89 | 0.22 s | 2 | OK |
+| 10 | byte | klar, erklärend | 0% | Liquidität ✓ | 2.23 | 180 Hz | 2.2 st | -20.4 dB | 0.89 | 0.26 s | 2 | OK |
+| 11 | byte | triumphierend, frech | 0% | 2 ✓, 1.260 ✓ | 2.00 | 155 Hz | 2.3 st | -22.8 dB | 0.89 | 0.26 s | 1 | OK |
+| 12 | kalle | überglücklich, lachend | 0% | – | 2.56 | 117 Hz | 2.6 st | -16.9 dB | 0.89 | 0.26 s | 3 | OK |
+| 13 | byte | verschmitzt, leise | 0% | – | 2.70 | 161 Hz | 2.2 st | -19.1 dB | 0.89 | 0.22 s | 1 | OK |
 
 ## Hinweise
 
@@ -101,12 +101,11 @@ Stimme: `{"model": "de_DE-thorsten-high", "speaker": null, "length_scale": 1.935
 - Versuch/Take 2: de_DE-thorsten-high Sprecher None, WER 0%, 2.63 W/s, F0 123 Hz ±3.5, -17.3 dB, Fehler: keine – „Höflich und klar. So schreibe ich das nie.“
 
 **10. byte:** „Liquidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.“  
-tts: „Likwiditäät heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.“ – Schreibweise angepasst: 'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden  
-Whisper: „Dequity-Tield heißt, Geld, das du jetzt zahlen kannst, nicht versprochenes Geld.“  
-Stimme: `{"model": "de_DE-kerstin-low", "speaker": null, "length_scale": 1.0, "noise_scale": 0.6, "noise_w": 0.8}`  
-- Versuch/Take 1: de_DE-kerstin-low Sprecher None, WER 9%, 2.33 W/s, F0 174 Hz ±2.1, -20.7 dB, Fehler: 'Liquidität' nicht exakt erkannt; lange Pause(n) [(0.48, 'kannst.')] – „Dequity-Tield heißt, Geld, das du jetzt zahlen kannst, nicht versprochenes Geld.“
-- Versuch/Take 2: de_DE-kerstin-low Sprecher None, WER 18%, 2.29 W/s, F0 169 Hz ±2.3, -20.4 dB, Fehler: WER 18% > 10 %; 'Liquidität' nicht exakt erkannt – „Liquidity it heißt. Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.“
-- Versuch/Take 3: de_DE-kerstin-low Sprecher None, WER 18%, 2.20 W/s, F0 169 Hz ±2.0, -20.4 dB, Fehler: WER 18% > 10 %; 'Liquidität' nicht exakt erkannt; lange Pause(n) [(0.8, 'heißt:'), (0.5, 'kannst.')] – „Liquidity Details. Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.“
+tts: „Li-quidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.“ – Schreibweise angepasst: 'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden  
+Whisper: „Liquidität heißt, Geld, das du jetzt zahlen kannst, nicht versprochenes Geld.“  
+Stimme: `{"model": "de_DE-kerstin-low", "speaker": null, "length_scale": 1.0, "noise_scale": 0.5, "noise_w": 0.8}`  
+- Versuch/Take 1: de_DE-kerstin-low Sprecher None, WER 9%, 2.33 W/s, F0 174 Hz ±2.1, -20.7 dB, Fehler: 'Liquidität' nicht exakt erkannt – „Dequity-Tield heißt, Geld, das du jetzt zahlen kannst, nicht versprochenes Geld.“
+- Versuch/Take 2: de_DE-kerstin-low Sprecher None, WER 0%, 2.23 W/s, F0 180 Hz ±2.2, -20.4 dB, Fehler: keine – „Liquidität heißt, Geld, das du jetzt zahlen kannst, nicht versprochenes Geld.“
 
 **11. byte:** „2 Tage später: Geld da, Mühle bezahlt, 1.260 Euro übrig.“  
 tts: „Zwei Tage später: Geld da, Mühle bezahlt, tausendzweihundertsechzig Euro übrig.“  
