@@ -639,14 +639,37 @@ def _count_text(line, t):
 
 
 def _split_long(lines):
+    """Rechnungen am '=' umbrechen, damit die Zahlen gross bleiben."""
     out = []
     for ln in lines:
-        if len(ln) > 26 and " = " in ln:
+        if len(ln) > 14 and " = " in ln:
             l1, l2 = ln.split(" = ", 1)
             out += [l1, "= " + l2]
         else:
             out.append(ln)
     return out
+
+
+_BIGTOK = re.compile(r"(\d{1,3}(?:\.\d{3})+|\d+|[€×−+=·])")
+
+
+def draw_mixed(img, xy, text, big, small, col, alpha=1.0, anchor="mm", max_w=None):
+    """Zahlen, € und Rechenzeichen gross, Woerter klein (Grundlinie gemeinsam)."""
+    parts = [p for p in _BIGTOK.split(text) if p]
+    while True:
+        segs = [(p, big if _BIGTOK.fullmatch(p.strip()) else small) for p in parts]
+        w = sum(font(sz).getlength(p) for p, sz in segs)
+        if max_w is None or w <= max_w or big < 60:
+            break
+        big, small = int(big * 0.94), int(small * 0.94)
+    x, y = xy
+    if anchor == "mm":
+        x -= w / 2
+    d = ImageDraw.Draw(img)
+    for p, sz in segs:
+        d.text((x, y + big * 0.36), p, font=font(sz), fill=(*col, int(255 * alpha)), anchor="ls")
+        x += font(sz).getlength(p)
+    return big
 
 
 def screen_lines(img, s, f):
@@ -680,17 +703,16 @@ def screen_lines(img, s, f):
         if a <= 0:
             continue
         txt = _count_text(ln, (f - starts[k]) / 18) if not mail else ln
-        size = 120 if not mail else 76
-        while font(size).getlength(ln) > SW - 140:
-            size -= 4
         y = top + (bot - top) * (k + 0.5) / n
         x = (SW / 2 if not mail else 100) - 60 * (1 - a)
         col = (255, 255, 255) if not mail else NAVY
-        if not mail and ("= " in ln or k == n - 1 and n > 1 and "=" in ln):
-            col = GREEN if not any(w in ln for w in ("600 €",)) else RED
+        if not mail and ln.startswith("="):
+            col = RED if "600 €" in ln else GREEN
         if not mail and ln.startswith("Nur versprochen"):
             col = (170, 170, 200)
-        _t(img, (x, y), txt, size, col, a, anchor="mm" if not mail else "lm")
+        big = (190 if n <= 2 else 150) if not mail else 104
+        draw_mixed(img, (x, y), txt, big, 64 if not mail else 58, col, a, anchor="mm" if not mail else "lm",
+                   max_w=SW - 120 if not mail else SW - 200)
     return img
 
 

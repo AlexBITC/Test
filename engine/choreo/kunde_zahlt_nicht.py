@@ -147,7 +147,7 @@ def direct(W):
 
     # =================================================================== SZENE 1 – Hook
     f0_1, f1_1 = S[0]
-    A1 = (TH.p(-0.2, -4.6, 1.75), TH.p(-0.2, 0.3, 1.47), 50.0)
+    A1 = (TH.p(-0.2, -4.6, 1.85), TH.p(-0.2, 0.3, 1.6), 50.0)
     geld = wd(0, "Geld")
     face_z = (face_w() + V(0, -4.1, 0.05), face_w() + V(0, 0, -0.18), 85.0)
 
@@ -300,8 +300,9 @@ def direct(W):
     clk = BU.objs["clock"]
     clk.root.scale = (0, 0, 0)
     # Wand-Monitor mit Screen-Texturen
-    mon = L.empty("buero_monitor", None, BU.p(0.95, 1.6, 2.3), coll)
-    mon.scale = (1.15, 1.15, 1.15)
+    mon = L.empty("buero_monitor", None, BU.p(0.42, 0.95, 2.95), coll)
+    mon.scale = (1.6, 1.6, 1.6)
+    L.cyl("mon_rod", 0.012, 1.2, 6, L.mat("antenna", L.METAL, 0.5, metallic=0.4), mon, (0, 0.03, 0.95), coll)
     L.box("mon_frame", (1.36, 0.06, 0.8), L.mat("screen_frame", L.NAVY2, 0.5), mon, (0, 0, 0), coll, bevel=0.03)
     L.box("mon_edge", (1.4, 0.04, 0.84), L.mat("screen_edge", L.TURQ, 0.5, emit=L.TURQ, strength=2.0), mon,
           (0, 0.02, 0), coll, bevel=0.03)
@@ -367,8 +368,8 @@ def direct(W):
         T.set(cn, "scale", lambda f, tc=tc: (min(1.0, ease_out((f - tc) / 4)),) * 3, tc - 1, tc + 5)
         T.set(cn, "scale", lambda f: (0, 0, 0), 0, 1)
     T.set(stack.root, "scale", lambda f: (unpop(f, S[5][0] + 2, 4),) * 3, S[5][0], S[5][0] + 8)
-    A4 = (BU.p(0.42, -5.0, 1.9), BU.p(0.42, 0.3, 1.75), 50.0)
-    B4 = (BU.p(0.42, -5.0, 2.05), BU.p(0.42, 0.3, 1.66), 50.0)
+    A4 = (BU.p(0.42, -5.4, 2.05), BU.p(0.42, 0.3, 2.05), 50.0)
+    B4 = (BU.p(0.42, -5.4, 2.2), BU.p(0.42, 0.3, 1.95), 50.0)
     cam.add_shot(f0_4, f1_4, shot_lerp(f0_4, f1_4, A4, B4, ease_in_out))
 
     # =================================================================== SZENE 5 – Stoppuhr
@@ -601,7 +602,7 @@ def direct(W):
     T.set(b.root, "location", lambda f: tuple(path([(bvs + 4, B10), (poke - 4, gpos + V(0.45, -0.3, 0.75)),
                                                     (poke, gpos + V(0.2, -0.2, 0.5)), (poke + 10, B10)], ease_in_out)(f)),
           bvs + 4, poke + 10)
-    C10 = GL + V(0.1, 0, 0.3)
+    C10 = GL + V(-0.25, 0, 0.3)
 
     def shot10(f):
         a = math.radians(-6 + 12 * ease_in_out((f - f0_10) / (f1_10 - f0_10)))
