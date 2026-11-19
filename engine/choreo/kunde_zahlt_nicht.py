@@ -187,8 +187,8 @@ def direct(W):
     C.reaction(T, coll, k, "schock", gb + 3, hold=S[1][0] + 8 - gb, speaking=True, seed=1, hat=False)
     for side in ("R", "L"):
         T.mul(k.eye[side], "scale", lambda f: (1 + 0.06 * window(f, gb + 3, S[1][0] + 8, 2, 8),) * 3, gb, S[1][0] + 10)
-        T.mul(k.pupil[side], "scale", lambda f: (1 - 0.45 * window(f, gb + 3, S[1][0] + 8, 2, 8),) * 3, gb,
-              S[1][0] + 10)
+        pm = bpy.data.objects[f"k_pupil_{side}"]          # Pupillen-Mesh selbst verkleinern (bleibt vorn)
+        T.mul(pm, "scale", lambda f: (1 - 0.4 * window(f, gb + 3, S[1][0] + 8, 2, 8),) * 3, gb, S[1][0] + 10)
     hl = 14
 
     def hat_up(f):
@@ -300,7 +300,7 @@ def direct(W):
     clk = BU.objs["clock"]
     clk.root.scale = (0, 0, 0)
     # Wand-Monitor mit Screen-Texturen
-    mon = L.empty("buero_monitor", None, BU.p(0.42, 0.95, 2.95), coll)
+    mon = L.empty("buero_monitor", None, BU.p(0.62, 0.95, 3.08), coll)
     mon.scale = (1.6, 1.6, 1.6)
     L.cyl("mon_rod", 0.012, 1.2, 6, L.mat("antenna", L.METAL, 0.5, metallic=0.4), mon, (0, 0.03, 0.95), coll)
     L.box("mon_frame", (1.36, 0.06, 0.8), L.mat("screen_frame", L.NAVY2, 0.5), mon, (0, 0, 0), coll, bevel=0.03)
@@ -326,7 +326,7 @@ def direct(W):
     invs = []
     for q in range(3):
         iv = PR.invoice(coll, f"inv{q}")
-        slot = BU.p(0.12 + q * 0.26, -0.55, 1.42 + 0.02 * (q == 1))
+        slot = BU.p(0.1 + q * 0.27, -0.6, 1.72 + 0.02 * (q == 1))
         t_in = br_ + 3 * q
         p0 = fold.location + V(0.16, 0, 0.05)
         T.set(iv.root, "location", lambda f, p0=p0, slot=slot, t_in=t_in: tuple(
@@ -341,7 +341,7 @@ def direct(W):
     scan = L.box("scanbar", (0.85, 0.01, 0.012), L.mat("scanbar", L.TURQ, 0.4, emit=L.TURQ, strength=6.0), None,
                  (0, 0, 0), coll)
     sc0 = br_ + 12
-    T.set(scan, "location", lambda f: tuple(BU.p(0.38, -0.58, 1.58 - 0.32 * ease_in_out((f - sc0) / 10))), sc0 - 1,
+    T.set(scan, "location", lambda f: tuple(BU.p(0.37, -0.64, 1.88 - 0.32 * ease_in_out((f - sc0) / 10))), sc0 - 1,
           sc0 + 11)
     T.set(scan, "scale", lambda f: (window(f, sc0 - 1, sc0 + 11, 2, 2),) * 3, sc0 - 2, sc0 + 12)
     T.set(scan, "scale", lambda f: (0, 0, 0), 0, 1)
@@ -355,7 +355,8 @@ def direct(W):
               ts - 1, ts + 5)
     b1860 = bt(3, "1.860")
     stack = PR.coin_stack(coll, "stack18", 18)
-    stack.root.location = BU.p(0.62, -0.32, desk_z)
+    stack.root.location = BU.p(0.38, -0.36, desk_z)
+    stack.root.scale = (1.4, 1.4, 1.4)
     for q, (iv, slot) in enumerate(invs):
         t0 = b1860 + 2 * q
         T.set(iv.upper, "rotation_euler", lambda f, t0=t0: (2.6 * ease_in_out((f - t0) / 8), 0, 0), t0, t0 + 9)
@@ -364,10 +365,10 @@ def direct(W):
                                                                                 ease_in((f - t0 - 6) / 8))), t0 + 6, t0 + 15)
         T.set(iv.root, "scale", lambda f, t0=t0: (unpop(f, t0 + 12, 4),) * 3, t0 + 11, t0 + 17)
     for q, cn in enumerate(stack.coins):
-        tc = b1860 + 14 + 2 * q
+        tc = b1860 + 2 * q
         T.set(cn, "scale", lambda f, tc=tc: (min(1.0, ease_out((f - tc) / 4)),) * 3, tc - 1, tc + 5)
         T.set(cn, "scale", lambda f: (0, 0, 0), 0, 1)
-    T.set(stack.root, "scale", lambda f: (unpop(f, S[5][0] + 2, 4),) * 3, S[5][0], S[5][0] + 8)
+    T.set(stack.root, "scale", lambda f: (1.4 * unpop(f, S[5][0] + 2, 4),) * 3, S[5][0], S[5][0] + 8)
     A4 = (BU.p(0.42, -5.4, 2.05), BU.p(0.42, 0.3, 2.05), 50.0)
     B4 = (BU.p(0.42, -5.4, 2.2), BU.p(0.42, 0.3, 1.95), 50.0)
     cam.add_shot(f0_4, f1_4, shot_lerp(f0_4, f1_4, A4, B4, ease_in_out))
@@ -392,10 +393,10 @@ def direct(W):
 
     # =================================================================== SZENE 6 – Kontoglas
     f0_6, f1_6 = S[5]
-    KS = ST.p(-0.75, -0.35, 0)
+    KS = ST.p(-0.32, -0.35, 0)
     set_kalle(S[5][0], S[10][0], KS, 0.25)
-    GL = ST.p(0.35, 1.0, 1.35)
-    ped = L.cyl("glass_ped", 0.34, 1.35, 20, L.mat("pedestal", "#2B2750", 0.5), None, ST.p(0.35, 1.0, 0.675), coll)
+    GL = ST.p(0.45, 1.0, 1.85)
+    ped = L.cyl("glass_ped", 0.34, 1.85, 20, L.mat("pedestal", "#2B2750", 0.5), None, ST.p(0.45, 1.0, 0.925), coll)
     gl = PR.konto_glas(coll, "kontoglas")
 
     def gl_pos(f):
@@ -407,7 +408,7 @@ def direct(W):
             return GL + V(-0.4, 0.4, 0) * (1 - ease_in_out((f - S[9][0]) / 14))
         return TH.p(0.98, -0.45, top)
     T.set(gl.root, "location", lambda f: tuple(gl_pos(f)), S[5][0], N)
-    T.set(ped, "location", lambda f: tuple(gl_pos(f) - V(0, 0, 0.675)), S[5][0], S[10][0])
+    T.set(ped, "location", lambda f: tuple(gl_pos(f) - V(0, 0, 0.925)), S[5][0], S[10][0])
     vis(T, gl.root, f0_6, None, dur_in=8)
     vis(T, ped, f0_6, None, dur_in=8)
     mill = bt(5, "Mühle")
@@ -417,8 +418,8 @@ def direct(W):
     zet.root.location = (0.24, -0.2, 0.32)
     zet.root.rotation_euler = (0, 0.15, 0)
     zet.root.scale = (1 / 0.42 * 0.9,) * 3
-    S6SACK = ST.p(0.95, 0.85, 1.35)
-    ped2 = L.cyl("sack_ped", 0.3, 1.35, 16, L.mat("pedestal", "#2B2750", 0.5), None, ST.p(0.95, 0.85, 0.675), coll)
+    S6SACK = ST.p(1.05, 0.85, 1.85)
+    ped2 = L.cyl("sack_ped", 0.3, 1.85, 16, L.mat("pedestal", "#2B2750", 0.5), None, ST.p(1.05, 0.85, 0.925), coll)
     vis(T, ped2, f0_6, S[10][0] - 4)
 
     def sack_pos(f):
@@ -476,8 +477,8 @@ def direct(W):
     T.set(b.root, "location", lambda f: tuple(B6), S[5][0], S[7][0])
     T.add(L.bsdf(b.m_shell).inputs["Emission Strength"], "default_value",
           lambda f: -0.35 * window(f, b600, b600 + 18, 3, 8), b600, b600 + 18)
-    A6 = (ST.p(0.15, -5.4, 2.35), ST.p(0.25, 1.0, 2.25), 35.0)
-    B6c = (ST.p(0.25, -5.0, 2.3), ST.p(0.3, 1.0, 2.15), 50.0)
+    A6 = (ST.p(0.15, -6.6, 2.45), ST.p(0.2, 1.0, 2.55), 35.0)
+    B6c = (ST.p(0.2, -6.2, 2.45), ST.p(0.2, 1.0, 2.55), 46.0)
     cam.add_shot(f0_6, f1_6, shot_lerp(f0_6, f1_6, A6, B6c, ease_in_out))
 
     # =================================================================== SZENE 7
@@ -602,11 +603,11 @@ def direct(W):
     T.set(b.root, "location", lambda f: tuple(path([(bvs + 4, B10), (poke - 4, gpos + V(0.45, -0.3, 0.75)),
                                                     (poke, gpos + V(0.2, -0.2, 0.5)), (poke + 10, B10)], ease_in_out)(f)),
           bvs + 4, poke + 10)
-    C10 = GL + V(-0.25, 0, 0.3)
+    C10 = GL + V(-0.08, 0, 0.3)
 
     def shot10(f):
         a = math.radians(-6 + 12 * ease_in_out((f - f0_10) / (f1_10 - f0_10)))
-        return (C10 + rotz(V(0, -5.7, 0.95), a), C10 + rotz(V(0, 0, 0.85), a), 35.0)
+        return (C10 + rotz(V(0, -5.9, 0.2), a), C10 + rotz(V(0, 0, -0.1), a), 35.0)
     cam.add_shot(f0_10, f1_10, shot10)
     cam.whips.append((S[10][0], -1))
 
@@ -666,6 +667,20 @@ def direct(W):
     A11 = (TH.p(0.25, -4.9, 1.75), TH.p(0.25, 0.3, 1.5), 50.0)
     B11c = (TH.p(0.25, -4.9, 1.95), TH.p(0.25, 0.3, 1.62), 50.0)
     cam.add_shot(f0_11, f1_11, shot_lerp(f0_11, bm, A11, B11c, ease_out))
+
+    tv = L.empty("theke_tv", None, TH.p(0.66, -0.15, 2.4), coll)
+    tv.scale = (1.12, 1.12, 1.12)
+    L.box("tv_frame", (1.5, 0.06, 0.88), L.mat("screen_frame", L.NAVY2, 0.5), tv, (0, 0, 0), coll, bevel=0.03)
+    L.box("tv_edge", (1.54, 0.04, 0.92), L.mat("screen_edge", L.TURQ, 0.5, emit=L.TURQ, strength=2.0), tv,
+          (0, 0.02, 0), coll, bevel=0.03)
+    tvd = L.box("tv_display", (1.42, 0.01, 0.8), bpy.data.objects["screen_display"].data.materials[0], tv,
+                (0, -0.035, 0), coll)
+    uvt = tvd.data.uv_layers.new(name="UVMap")
+    for poly in tvd.data.polygons:
+        for li in poly.loop_indices:
+            vv = tvd.data.vertices[tvd.data.loops[li].vertex_index].co
+            uvt.data[li].uv = (vv.x / 1.42 + 0.5, vv.z / 0.8 + 0.5)
+    vis(T, tv, S[10][0], S[11][0] + 4, dur_in=8, dur_out=8)
 
     # =================================================================== SZENE 12 – Jubel
     f0_12, f1_12 = S[11]

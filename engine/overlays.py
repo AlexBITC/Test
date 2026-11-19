@@ -644,7 +644,12 @@ def _split_long(lines):
     for ln in lines:
         if len(ln) > 14 and " = " in ln:
             l1, l2 = ln.split(" = ", 1)
-            out += [l1, "= " + l2]
+            if len(l1) > 16 and " − " in l1:          # sehr lange Rechnung: auch vor dem Minus umbrechen
+                a_, b_ = l1.rsplit(" − ", 1)
+                out += [a_, "− " + b_]
+            else:
+                out.append(l1)
+            out.append("= " + l2)
         else:
             out.append(ln)
     return out

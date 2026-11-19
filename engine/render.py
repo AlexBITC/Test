@@ -600,25 +600,30 @@ def main():
     # 0) echte Website (Zeilenzahl, Screenshots, Code-Texturen)
     if ep["slug"] == "website":
         website_stage()
-    # 1) Stimmen + Check
-    if any("tts" in sz for sz in ep["szenen"]):
+    # 1) Stimmen + Check (REUSE_TIMELINE=1: vorhandene Timeline fuer Style-Tests wiederverwenden)
+    if os.environ.get("REUSE_TIMELINE") == "1" and (work / "timeline.json").exists() and args.stage == "style":
+        tl = json.loads((work / "timeline.json").read_text())
+        tl_path = work / "timeline.json"
+        log(f"Timeline wiederverwendet: {tl['frames']} Frames")
+    elif any("tts" in sz for sz in ep["szenen"]):
         lines, model, cfg = voices_stage_tts(ep, work)
         voice_report_tts(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md")
     else:
         lines, model, cfg = voices_stage(ep, work)
         voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
-    tl = build_timeline(ep, lines)
-    tl["model"] = model
-    tl_path = work / "timeline.json"
-    old = tl_path.read_text() if tl_path.exists() else None
-    new = json.dumps(tl, ensure_ascii=False)
-    if old != new:
-        tl_path.write_text(new)
-    log(f"Timeline: {tl['frames']} Frames = {tl['frames']/FPS:.2f} s")
-    if any(s_.get("beat_list") for s_ in tl["scenes"]):
-        write_timing(tl, ROOT / "out" / f"{slug}_timing.md")
-    for s in tl["scenes"]:
-        log(f"  Szene {s['i']+1}: {s['f0']}-{s['f1']} ({s['n']/FPS:.2f}s) Beats {s['beats']}")
+    if os.environ.get("REUSE_TIMELINE") != "1" or args.stage != "style":
+        tl = build_timeline(ep, lines)
+        tl["model"] = model
+        tl_path = work / "timeline.json"
+        old = tl_path.read_text() if tl_path.exists() else None
+        new = json.dumps(tl, ensure_ascii=False)
+        if old != new:
+            tl_path.write_text(new)
+        log(f"Timeline: {tl['frames']} Frames = {tl['frames']/FPS:.2f} s")
+        if any(s_.get("beat_list") for s_ in tl["scenes"]):
+            write_timing(tl, ROOT / "out" / f"{slug}_timing.md")
+        for s in tl["scenes"]:
+            log(f"  Szene {s['i']+1}: {s['f0']}-{s['f1']} ({s['n']/FPS:.2f}s) Beats {s['beats']}")
     if args.stage in ("voices", "timeline"):
         return
 
