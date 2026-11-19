@@ -1,0 +1,16 @@
+{
+  "stimme": "keine",
+  "hinweis": "Ohne Stimme wie folge-04: Wortzeiten im Lesetempo, Mund aus Silben-Hüllkurve, Tonspur nur Soundeffekte.",
+  "woerter_pro_sekunde": {
+    "kalle": 2.8,
+    "byte": 2.6
+  },
+  "pause_vor_szene": {
+    "8": 0.3,
+    "11": 0.3
+  },
+  "hook_karte": {
+    "text_oben": "Dieser Rabatt kostet Kalle Geld.",
+    "gelb": "Geld"
+  }
+}

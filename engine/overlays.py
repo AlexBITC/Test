@@ -238,6 +238,11 @@ def draw_hook_card(img, tl, f):
     parts = [p.strip() + ("." if not p.strip().endswith(".") else "") for p in txt.split(". ") if p.strip()]
     gelb = hk.get("gelb", "")
     size = 104
+    if len(parts) == 1 and font(size).getlength(parts[0]) > X1 - X0 - 60:      # hoechstens zweizeilig umbrechen
+        ws = parts[0].split()
+        k_ = min(range(1, len(ws)), key=lambda k: abs(font(size).getlength(" ".join(ws[:k])) -
+                                                       font(size).getlength(" ".join(ws[k:]))))
+        parts = [" ".join(ws[:k_]), " ".join(ws[k_:])]
     fnt = font(int(size * sc))
     for i, ln in enumerate(parts):
         cy = y0 + (y1 - y0) * (i + 1) / (len(parts) + 1) + dy
@@ -383,9 +388,10 @@ def draw_term(img, tl, f, anchors):
         a = slide(f, f_in, f_out, 8)
         dy = -60 * (1 - a)
         if isinstance(tl.get("hook"), dict):            # neues Format: Karte y 230-380, nur der Begriff
-            box = (X0, 230 + dy, X1, 380 + dy)
+            oy = 110 if s.get("kapitel") is not None else 0     # unter dem Kapitel-Banner
+            box = (X0, 230 + oy + dy, X1, 380 + oy + dy)
             card(img, box, a, border=YELLOW)
-            text_center(img, ((X0 + X1) / 2, 305 + dy), begriff.upper(), 96, YELLOW, a)
+            text_center(img, ((X0 + X1) / 2, 305 + oy + dy), begriff.upper(), 96, YELLOW, a)
             sweep(img, box, (f - f_in - 4) / 16, 28, a)
             continue
         box = (X0, TOP + dy, X1, TOP + 172 + dy)
@@ -553,6 +559,8 @@ def screen_frame(tl, f):
     vis = s.get("visual", "")
     if s.get("screen"):
         return screen_lines(img, s, f)
+    if "Kassenbon" in vis or "Zähler zählt schnell" in vis:
+        return screen_bon(img, s, f, vis)
     if "Anruffenster" in vis or "Wellenform zappelt" in vis or "Stoppuhr stoppt" in vis or \
             re.search(r"\[Screen\] '([^']+)'", vis):
         return screen_calls(img, s, f, vis)
@@ -763,6 +771,55 @@ def _wave(d, box, f, seed, amp=1.0, hektisch=False, col=TURQ):
             v *= 1.4 + 0.6 * math.sin(k * 3.1 + f * 2.3)
         pts.append((x, cy + v * (y1 - y0) * 0.42 * amp * env))
     d.line(pts, fill=(*col, 255), width=6, joint="curve")
+
+
+def screen_bon(img, s, f, vis):
+    """Kassenbon als roter Faden (Folge 'Der teuerste Rabatt'): weisser Bon rollt von oben herein,
+    Zeilen erscheinen nacheinander; Verlust rot (blinkt), Gewinn gruen. Zaehler zaehlt schnell hoch."""
+    t = f - s["f0"]
+    d = ImageDraw.Draw(img)
+    m = re.search(r"Zähler zählt schnell hoch bis '(\d+)'", vis)
+    if m:
+        n = int(m.group(1))
+        hl = next((w["f0"] for w in s["words"] if w["hl"]), s["f0"] + 30)
+        v = int(round(n * ease_out((f - s["f0"] - 4) / max(1, hl - s["f0"] + 6))))
+        pk = 1 + 0.12 * math.sin(math.pi * clamp01((f - hl - 2) / 6)) if v >= n else 1.0
+        d.text((SW / 2, 440), "BREZELN IM MÜLL", font=font(58), fill=(170, 170, 200, 255), anchor="mm")
+        d.text((SW / 2, 590), str(v), font=font(int(210 * pk)), fill=(*RED, 255), anchor="mm")
+        return img
+    rows = []                                       # (Text, Farbe, gross?)
+    if "Kassenbon rollt ins Bild" in vis:
+        rows = [("KOSTEN      0,90 €", (40, 40, 60), False), ("PREIS       1,20 €", (40, 40, 60), False)]
+    elif "Kassenbon-Summe" in vis:
+        rows = [("KOSTEN      0,90 €", (40, 40, 60), False), ("PREIS       1,20 €", (40, 40, 60), False),
+                ("+0,30 €", (30, 170, 90), True), ("MARGE", (30, 170, 90), False)]
+    elif "−0,06" in vis:
+        rows = [("KOSTEN      0,90 €", (40, 40, 60), False), ("PREIS −30 % 0,84 €", (200, 50, 55), False),
+                ("−0,06 €", (220, 40, 50), True)]
+    elif "= +24" in vis:
+        rows = [("40 × 0,60 €", (40, 40, 60), True), ("= +24 €", (30, 170, 90), True)]
+    roll = ease_out((t - 2) / 12)
+    bw, bx = 640, (SW - 640) / 2
+    bh = 120 + sum(150 if g else 90 for _, _, g in rows)
+    by1 = 60 + (bh) * roll
+    d.rectangle((bx, 40, bx + bw, by1), fill=(250, 248, 240, 255))
+    for k_ in range(int(bw / 32)):                  # Zackenrand unten
+        x = bx + k_ * 32
+        d.polygon([(x, by1), (x + 16, by1 + 16), (x + 32, by1)], fill=(250, 248, 240, 255))
+    d.text((SW / 2, 85), "BÄCKEREI KALLE", font=font(44), fill=(90, 90, 110, 255), anchor="mm")
+    y = 150
+    hl = [w["f0"] for w in s["words"] if w["hl"]] or [s["f0"] + 10]
+    for k_, (txt, col, big) in enumerate(rows):
+        start = s["f0"] + 6 + 8 * k_ if not big else hl[0] - 4
+        h = 150 if big else 90
+        if y + h / 2 < by1 and f >= start:
+            a = ease_out((f - start) / 5)
+            if big and col[0] > 200 and int((f - start) / 6) % 2 == 1:
+                a *= 0.35                           # Verlust blinkt
+            sz = 130 if big else 62
+            d.text((SW / 2, y + h / 2), txt, font=font(sz), fill=(*col, int(255 * a)), anchor="mm")
+        y += h
+    return img
 
 
 def screen_calls(img, s, f, vis):

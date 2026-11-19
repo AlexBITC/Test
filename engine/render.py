@@ -681,6 +681,8 @@ def main():
     if os.environ.get("REUSE_TIMELINE") != "1" or args.stage != "style":
         tl = build_timeline(ep, lines)
         tl["model"] = model
+        if regie.get("hook_karte"):                 # Hook-Karte ab Frame 0 mit Hervorhebung (Regie-Datei)
+            tl["hook"] = dict(regie["hook_karte"], gesprochen=ep.get("hook", ""))
         tl_path = work / "timeline.json"
         old = tl_path.read_text() if tl_path.exists() else None
         new = json.dumps(tl, ensure_ascii=False)

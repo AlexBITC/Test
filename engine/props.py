@@ -1208,3 +1208,160 @@ def preisschild(coll, name, old="24 €", new="19,70 €"):
            (0, 0, 0), coll, extrude=0.012, font=L.font())
     newp.scale = (0, 0, 0)
     return P(root=root, flip=flip, strike=strike, new=newp)
+
+
+# =================================================================== Folge "Der teuerste Rabatt"
+def neonschild(coll, name, text, color="#FF3B6B", width=1.3, height=0.42, size=0.2):
+    """Neonschild: dunkle Platte, leuchtende Schrift und Rahmen. Flackern/Ausfall ueber die Material-Farbe
+    (neon_flacker). Workbench zeigt die Objektfarbe, daher wird diffuse_color animiert."""
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_board", (width, 0.04, height), L.mat("neon_board", "#141228", 0.4), root, (0, 0, 0), coll, bevel=0.03)
+    m = L.unique_mat(L.mat(f"neon_{color}", color, 0.4, emit=color, strength=6.0), f"{name}_neon")
+    for k_, (w, h, x, z) in enumerate([(width - 0.06, 0.018, 0, height / 2 - 0.04), (width - 0.06, 0.018, 0, -height / 2 + 0.04),
+                                       (0.018, height - 0.08, -width / 2 + 0.03, 0), (0.018, height - 0.08, width / 2 - 0.03, 0)]):
+        L.box(f"{name}_tube{k_}", (w, 0.02, h), m, root, (x, -0.03, z), coll)
+    L.text(f"{name}_txt", text, size, m, root, (0, -0.035, -0.01), coll, extrude=0.012, font=L.font())
+    return P(root=root, mat=m, color=color)
+
+
+def neon_flacker(T, ns, f0, f1, seed=0, aus=None, strength=1.0):
+    """Flackern: kurze dunkle Aussetzer (Seed); aus=(a, b) -> komplett aus."""
+    r = random.Random(seed)
+    drops = set()
+    f = f0
+    while f < f1:
+        f += r.randint(9, 26)
+        for k in range(r.randint(1, 3)):
+            drops.add(f + k)
+    on = L.srgb(ns.color)
+    off = tuple(x * 0.18 for x in on[:3]) + (1.0,)
+
+    def col(f):
+        dark = (f in drops and r.random() < 2) or (aus and aus[0] <= f < aus[1])
+        c = off if dark else on
+        if strength < 1 and f in drops:
+            c = tuple(a_ * 0.6 + b_ * 0.4 for a_, b_ in zip(on, off))
+        return c
+    T.set(ns.mat, "diffuse_color", col, f0, f1)
+    T.set(L.bsdf(ns.mat).inputs["Emission Strength"], "default_value",
+          lambda f: 0.6 if (f in drops or (aus and aus[0] <= f < aus[1])) else 6.0, f0, f1)
+
+
+def konfetti_kanone(coll, name):
+    root = L.empty(name, coll=coll)
+    L.cyl(f"{name}_foot", 0.12, 0.05, 12, L.mat("cannon_dark", "#2A2238", 0.5), root, (0, 0, 0.025), coll)
+    barrel = L.empty(f"{name}_barrel", root, (0, 0, 0.06), coll)
+    barrel.rotation_euler = (math.radians(-35), 0, 0)
+    L.cyl(f"{name}_tube", 0.07, 0.36, 12, L.mat("cannon_gold", "#F2B45A", 0.35, metallic=0.7), barrel, (0, 0, 0.18), coll)
+    L.torus(f"{name}_ring", 0.075, 0.012, 12, 4, L.mat("cannon_red", "#FF3B6B", 0.5), barrel, (0, 0, 0.34), coll)
+    return P(root=root, barrel=barrel)
+
+
+def alarmlicht(coll, name, parent=None, loc=(0, 0, 0)):
+    """Rundumleuchte (Kuppel + drehender Reflektor). Farbe rot/gruen ueber zwei Kuppeln (Scale-Umschaltung)."""
+    root = L.empty(name, parent, loc, coll)
+    L.cyl(f"{name}_base", 0.04, 0.02, 10, L.mat("alarm_base", "#2A2238", 0.5), root, (0, 0, 0), coll)
+    red = L.sphere(f"{name}_red", 0.04, 10, 6, (1, 1, 1.1), L.mat("alarm_red", "#FF3B3B", 0.3, emit="#FF3B3B", strength=5.0),
+                   root, (0, 0, 0.035), coll)
+    green = L.sphere(f"{name}_green", 0.04, 10, 6, (1, 1, 1.1), L.mat("alarm_green", "#3DDC84", 0.3, emit="#3DDC84",
+                                                                       strength=5.0), root, (0, 0, 0.035), coll)
+    green.scale = (0, 0, 0)
+    spin = L.empty(f"{name}_spin", root, (0, 0, 0.035), coll)
+    L.box(f"{name}_beam", (0.012, 0.11, 0.025), L.mat("alarm_beam", "#FFFFFF", 0.3, emit="#FFFFFF", strength=4.0), spin,
+          (0, 0.03, 0), coll)
+    return P(root=root, red=red, green=green, spin=spin)
+
+
+def brezel_schild(coll, name, preis="1,20 €", parent=None, loc=(0, 0, 0), s=1.0):
+    """Brezel (Gebaeck-Set) mit kleinem Preisschild am Faden."""
+    root = L.empty(name, parent, loc, coll)
+    root.scale = (s, s, s)
+    pastry(coll, f"{name}_b", "brezel", root, (0, 0, 0), 1.0)
+    tag = L.empty(f"{name}_tag", root, (0.12, -0.06, 0.12), coll)
+    L.box(f"{name}_tagp", (0.13, 0.006, 0.07), L.mat("tag_gold", "#F2B45A", 0.45, metallic=0.4), tag, (0, 0, 0), coll,
+          bevel=0.008)
+    L.text(f"{name}_tagt", preis, 0.04, L.mat("tag_ink", "#3A2A22", 0.6), tag, (0, -0.005, -0.004), coll, extrude=0.002,
+           font=L.font())
+    return P(root=root, tag=tag)
+
+
+def schere(coll, name):
+    root = L.empty(name, coll=coll)
+    m = L.mat("scissor_metal", L.METAL, 0.3, metallic=0.8)
+    m2 = L.mat("scissor_grip", "#FF3B6B", 0.5)
+    blades = []
+    for sx in (-1, 1):
+        piv = L.empty(f"{name}_piv{sx}", root, (0, 0, 0), coll)
+        L.box(f"{name}_blade{sx}", (0.03, 0.01, 0.28), m, piv, (0, 0, 0.14), coll, bevel=0.008)
+        L.torus(f"{name}_grip{sx}", 0.045, 0.012, 12, 4, m2, piv, (sx * 0.03, 0, -0.07), coll, axis="Y")
+        piv.rotation_euler = (0, sx * 0.25, 0)
+        blades.append((piv, sx))
+    return P(root=root, blades=blades)
+
+
+def muenze_minus(coll, name):
+    root = L.empty(name, coll=coll)
+    L.cyl(f"{name}_m", 0.07, 0.02, 14, L.mat("coin_red", "#E0303A", 0.4, emit="#E0303A", strength=1.0), root, (0, 0, 0),
+          coll, axis="Y")
+    L.box(f"{name}_minus", (0.07, 0.024, 0.016), L.mat("coin_minus_w", "#FFFFFF", 0.4, emit="#FFFFFF", strength=1.0), root,
+          (0, -0.004, 0), coll)
+    return root
+
+
+def brezel_tuete(coll, name):
+    root = L.empty(name, coll=coll)
+    L.box(f"{name}_bag", (0.22, 0.14, 0.3), L.mat("paperbag", "#D7B98C", 0.8), root, (0, 0, 0.15), coll, bevel=0.01)
+    L.box(f"{name}_fold", (0.22, 0.145, 0.03), L.mat("paperbag_d", "#B8955F", 0.8), root, (0, 0, 0.29), coll)
+    pastry(coll, f"{name}_logo", "brezel", root, (0, -0.075, 0.07), 0.45)
+    return root
+
+
+def muelltonne_reste(coll, name):
+    """Muelltonne 'RESTE' mit Deckel-Pivot; dazu eine Kasse an derselben Stelle (Verwandlung per Scale-Wechsel)."""
+    root = L.empty(name, coll=coll)
+    bin_ = L.empty(f"{name}_bin", root, (0, 0, 0), coll)
+    m = L.mat("bin_grey", "#5C6378", 0.5, metallic=0.2)
+    L.cyl(f"{name}_body", 0.3, 0.75, 16, m, bin_, (0, 0, 0.375), coll, r2=0.34)
+    for z in (0.2, 0.5):
+        L.torus(f"{name}_rib{z}", 0.32 + 0.03 * z, 0.012, 16, 4, L.mat("bin_rib", "#454B5E", 0.5), bin_, (0, 0, z), coll)
+    L.box(f"{name}_plate", (0.36, 0.02, 0.14), L.mat("bin_plate", "#F5F1E8", 0.6), bin_, (0, -0.33, 0.45), coll)
+    L.text(f"{name}_txt", "RESTE", 0.1, L.mat("stamp_red", "#FF5A5F", 0.55, emit="#FF5A5F", strength=0.4), bin_,
+           (0, -0.345, 0.44), coll, extrude=0.004, font=L.font())
+    lid = L.empty(f"{name}_lid", bin_, (0, 0.34, 0.76), coll)
+    L.cyl(f"{name}_lidm", 0.36, 0.05, 16, L.mat("bin_lid", "#454B5E", 0.5), lid, (0, -0.34, 0.02), coll)
+    L.box(f"{name}_handle", (0.16, 0.04, 0.04), L.mat("bin_lid", "#454B5E", 0.5), lid, (0, -0.34, 0.06), coll)
+    kasse = L.empty(f"{name}_kasse", root, (0, 0, 0), coll)
+    mk = L.mat("register", "#46496E", 0.5)
+    L.box(f"{name}_kbase", (0.7, 0.55, 0.3), mk, kasse, (0, 0, 0.15), coll, bevel=0.03)
+    drawer = L.empty(f"{name}_kdrawer", kasse, (0, 0, 0.0), coll)
+    L.box(f"{name}_kdrawerm", (0.62, 0.5, 0.12), L.mat("drawer", "#5A5E86", 0.5), drawer, (0, -0.04, 0.08), coll, bevel=0.01)
+    L.box(f"{name}_kbody", (0.6, 0.35, 0.3), mk, kasse, (0, 0.08, 0.45), coll, bevel=0.03)
+    L.box(f"{name}_kdisp", (0.4, 0.04, 0.14), L.mat("reg_glass", "#123", 0.4, emit=L.TURQ, strength=1.2), kasse,
+          (0, -0.1, 0.55), coll)
+    L.text(f"{name}_ktxt", "+24 €", 0.08, L.mat("ktxt", "#3DDC84", 0.4, emit="#3DDC84", strength=3.0), kasse,
+           (0, -0.125, 0.545), coll, extrude=0.003, font=L.font())
+    kasse.scale = (0, 0, 0)
+    return P(root=root, bin=bin_, lid=lid, kasse=kasse, drawer=drawer)
+
+
+def neon_plakat(coll, name, zeilen, color="#3DDC84", size=0.16):
+    """Neon-Plakat: jeder Buchstabe ein eigenes Objekt (baut sich Stueck fuer Stueck auf)."""
+    root = L.empty(name, coll=coll)
+    m = L.mat(f"plakat_{color}", color, 0.4, emit=color, strength=6.0)
+    letters = []
+    fnt = L.font()
+    for zi, zeile in enumerate(zeilen):
+        z = -zi * size * 1.35
+        w = len(zeile) * size * 0.55
+        for ci, ch in enumerate(zeile):
+            if ch == " ":
+                continue
+            o = L.text(f"{name}_{zi}_{ci}", ch, size, m, root, (-w / 2 + (ci + 0.5) * size * 0.55, -0.02, z), coll,
+                       extrude=0.01, font=fnt)
+            o.scale = (0, 0, 0)
+            letters.append(o)
+    rows = len(zeilen)
+    frame = L.box(f"{name}_frame", (max(len(z_) for z_ in zeilen) * size * 0.58 + 0.15, 0.02, rows * size * 1.35 + 0.1),
+                  L.mat("neon_board", "#141228", 0.4), root, (0, 0.01, -(rows - 1) * size * 0.675), coll)
+    frame.scale = (0, 0, 0)
+    return P(root=root, letters=letters, frame=frame)
