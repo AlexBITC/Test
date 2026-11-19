@@ -5,6 +5,8 @@
   "description": "Blender-basierte Video-Engine fuer TikTok-Kurzvideos im Stil KI-Staunen",
   "scripts": {
     "render": "python3 -m engine.render",
-    "voices": "python3 -m engine.tts --check-voices"
+    "voices": "python3 -m engine.tts --check-voices",
+    "preview": "python3 -m engine.render --stage contact",
+    "final": "python3 -m engine.render"
   }
 }

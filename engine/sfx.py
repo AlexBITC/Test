@@ -57,11 +57,15 @@ def build_mix(tl: dict, work: Path) -> Path:
     n = int(tl["frames"] / FPS * SR) + SR
     mix = np.zeros(n, np.float32)
     for s in tl["scenes"]:
+        if not s.get("wav"):
+            continue                       # Folge ohne Stimme
         y = _load(ROOT / s["wav"])
         a = int(round(s["audio_start"] * SR))
         mix[a:a + len(y)] += y[: max(0, n - a)]
     new_fmt = any(s.get("beat_list") for s in tl["scenes"])
     speech_peak = float(np.max(np.abs(mix))) if len(mix) else 1.0
+    if speech_peak < 1e-3:                 # ohne Stimme: Effekte auf festen Pegel
+        speech_peak = 0.9
     for f, kind, gain in cues:
         if new_fmt:
             # Soundeffekte 6 dB unter der Sprache: Effekt-Spitze = halbe Sprach-Spitze

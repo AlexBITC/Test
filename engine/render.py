@@ -322,6 +322,62 @@ def voice_report_tts(ep, lines, path: Path):
     path.write_text("\n".join(r) + "\n")
 
 
+# ------------------------------------------------------------------ ohne Stimme (Lesetempo)
+def _syllables(word: str) -> int:
+    w = word.lower()
+    r = tts._num_token(re.sub(r"[^\w.,]", "", w).strip(".,"))
+    if r:
+        w = r[0]
+    return max(1, len(re.findall(r"[aeiouäöüy]+", w)))
+
+
+def voices_stage_none(ep: dict, regie: dict):
+    """Keine Stimme: Wortzeiten aus Silbenzahl und Satzzeichen, skaliert auf das Lesetempo der Figur.
+    Pausen vor Pointen aus der Regie-Datei (pause_vor_szene)."""
+    rate = regie.get("woerter_pro_sekunde", {"kalle": 2.7, "byte": 2.6})
+    pause = {int(k): float(v) for k, v in regie.get("pause_vor_szene", {}).items()}
+    lines = []
+    for i, sz in enumerate(ep["szenen"]):
+        ws = tts.split_words(sz["text"])
+        real = [w for w in ws if re.search(r"\w", w)]
+        lead = pause.get(i + 1, 0.0)
+        units = []
+        for w in ws:
+            if not re.search(r"\w", w):
+                units.append((w, 0.0, 0.15))
+                continue
+            gap = 0.28 if w[-1] in ".!?…" else 0.14 if w[-1] in ",:;" else 0.0
+            units.append((w, _syllables(w), gap))
+        dur_target = len(real) / rate.get(sz["sprecher"], 2.6)
+        syl = sum(u[1] for u in units)
+        gaps = sum(u[2] for u in units[:-1])
+        per = max(0.12, (dur_target - gaps) / max(1, syl))
+        t, words = lead, []
+        for k, (w, sy, gap) in enumerate(units):
+            d = sy * per
+            words.append({"w": w, "start": t, "end": t + d})
+            t += d + (gap if k < len(units) - 1 else 0.0)
+        lines.append({"meta": {"wav": None}, "words": words, "check": {"dur": t, "ok": True}, "n_attempts": 0})
+    return lines
+
+
+def synthetic_envelopes(words, n_frames, lead_s=0.0):
+    """Mund-Huellkurve ohne Audio: pro Silbe ein Oeffnungs-Puls, Equalizer daraus mit festem Seed."""
+    import random as _r
+    amp = np.zeros(n_frames)
+    for w in words:
+        sy = _syllables(w["w"]) if re.search(r"\w", w["w"]) else 0
+        if sy == 0 or w["end"] <= w["start"]:
+            continue
+        a, b = (w["start"] + lead_s) * FPS, (w["end"] + lead_s) * FPS
+        for f in range(int(a), min(n_frames, int(math.ceil(b)) + 1)):
+            x = (f - a) / max(1e-6, b - a)
+            amp[f] = max(amp[f], 0.35 + 0.65 * abs(math.sin(math.pi * x * sy)))
+    rr = _r.Random(len(words) * 7 + 3)
+    eq = [[round(min(1.2, v * (0.5 + rr.random() * 0.7)), 3) for _ in range(5)] for v in amp]
+    return amp.round(3).tolist(), eq
+
+
 # ------------------------------------------------------------------ Timeline
 def _envelopes(wav: Path, n_frames: int, lead_s: float):
     y, sr = sf.read(str(wav), dtype="float32")
@@ -371,7 +427,10 @@ def build_timeline(ep: dict, lines: list) -> dict:
                     break
             else:
                 log(f"WARN Szene {i+1}: Beat-Wort '{phrase}' nicht gefunden")
-        amp, eq = _envelopes(ROOT / l["meta"]["wav"], n, LEAD)
+        if l["meta"]["wav"] is None:
+            amp, eq = synthetic_envelopes(l["words"], n, LEAD)
+        else:
+            amp, eq = _envelopes(ROOT / l["meta"]["wav"], n, LEAD)
         beat_list = []
         for bt in sz.get("beats", []) if isinstance(sz.get("beats"), list) else []:
             core = _core(bt["wort"])
@@ -588,6 +647,8 @@ def main():
 
     ep_path = (ROOT / args.episode) if not os.path.isabs(args.episode) else Path(args.episode)
     ep = json.loads(ep_path.read_text())
+    regie_p = ep_path.with_name(ep_path.stem + ".regie.json")
+    regie = json.loads(regie_p.read_text()) if regie_p.exists() else {}
     slug = ep["slug"]
     stem = ep_path.stem
     work = ROOT / "out" / "work" / slug
@@ -605,6 +666,11 @@ def main():
         tl = json.loads((work / "timeline.json").read_text())
         tl_path = work / "timeline.json"
         log(f"Timeline wiederverwendet: {tl['frames']} Frames")
+    elif regie.get("stimme") == "keine":
+        lines, model = voices_stage_none(ep, regie), "keine"
+        (ROOT / "out" / f"{slug}_stimmen-check.md").write_text(
+            f"# Stimmen-Check: {ep['titel']}\n\nEntfällt: Diese Folge hat auf Wunsch keine Stimme. Untertitel im Lesetempo "
+            f"(Kalle 2,8 / Byte 2,6 Wörter/s), Mundbewegung aus Silben-Hüllkurve, Tonspur nur Soundeffekte.\n")
     elif any("tts" in sz for sz in ep["szenen"]):
         lines, model, cfg = voices_stage_tts(ep, work)
         voice_report_tts(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md")

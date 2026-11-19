@@ -199,9 +199,14 @@ def draw_hook(img, tl, f):
     if a <= 0:
         return
     dy = -160 * (1 - a)
-    m = re.search(r"Hook-Text[^']*'([^']+)'", tl["scenes"][0].get("visual", ""))
+    m = re.search(r"Hook(?:-Text)?[^'\[]*'([^']+)'", tl["scenes"][0].get("visual", ""))
     hook = m.group(1) if m else tl["hook"]
-    if " – " in hook:
+    if font(BIG).getlength(hook) > (X1 - X0 - 60) and " – " not in hook and ". " not in hook:
+        ws = hook.split()
+        best = min(range(1, len(ws)), key=lambda k: abs(font(BIG).getlength(" ".join(ws[:k])) -
+                                                         font(BIG).getlength(" ".join(ws[k:]))))
+        lines = [" ".join(ws[:best]), " ".join(ws[best:])]
+    elif " – " in hook:
         a1, a2 = hook.split(" – ", 1)
         lines = [a1 + " –", a2]
     else:
@@ -457,8 +462,25 @@ def draw_notification(img, tl, f, anchors):
         text_center(img, (box[0] + 120 * sc_, y + 24 * sc_), body, 56, NAVY, a, scale=sc_, anchor="lm")
 
 
+def draw_big_overlay(img, tl, f):
+    """[Overlay] '<Text>' gross und gruen/gelb: grosse Einblendung mit Pop (z. B. '−18 %')."""
+    for s in tl["scenes"]:
+        m = re.search(r"\[Overlay\] '([^']+)' gro(?:ß|ss) und (gr\u00fcn|gelb)", s.get("visual", ""))
+        if not m or not (s["f0"] <= f < s["f1"] + 4):
+            continue
+        txt, col = m.group(1), GREEN if m.group(2) == "grün" else YELLOW
+        hl = next((w["f0"] for w in s["words"] if w["hl"]), s["f0"] + 6)
+        f_in = hl - 2
+        a = slide(f, f_in, s["f1"] - 4, 5)
+        if a <= 0:
+            continue
+        sc = 0.6 + 0.4 * ease_out_back(clamp01((f - f_in) / 7), 3.0)
+        text_center(img, ((X0 + X1) / 2, 430), txt, 220, col, a, stroke=10, stroke_fill=NAVY, scale=sc)
+
+
 def overlay_frame(tl, f, anchors):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    draw_big_overlay(img, tl, f)
     draw_notification(img, tl, f, anchors)
     draw_hook(img, tl, f)
     draw_banner(img, tl, f)
@@ -531,6 +553,9 @@ def screen_frame(tl, f):
     vis = s.get("visual", "")
     if s.get("screen"):
         return screen_lines(img, s, f)
+    if "Anruffenster" in vis or "Wellenform zappelt" in vis or "Stoppuhr stoppt" in vis or \
+            re.search(r"\[Screen\] '([^']+)'", vis):
+        return screen_calls(img, s, f, vis)
     if "Zähler zählt hoch" in vis:            # Code-Zaehler (echte Zeilenzahl)
         n = zeilen()
         f_a, f_b = counter_window(s)
@@ -718,6 +743,68 @@ def screen_lines(img, s, f):
         big = (190 if n <= 2 else 150) if not mail else 104
         draw_mixed(img, (x, y), txt, big, 64 if not mail else 58, col, a, anchor="mm" if not mail else "lm",
                    max_w=SW - 120 if not mail else SW - 200)
+    return img
+
+
+def _wave(d, box, f, seed, amp=1.0, hektisch=False, col=TURQ):
+    import random as _r
+    x0, y0, x1, y1 = box
+    cy = (y0 + y1) / 2
+    rr = _r.Random(seed)
+    ph = [rr.uniform(0, 6.28) for _ in range(3)]
+    pts = []
+    n = 48
+    for k in range(n + 1):
+        x = x0 + (x1 - x0) * k / n
+        sp = 0.55 if not hektisch else 1.6
+        v = (math.sin(k * 0.55 + f * sp + ph[0]) * 0.6 + math.sin(k * 1.3 - f * sp * 1.4 + ph[1]) * 0.4)
+        env = 0.5 + 0.5 * math.sin(f * (0.18 if not hektisch else 0.6) + ph[2])
+        if hektisch:
+            v *= 1.4 + 0.6 * math.sin(k * 3.1 + f * 2.3)
+        pts.append((x, cy + v * (y1 - y0) * 0.42 * amp * env))
+    d.line(pts, fill=(*col, 255), width=6, joint="curve")
+
+
+def screen_calls(img, s, f, vis):
+    """Studio-Screen fuer die Telefon-Folge: Anruffenster mit Wellenformen, Stoppuhr, hektische Wellenform,
+    Text-Screen ([Screen] '...')."""
+    d = ImageDraw.Draw(img)
+    t = f - s["f0"]
+    if "Anruffenster" in vis:
+        for k, lab in enumerate(["MÜHLE A", "MÜHLE B", "MÜHLE C"]):
+            x0 = 60 + k * 400
+            a = ease_out((t - 4 - 5 * k) / 6)
+            if a <= 0:
+                continue
+            d.rounded_rectangle((x0, 140, x0 + 360, 660), 24, fill=(36, 32, 74, 255), outline=(*TURQ, int(255 * a)), width=4)
+            d.text((x0 + 180, 200), lab, font=font(56), fill=(255, 255, 255, int(255 * a)), anchor="mm")
+            d.ellipse((x0 + 150, 250, x0 + 210, 310), fill=(*GREEN, 255))
+            d.text((x0 + 180, 282), "☎" if False else "●", font=font(30), fill=(255, 255, 255, 255), anchor="mm")
+            _wave(d, (x0 + 30, 360, x0 + 330, 600), f, 11 + k)
+        return img
+    if "Stoppuhr stoppt" in vis:
+        m = re.search(r"Stoppuhr stoppt bei (\d+):(\d+)", vis)
+        stop = int(m.group(1)) * 60 + int(m.group(2)) if m else 40
+        hl = next((w["f0"] for w in s["words"] if w["hl"]), s["f1"] - 20)
+        sec = min(stop, int(stop * ease_out((f - s["f0"]) / max(1, hl - s["f0"]))))
+        done = sec >= stop
+        cx, cy, r = SW / 2, 400, 230
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(*(GREEN if done else TURQ), 255), width=14)
+        d.rectangle((cx - 30, cy - r - 60, cx + 30, cy - r - 10), fill=(*TURQ, 255))
+        a = 2 * math.pi * sec / 60
+        d.line([(cx, cy), (cx + (r - 50) * math.sin(a), cy - (r - 50) * math.cos(a))], fill=(*RED, 255), width=12)
+        d.text((cx, cy + 90), f"0:{sec:02d}", font=font(150), fill=(*(GREEN if done else (255, 255, 255)), 255),
+               anchor="mm")
+        return img
+    if "Wellenform zappelt" in vis:
+        d.rounded_rectangle((90, 140, SW - 90, 660), 26, fill=(36, 32, 74, 255), outline=(*RED, 255), width=5)
+        d.text((SW / 2, 210), "STAMMLIEFERANT", font=font(72), fill=(255, 255, 255, 255), anchor="mm")
+        _wave(d, (150, 290, SW - 150, 620), f, 77, amp=1.0, hektisch=True, col=YELLOW)
+        return img
+    m = re.search(r"\[Screen\] '([^']+)'", vis)
+    if m:
+        a = ease_out((t - 6) / 8)
+        draw_mixed(img, (SW / 2, 400 - 30 * (1 - a)), m.group(1), 170, 90, (255, 255, 255), a, max_w=SW - 120)
     return img
 
 

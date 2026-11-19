@@ -20,7 +20,7 @@ class P:
 
 
 # ------------------------------------------------------------------ Mehlsack 25 kg
-def flour_sack(coll, name, label=True, scale=1.0, color=L.BURLAP, bow=False):
+def flour_sack(coll, name, label=True, scale=1.0, color=L.BURLAP, bow=False, text1="MEHL", text2="25 kg"):
     root = L.empty(name, coll=coll)
     root.scale = (scale,) * 3
     body = L.empty(f"{name}_body", root, (0, 0, 0), coll)      # Squash-Pivot am Boden
@@ -43,8 +43,9 @@ def flour_sack(coll, name, label=True, scale=1.0, color=L.BURLAP, bow=False):
         L.box(f"{name}_labelplate", (0.34, 0.012, 0.22), L.mat("sack_label", L.FLOUR, 0.65), lab, (0, 0, 0), coll,
               bevel=0.01)
         mt = L.mat("sack_text", "#5A3B26", 0.6)
-        L.text(f"{name}_t1", "MEHL", 0.11, mt, lab, (0, -0.008, 0.03), coll, extrude=0.003, font=L.font())
-        L.text(f"{name}_t2", "25 kg", 0.065, mt, lab, (0, -0.008, -0.06), coll, extrude=0.003, font=L.font())
+        L.text(f"{name}_t1", text1, 0.11 if len(text1) <= 5 else 0.075, mt, lab, (0, -0.008, 0.03), coll,
+               extrude=0.003, font=L.font())
+        L.text(f"{name}_t2", text2, 0.065, mt, lab, (0, -0.008, -0.06), coll, extrude=0.003, font=L.font())
     if bow:
         mb = L.mat("bow", L.RED, 0.55)
         for sx in (-1, 1):
@@ -1050,3 +1051,160 @@ def vitrine(coll, name):
         L.ico(f"{name}_crumb{k}", 0.007, 0, (1, 1, 0.7), m_c, root, (rr.uniform(-0.27, 0.27), rr.uniform(-0.14, 0.14), 0.035),
               coll)
     return P(root=root, H=Hh + 0.05, W=W, D=D)
+
+
+# =================================================================== Folge "Byte telefoniert"
+def rechnung_lang(coll, name, length=2.2, width=0.22):
+    """Meterlange Rechnung: Papierstreifen (Scale-X = abgerollter Anteil) + Rolle, die mitwandert.
+    Am Anfang rot umkreist '24 €/Sack'. Pivot am Streifenanfang, Streifen laeuft in +X."""
+    root = L.empty(name, coll=coll)
+    strip = L.empty(f"{name}_strip", root, (0, 0, 0), coll)
+    m_p = L.mat("invoice_paper", PAPER, 0.7)
+    L.box(f"{name}_paper", (length, width, 0.004), m_p, strip, (length / 2, 0, 0), coll)
+    m_l = L.mat("invoice_line", "#8A8580", 0.7)
+    for k in range(int(length / 0.07)):
+        x = 0.05 + k * 0.07
+        L.box(f"{name}_ln{k}", (0.045, width * (0.7 if k % 3 else 0.5), 0.002), m_l, strip, (x, 0, 0.003), coll)
+    mark = L.empty(f"{name}_mark", strip, (0.16, 0, 0.006), coll)
+    m_r = L.mat("mark_red", "#FF5A5F", 0.5, emit="#FF5A5F", strength=1.5)
+    L.torus(f"{name}_circle", 0.1, 0.008, 24, 4, m_r, mark, (0, 0, 0), coll)
+    mark.scale = (1.5, 0.95, 1)
+    t = L.text(f"{name}_price", "24 €/Sack", 0.055, L.mat("price_red", "#C0353A", 0.6), mark, (0, 0, 0.004), coll,
+               extrude=0.002, rot=(0, 0, 0), font=L.font())
+    roll = L.empty(f"{name}_roll", root, (0, 0, 0.03), coll)
+    L.cyl(f"{name}_rollm", 0.035, width, 14, m_p, roll, (0, 0, 0), coll, axis="Y")
+    L.cyl(f"{name}_rollcore", 0.012, width + 0.01, 8, L.mat("roll_core", "#C9B79A", 0.7), roll, (0, 0, 0), coll, axis="Y")
+    return P(root=root, strip=strip, roll=roll, mark=mark, length=length)
+
+
+def rechnung_abrollen(T, r, fn, f0, f1):
+    """fn(f) -> 0..1 abgerollter Anteil (0 = eingerollt). Rolle wandert ans Streifenende und wird duenner."""
+    T.set(r.strip, "scale", lambda f: (max(0.001, fn(f)), 1, 1), f0, f1)
+    T.set(r.roll, "location", lambda f: (r.length * fn(f), 0, 0.03 + 0.02 * (1 - fn(f))), f0, f1)
+    T.set(r.roll, "scale", lambda f: (1.6 - 0.9 * fn(f), 1, 1.6 - 0.9 * fn(f)), f0, f1)
+    T.set(r.mark, "scale", lambda f: ((1.5, 0.95, 1) if fn(f) > 0.12 else (0, 0, 0)), f0, f1)
+
+
+def telefonhoerer(coll, name):
+    """Altmodischer Telefonhoerer (Griff + Hoer-/Sprechmuschel), schwarz-rot."""
+    root = L.empty(name, coll=coll)
+    m = L.mat("handset", "#2A2238", 0.4)
+    m2 = L.mat("handset_red", "#C0353A", 0.45)
+    L.box(f"{name}_grip", (0.05, 0.04, 0.24), m, root, (0, 0, 0), coll, bevel=0.015)
+    for z, nm in ((0.13, "ear"), (-0.13, "mouth")):
+        cup = L.cyl(f"{name}_{nm}", 0.045, 0.05, 12, m2, root, (0, -0.025, z), coll, axis="Y")
+    return root
+
+
+def ringelkabel(T, coll, name, a_fn, b_fn, f0, f1, n=18, wrap_fn=None):
+    """Ringelkabel als Kette kleiner Ringe zwischen zwei bewegten Punkten. wrap_fn(f) -> (center, r, amount)
+    wickelt das Kabel spiralfoermig um einen Punkt (verheddert)."""
+    m = L.mat("cable", "#2A2238", 0.5)
+    rings = []
+    for k in range(n):
+        o = L.torus(f"{name}_r{k}", 0.022, 0.006, 8, 3, m, None, (0, 0, 0), coll, axis="X")
+
+        def loc(f, k=k):
+            t = (k + 0.5) / n
+            p = Vector(a_fn(f)).lerp(Vector(b_fn(f)), t)
+            p.z -= 0.18 * math.sin(math.pi * t)            # durchhaengen
+            if wrap_fn:
+                c, rr, am = wrap_fn(f)
+                if am > 0:
+                    ang = t * 6 * math.pi + f * 0.05
+                    q = Vector(c) + Vector((rr * math.cos(ang), rr * math.sin(ang), 0.25 * (t - 0.5)))
+                    p = p.lerp(q, am)
+            return tuple(p)
+        T.set(o, "location", loc, f0, f1)
+        rings.append(o)
+    return rings
+
+
+def muehlen_kiste(coll, name, label):
+    """Holzkiste mit Aufschrift (z. B. 'MÜHLE A', 'STAMMLIEFERANT'), Glocke oben (klingelt), Pivot unten
+    (wackeln), Stempelflaeche vorne."""
+    root = L.empty(name, coll=coll)
+    body = L.empty(f"{name}_body", root, (0, 0, 0), coll)
+    m_w = L.mat("crate_wood", "#B98A55", 0.7)
+    m_d = L.mat("crate_dark", "#7A5536", 0.7)
+    L.box(f"{name}_box", (0.6, 0.45, 0.42), m_w, body, (0, 0, 0.21), coll, bevel=0.015)
+    for z in (0.08, 0.21, 0.34):
+        L.box(f"{name}_plank{z}", (0.62, 0.47, 0.012), m_d, body, (0, 0, z), coll)
+    for x in (-0.3, 0.3):
+        L.box(f"{name}_post{x}", (0.03, 0.47, 0.42), m_d, body, (x, 0, 0.21), coll)
+    plate = L.box(f"{name}_plate", (0.5, 0.01, 0.13), L.mat("crate_plate", "#F5F1E8", 0.6), body, (0, -0.232, 0.25), coll)
+    L.text(f"{name}_label", label, 0.085 if len(label) < 9 else 0.044, L.mat("crate_ink", "#3A2A22", 0.6), body,
+           (0, -0.24, 0.235), coll, extrude=0.003, font=L.font())
+    bell = L.empty(f"{name}_bell", body, (0.18, 0, 0.42), coll)
+    L.sphere(f"{name}_bellm", 0.05, 10, 6, (1, 1, 0.8), L.mat("bell_brass", L.GOLD, 0.35, metallic=0.7), bell,
+             (0, 0, 0.03), coll)
+    L.cyl(f"{name}_bellknob", 0.012, 0.03, 6, L.mat("bell_brass", L.GOLD, 0.35, metallic=0.7), bell, (0, 0, 0.075), coll)
+    stamp_mark = L.empty(f"{name}_stampmark", body, (-0.02, -0.235, 0.1), coll)
+    L.text(f"{name}_stamptxt", "STAMMLIEFERANT", 0.04, L.mat("stamp_red", "#FF5A5F", 0.55, emit="#FF5A5F",
+                                                               strength=0.4), stamp_mark, (0, -0.004, 0), coll,
+           extrude=0.002, font=L.font())
+    stamp_mark.rotation_euler = (0, math.radians(-8), 0)
+    stamp_mark.scale = (0, 0, 0)
+    return P(root=root, body=body, bell=bell, stamp_mark=stamp_mark)
+
+
+def kiste_wackeln(T, k, f0, f1, amount=1.0, seed=0):
+    nz = Noise(300 + seed, 3, 3.0)
+    T.add(k.body, "rotation_euler", lambda f: (0.05 * amount * nz(f / FPS), 0.07 * amount * nz(f / FPS + 3), 0), f0, f1)
+    T.add(k.bell, "rotation_euler", lambda f: (0.35 * amount * math.sin(f * 2.4), 0, 0), f0, f1)
+
+
+def angebotszettel(coll, name, price, green=False):
+    """Angebotszettel mit grossem Preis; green=True leuchtet gruen (bestes Angebot)."""
+    root = L.empty(name, coll=coll)
+    col = "#3DDC84" if green else "#F5F1E8"
+    m = L.unique_mat(L.mat(f"offer_{price}", col, 0.6, emit=col, strength=0.8 if green else 0.0), f"{name}_mat")
+    L.box(f"{name}_p", (0.32, 0.01, 0.22), m, root, (0, 0, 0), coll, bevel=0.01)
+    L.box(f"{name}_pin", (0.04, 0.012, 0.04), L.mat("pin_red", "#FF5A5F", 0.5), root, (0, -0.002, 0.09), coll)
+    L.text(f"{name}_txt", price, 0.12, L.mat("offer_ink", "#3A2A22", 0.6), root, (0, -0.008, -0.02), coll,
+           extrude=0.004, font=L.font())
+    return P(root=root, mat=m)
+
+
+def stempel(coll, name, text="STAMMLIEFERANT"):
+    """Holzstempel mit Griff; Unterseite rot."""
+    root = L.empty(name, coll=coll)
+    L.cyl(f"{name}_knob", 0.05, 0.06, 12, L.mat("stamp_knob", "#7A5536", 0.6), root, (0, 0, 0.2), coll)
+    L.cyl(f"{name}_neck", 0.02, 0.1, 8, L.mat("stamp_knob", "#7A5536", 0.6), root, (0, 0, 0.12), coll)
+    L.box(f"{name}_base", (0.34, 0.1, 0.05), L.mat("crate_wood", "#B98A55", 0.7), root, (0, 0, 0.05), coll, bevel=0.01)
+    L.box(f"{name}_rubber", (0.32, 0.09, 0.012), L.mat("stamp_red", "#FF5A5F", 0.55), root, (0, 0, 0.02), coll)
+    t = L.text(f"{name}_txt", text, 0.035, L.mat("stamp_ink", "#FFFFFF", 0.5), root, (0, -0.052, 0.05), coll,
+               extrude=0.001, font=L.font())
+    return root
+
+
+def sonnenbrille(coll, name):
+    root = L.empty(name, coll=coll)
+    m = L.mat("shades", "#141228", 0.2, metallic=0.3)
+    for sx in (-1, 1):
+        L.box(f"{name}_lens{sx}", (0.1, 0.012, 0.055), m, root, (sx * 0.065, 0, 0), coll, bevel=0.015)
+    L.box(f"{name}_bridge", (0.04, 0.01, 0.012), m, root, (0, 0, 0.015), coll)
+    L.box(f"{name}_glint", (0.03, 0.002, 0.008), L.mat("glint", "#FFFFFF", 0.4, emit="#FFFFFF", strength=2.0), root,
+          (0.08, -0.008, 0.012), coll)
+    return root
+
+
+def preisschild(coll, name, old="24 €", new="19,70 €"):
+    """Grosses Preisschild: alter Preis + roter Durchstrich (Scale-X), neuer Preis darunter (Pop)."""
+    root = L.empty(name, coll=coll)
+    flip = L.empty(f"{name}_flip", root, (0, 0, 0), coll)
+    L.box(f"{name}_board", (0.95, 0.04, 0.75), L.mat("sign_board", "#1D2A4A", 0.5), flip, (0, 0, 0), coll, bevel=0.04)
+    L.box(f"{name}_edge", (0.99, 0.03, 0.79), L.mat("plate_edge", L.TURQ, 0.5, emit=L.TURQ, strength=5.0), flip,
+          (0, 0.01, 0), coll, bevel=0.04)
+    L.text(f"{name}_old", old, 0.2, L.mat("old_price", "#F5F1E8", 0.5, emit="#F5F1E8", strength=0.5), flip,
+           (0, -0.03, 0.17), coll, extrude=0.01, font=L.font())
+    strike = L.empty(f"{name}_strikepiv", flip, (-0.27, -0.05, 0.19), coll)
+    L.box(f"{name}_strike", (0.54, 0.01, 0.035), L.mat("mark_red", "#FF5A5F", 0.5, emit="#FF5A5F", strength=1.5),
+          strike, (0.27, 0, 0), coll)
+    strike.rotation_euler = (0, math.radians(-8), 0)
+    strike.scale = (0, 1, 1)
+    newp = L.empty(f"{name}_newpiv", flip, (0, -0.04, -0.15), coll)
+    L.text(f"{name}_new", new, 0.24, L.mat("new_price", "#3DDC84", 0.5, emit="#3DDC84", strength=2.0), newp,
+           (0, 0, 0), coll, extrude=0.012, font=L.font())
+    newp.scale = (0, 0, 0)
+    return P(root=root, flip=flip, strike=strike, new=newp)
