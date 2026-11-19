@@ -1,0 +1,1 @@
+{"hash": "f8c043ec2fc67b995720", "speech_text": "Das Büro gegenüber zahlt seit sechs Wochen net!", "voice": {"model": "de_DE-thorsten-high", "url_sub": "thorsten/high/", "speaker": null, "length_scale": 1.455, "noise_scale": 0.8, "noise_w": 0.9}, "model": "piper", "wav": "out/cache/f8c043ec2fc67b995720.wav", "cached": false}

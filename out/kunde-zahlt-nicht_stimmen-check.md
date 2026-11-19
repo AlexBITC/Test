@@ -3,7 +3,7 @@
 **Ergebnis:** alle Zeilen bestanden  
 **Modell:** Piper (lokal, ONNX) – ElevenLabs nicht nutzbar: Kontingent des Free-Tarifs erschöpft (9.988 von 10.000 Zeichen, Reset am 13.12.2026); nötig wären mindestens 755 Zeichen.  
 **Kalle:** Thorsten (`de_DE-thorsten-high`) bzw. derselbe Sprecher im Emotions-Modell (`de_DE-thorsten_emotional-medium`: surprised/amused/angry)  
-**Byte:** Kerstin (`de_DE-kerstin-low`), Tempo 1,075 (length_scale 0,93)  
+**Byte:** Kerstin (`de_DE-kerstin-low`), Tempo je Zeile per length_scale geregelt (Ziel 2,0–2,8 W/s)  
 **Stimmabstand:** Median-F0 Kalle 121 Hz, Byte 163 Hz → 5.1 Halbtöne (klar unterschiedlich)  
 **Whisper:** faster-whisper `medium` (int8, CPU), Sprache de, Wort-Zeitstempel für Lippensync und Untertitel  
 **Natürlichkeit (UTMOS):** nicht installiert/ladbar (HTTPError: HTTP Error 403: Forbidden)

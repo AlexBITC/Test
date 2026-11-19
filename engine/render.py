@@ -282,7 +282,7 @@ def voice_report_tts(ep, lines, path: Path):
          "(9.988 von 10.000 Zeichen, Reset am 13.12.2026); nötig wären mindestens 755 Zeichen.  ",
          "**Kalle:** Thorsten (`de_DE-thorsten-high`) bzw. derselbe Sprecher im Emotions-Modell "
          "(`de_DE-thorsten_emotional-medium`: surprised/amused/angry)  ",
-         "**Byte:** Kerstin (`de_DE-kerstin-low`), Tempo 1,075 (length_scale 0,93)  ",
+         "**Byte:** Kerstin (`de_DE-kerstin-low`), Tempo je Zeile per length_scale geregelt (Ziel 2,0–2,8 W/s)  ",
          f"**Stimmabstand:** Median-F0 Kalle {np.median(kal):.0f} Hz, Byte {np.median(byt):.0f} Hz → {dist:.1f} Halbtöne "
          f"({'klar unterschiedlich' if abs(dist) >= 4 else 'zu ähnlich'})  ",
          "**Whisper:** faster-whisper `medium` (int8, CPU), Sprache de, Wort-Zeitstempel für Lippensync und Untertitel  ",

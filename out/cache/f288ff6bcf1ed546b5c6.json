@@ -1,0 +1,1 @@
+{"hash": "f288ff6bcf1ed546b5c6", "speech_text": "Ich hol dein Geld zurück.", "voice": {"model": "de_DE-kerstin-low", "url_sub": "kerstin/low/", "speaker": null, "length_scale": 2.26, "noise_scale": 0.8, "noise_w": 0.9}, "model": "piper", "wav": "out/cache/f288ff6bcf1ed546b5c6.wav", "cached": false}
