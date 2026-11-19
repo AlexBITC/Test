@@ -475,7 +475,7 @@ def draw_big_overlay(img, tl, f):
         if a <= 0:
             continue
         sc = 0.6 + 0.4 * ease_out_back(clamp01((f - f_in) / 7), 3.0)
-        text_center(img, ((X0 + X1) / 2, 430), txt, 220, col, a, stroke=10, stroke_fill=NAVY, scale=sc)
+        text_center(img, ((X0 + X1) / 2, 392), txt, 180, col, a, stroke=10, stroke_fill=NAVY, scale=sc)
 
 
 def overlay_frame(tl, f, anchors):

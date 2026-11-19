@@ -131,7 +131,8 @@ def direct(W):
     PR.slips_flutter(T, slips, 0, N - 1, amount=0.6)
     # beschriftete Requisiten an der Theke: Weizen-Sack (platzt), Roggen-Sack, lange Rechnung
     sack_r = PR.flour_sack(coll, "sack_roggen", label=True, scale=0.75, text1="ROGGEN", text2="1150")
-    sack_r.root.location = TH.p(1.15, 0.85, 0)
+    tisch = L.box("sack_tisch", (1.3, 0.6, 0.9), L.mat("wood_dark", L.WOOD_DARK, 0.65), None, TH.p(1.05, 0.95, 0.45), coll)
+    sack_r.root.location = TH.p(1.45, 0.98, 0.9)
     sack_r.root.rotation_euler = (0, 0, -0.3)
 
     def burst_sack(name, f_b, loc, seed):
@@ -147,14 +148,14 @@ def direct(W):
         PR.burst(T, coll, f"{name}_shreds", "confetti_#D8C19A", tuple(loc + V(0, 0, 0.5)), f_b, 10, seed + 2,
                  speed=(1.0, 2.0), up=1.0, gravity=-3.0, life=(20, 30), size=(1.2, 1.8))
         return sk
-    SACK_POS = TH.p(0.45, 0.85, 0)
+    SACK_POS = TH.p(0.85, 0.85, 0.9)
     s1_burst = wd(0, "Mehl") - 3
     sk1 = burst_sack("sack_w1", s1_burst, SACK_POS, 501)
     cue(s1_burst, "buzz", 1.0)
     # lange Rechnung: rollt ab (Szene 1), Byte rutscht darauf (2), faellt und rollt sich ein (12), rollt wieder ab (14)
     rech = PR.rechnung_lang(coll, "rechnung", length=2.1)
-    rech.root.location = TH.p(-1.05, -0.6, top + 0.006)
-    rech.root.rotation_euler = (math.radians(-28), 0, 0)
+    rech.root.location = TH.p(-1.05, -0.55, top + 0.07)
+    rech.root.rotation_euler = (math.radians(-38), 0, 0)
     env = PR.envelope(coll, "umschlag", scale=0.7)
     s1_rip = S[0][0] + 6
     roll1_end = s1_rip + 26
@@ -188,8 +189,8 @@ def direct(W):
 
     # =================================================================== SZENE 1 – Schock, harter Zoom
     f0_1, f1_1 = S[0]
-    WIDE = (TH.p(0.05, -4.3, 1.95), TH.p(0.0, 0.2, 1.62), 40.0)
-    CLOSE = (face + V(0.05, -3.0, 0.02), face + V(0, 0, -0.08), 62.0)
+    WIDE = (TH.p(0.1, -4.6, 1.85), TH.p(0.1, 0.2, 1.42), 38.0)
+    CLOSE = (face + V(0.15, -3.7, -0.05), face + V(0.15, 0, -0.42), 50.0)
     s1 = harter_zoom(f0_1, f1_1, WIDE, CLOSE, hl(0) + 2)
     cam.add_shot(f0_1, f1_1, s1)
     C.reaction(T, coll, k, "schock", hl(0) + 2, hold=f1_1 - hl(0), speaking=True, seed=1)
@@ -216,8 +217,8 @@ def direct(W):
              life=(14, 22))
     cue(bp, "whoosh", 1.0)
     C.reaction(T, coll, k, "neutral", hl(1), seed=2)
-    cam.add_shot(f0_2, f1_2, fahrt(f0_2, f1_2, (TH.p(0.35, -3.9, 1.8), TH.p(0.35, 0.0, 1.5), 42.0),
-                               (TH.p(0.05, -4.0, 1.85), TH.p(0.1, 0.0, 1.6), 44.0)))
+    cam.add_shot(f0_2, f1_2, fahrt(f0_2, f1_2, (TH.p(0.35, -3.9, 1.75), TH.p(0.35, 0.0, 1.35), 42.0),
+                               (TH.p(0.05, -4.0, 1.8), TH.p(0.1, 0.0, 1.42), 44.0)))
 
     # =================================================================== SZENE 3 – Kalle klopft an Bytes Kopf
     f0_3, f1_3 = S[2]
@@ -235,7 +236,7 @@ def direct(W):
     cue(tock + 3, "pop", 0.4)
     C.reaction(T, coll, k, "zweifel", hl(2) - 4, hold=f1_3 - hl(2) + 4, speaking=True, seed=3)
     T.add(k.brow["R"], "location", lambda f: (0, 0, 0.06 * window(f, hl(2) - 4, f1_3, 4, 6)), hl(2) - 4, f1_3)
-    cam.add_shot(f0_3, f1_3, zoom_gesicht(f0_3, f1_3, (TH.p(0.0, -4.0, 1.85), TH.p(0.0, 0.0, 1.55), 44.0),
+    cam.add_shot(f0_3, f1_3, zoom_gesicht(f0_3, f1_3, (TH.p(0.0, -4.0, 1.8), TH.p(0.0, 0.0, 1.42), 44.0),
                                       (face + V(0.12, -2.6, -0.05), face + V(0.1, 0, -0.22), 58.0)))
 
     # =================================================================== SZENE 4 – drei Hoerer aus der Antenne
@@ -277,7 +278,7 @@ def direct(W):
     C.pose(T, k, lean, shots[0] + 2, f1_4 + 2, 4, 6, overshoot=0.2)
     C.reaction(T, coll, k, "staunen", shots[0] + 3, hold=f1_4 - shots[0], seed=4)
     cam.add_shot(f0_4, f1_4, rueckfahrt(f0_4, f1_4, (face + V(0.3, -2.8, 0.05), face + V(0.3, 0, -0.1), 55.0),
-                                    (TH.p(0.15, -4.6, 1.95), TH.p(0.15, 0.0, 1.75), 38.0), ease_out))
+                                    (TH.p(0.15, -4.6, 1.85), TH.p(0.15, 0.0, 1.5), 38.0), ease_out))
 
     # =================================================================== Studio-Grundlagen
     KS = ST.p(-1.0, -0.45, 0)
@@ -326,13 +327,14 @@ def direct(W):
     offers = []
     for q in range(3):
         o = PR.angebotszettel(coll, f"zettel{q}", prices[q], green=(q == 1))
+        o.root.scale = (1.9, 1.9, 1.9)
         tq = words6[q] - 3
-        base = CR[q] + V(0, -0.12, 0.95)
+        base = CR[q] + V(0, -0.35, 0.85)
         T.set(o.root, "location", lambda f, tq=tq, base=base: tuple(base + V(0, 0, -0.5 * (1 - ease_out_back(min(1, max(0, (f - tq) / 7)), 1.8)))),
               tq - 1, tq + 8)
         T.set(o.root, "location", lambda f, base=base: tuple(base), tq + 8, tq + 9)
         o.root.scale = (0, 0, 0)
-        T.set(o.root, "scale", lambda f, tq=tq: (pop(f, tq, 6, 1.15),) * 3, tq - 1, tq + 7)
+        T.set(o.root, "scale", lambda f, tq=tq: (1.9 * pop(f, tq, 6, 1.15),) * 3, tq - 1, tq + 7)
         T.set(o.root, "scale", lambda f: (0, 0, 0), 0, 1)
         T.add(o.root, "rotation_euler", lambda f, q=q: (0, 0.06 * math.sin(f * 0.2 + q), 0), tq, N - 1)
         offers.append((o, base))
@@ -341,8 +343,8 @@ def direct(W):
           lambda f: 1.5 * (0.5 + 0.5 * math.sin(f * 0.4)), words6[1], N - 1)
     T.add(b.body, "rotation_euler", lambda f: (0, 0, 4 * math.pi * ease_in_out((f - (hl(5) - 4)) / 18)), hl(5) - 4, hl(5) + 14)
     C.reaction(T, coll, k, "staunen", hl(5), hold=f1_6 - hl(5), seed=6)
-    cam.add_shot(f0_6, f1_6, schwenk(f0_6, f1_6, (ST.p(-0.7, -4.6, 2.3), ST.p(-0.7, 0.75, 2.05), 36.0),
-                                 (ST.p(0.8, -4.6, 2.3), ST.p(0.8, 0.75, 2.05), 36.0)))
+    cam.add_shot(f0_6, f1_6, schwenk(f0_6, f1_6, (ST.p(-0.6, -3.9, 2.25), ST.p(-0.6, 0.6, 2.05), 40.0),
+                                 (ST.p(0.7, -3.9, 2.25), ST.p(0.7, 0.6, 2.05), 40.0)))
 
     # =================================================================== SZENE 7 – Kalle haut auf die Theke
     f0_7, f1_7 = S[6]
@@ -356,7 +358,7 @@ def direct(W):
     T.set(drawer, "location", lambda f: (0, -0.3 * ease_out_back(min(1, max(0, (f - slap - 2) / 6)), 1.5), 0), slap, N - 1)
     T.set(drawer, "location", lambda f: (0, 0, 0), S[13][0], N)
     C.reaction(T, coll, k, "jubel", slap + 2, hold=f1_7 - slap, speaking=True, seed=7)
-    cam.add_shot(f0_7, f1_7, push_in(f0_7, f1_7, (TH.p(-0.25, -4.3, 1.9), TH.p(-0.25, 0.0, 1.55), 40.0), k=0.2))
+    cam.add_shot(f0_7, f1_7, push_in(f0_7, f1_7, (TH.p(-0.25, -4.3, 1.85), TH.p(-0.25, 0.0, 1.4), 40.0), k=0.2))
     cam.whips.append((f0_7, -1))
     T.set(b.root, "location", lambda f: tuple(B_TH), S[6][0], S[7][0])
 
@@ -381,7 +383,10 @@ def direct(W):
     T.set(shades, "location", lambda f: (0, -0.24 - 0.2 * ease_in((f - off) / 6), 0.035 + 0.25 * ease_in((f - off) / 6)),
           off, off + 7)
     T.set(shades, "scale", lambda f: (1, 1, 1) if on - 1 <= f < off + 7 else (0, 0, 0), 0, N)
-    CR4 = ST.p(1.45, 0.3, 0)
+    CR4 = ST.p(1.15, -0.1, 0.0)
+    ped4 = L.cyl("crate_ped4", 0.4, 1.05, 16, L.mat("pedestal", "#2B2750", 0.5), None, CR4 + V(0, 0, 0.525), coll)
+    vis(T, ped4, f0_8 + 4, None)
+    CR4 = CR4 + V(0, 0, 1.05)
     cr4 = PR.muehlen_kiste(coll, "kiste4", "MÜHLE MAIER")
     cr4.root.scale = (1.15, 1.15, 1.15)
     roll_in = f0_8 + 4
@@ -400,7 +405,7 @@ def direct(W):
     C.reaction(T, coll, k, "neutral", hl(7), seed=8)
     face_b8 = BS8
     cam.add_shot(f0_8, f1_8, zoom_gesicht(f0_8, f1_8, (ST.p(0.6, -4.8, 2.3), ST.p(0.6, 0.4, 2.1), 36.0),
-                                      (face_b8 + V(0.25, -2.3, 0.05), face_b8 + V(0.25, 0, -0.15), 50.0)))
+                                      (face_b8 + V(0.35, -2.9, 0.0), face_b8 + V(0.35, 0, -0.3), 46.0)))
     cam.whips.append((f0_8, 1))
 
     # =================================================================== SZENE 9 – Konkurrenz macht 21
@@ -433,8 +438,8 @@ def direct(W):
     PR.burst(T, coll, "s10slips", "confetti_#F7E7A6", tuple(TH.p(-0.62, -0.1, top + 0.3)), f0_10 + 4, 12, 1001,
              speed=(0.4, 0.9), up=1.2, gravity=-0.6, life=(30, 44), size=(1.5, 2.2), flutter=0.7, wobble=0.05)
     cue(hl(9), "buzz", 1.0)
-    cam.add_shot(f0_10, f1_10, harter_zoom(f0_10, f1_10, (TH.p(0.0, -4.2, 1.9), TH.p(0.0, 0.2, 1.6), 40.0),
-                                     (face + V(0.0, -2.9, 0.02), face + V(0, 0, -0.1), 60.0), hl(9) - 1))
+    cam.add_shot(f0_10, f1_10, harter_zoom(f0_10, f1_10, (TH.p(0.0, -4.2, 1.85), TH.p(0.0, 0.2, 1.45), 40.0),
+                                     (face + V(0.1, -3.4, 0.0), face + V(0.1, 0, -0.3), 52.0), hl(9) - 1))
     cam.whips.append((f0_10, -1))
 
     # =================================================================== SZENE 11 – 19,70
@@ -465,8 +470,8 @@ def direct(W):
     T.add(k.body, "location", lambda f: (0, 0.08 * spring((f - f_drop - 18) / FPS, 3, 0.3) if f > f_drop + 18 else 0, 0),
           f_drop + 18, f_drop + 40)
     cue(f_drop + 18, "pop", 0.6)
-    cam.add_shot(f0_12, f1_12, zoom_gesicht(f0_12, f1_12, (TH.p(-0.05, -4.2, 1.85), TH.p(-0.05, 0.1, 1.55), 40.0),
-                                      (face + V(0.0, -3.0, 0.0), face + V(0, 0, -0.12), 56.0)))
+    cam.add_shot(f0_12, f1_12, zoom_gesicht(f0_12, f1_12, (TH.p(-0.05, -4.2, 1.8), TH.p(-0.05, 0.1, 1.4), 40.0),
+                                      (face + V(0.0, -3.4, 0.0), face + V(0, 0, -0.35), 50.0)))
     cam.whips.append((f0_12, -1))
 
     # =================================================================== SZENE 13 – Saecke, Muenzsaeule
@@ -499,7 +504,9 @@ def direct(W):
 
     # =================================================================== SZENE 14 – jahrelang bezahlt (Loop)
     f0_14, f1_14 = S[13]
-    T.set(b.root, "location", lambda f: tuple(B_TH), f0_14, N)
+    back = N - 16                          # Byte schluepft zurueck in den Laptop (Loop: Frame 1 ohne Byte)
+    T.set(b.root, "location", lambda f: tuple(B_TH.lerp(lap_pos, ease_in((f - back) / 10)) if f > back else B_TH), f0_14, N)
+    T.set(b.root, "scale", lambda f: (1 - ease_in((f - back - 2) / 9),) * 3 if f > back else (1, 1, 1), back, N)
     slump = {"hips": (0.25, 0, 0), "head": (0.3, 0, 0.1), "sh_R": (-0.3, 0.2, 0), "sh_L": (-0.3, -0.2, 0)}
     C.pose(T, k, slump, f0_14 + 2, N - 14, 8, 10)
     T.add(k.body, "location", lambda f: (0, 0, -0.12 * window(f, f0_14 + 2, N - 12, 8, 10)), f0_14, N - 10)
@@ -510,7 +517,7 @@ def direct(W):
     cue(burst2, "buzz", 1.0)
     C.reaction(T, coll, k, "schock", hl(13), hold=f1_14 - hl(13) - 10, speaking=True, seed=14, hat=False)
     S1START = s1(0)
-    cam.add_shot(f0_14, N, fahrt(f0_14, N - 7, (face + V(0.05, -2.9, 0.0), face + V(0, 0, -0.15), 54.0), S1START))
+    cam.add_shot(f0_14, N, fahrt(f0_14, N - 7, (face + V(0.05, -3.4, 0.0), face + V(0, 0, -0.35), 50.0), S1START))
     cam.whips.append((f0_14, -1))
 
     # Byte-Ausdruecke

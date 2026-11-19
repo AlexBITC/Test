@@ -413,6 +413,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
         n = int(round((LEAD + dur + TAIL + hold) * FPS))
         words = []
         hl = {h.lower() for h in sz.get("highlight", [])}
+        hl |= {_core(x) for h in sz.get("highlight", []) if " " in h for x in h.split()}   # Mehrwort-Highlights
         for w in l["words"]:
             words.append({"w": w["w"], "start": w["start"] + LEAD, "end": w["end"] + LEAD,
                           "f0": f + int(round((w["start"] + LEAD) * FPS)),
