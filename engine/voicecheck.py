@@ -27,7 +27,8 @@ MUST = {"code", "marketing"}
 EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schreib": "schreibe", "hol": "hole", "merk": "merke", "ah": "ha", "haha": "ha", "gibt's": "gibts",
          "eintausend": "tausend", "stop": "stopp",
          # bairische Formen (Kalle): gleiche Bedeutung wie Hochdeutsch
-         "i": "ich", "mei": "mein", "behalt": "behalte", "verkauf": "verkaufe", "verlier": "verliere",}
+         "i": "ich", "mei": "mein", "behalt": "behalte", "verkauf": "verkaufe", "verlier": "verliere",
+         "en": "einen", "spinnet": "spinnen", "isch": "ist", "mi": "mich", "telefonier": "telefoniere", "brauch": "brauche", "n": "einen",}
 
 
 def whisper():
@@ -49,6 +50,7 @@ def load16k(path):
 
 
 def normalize(text: str, mehl_is_mail_ok: bool = False) -> list:
+    text = re.sub(r"(?<=[a-zäöüß])'s\b", " es", text)        # wird's / er's -> wird es / er es
     text = text.replace("€", " Euro ").replace("–", " ").replace("…", " ").replace("%", " Prozent ")
     text = re.sub(r"(?<=[A-Za-zÄÖÜäöüß])(?=\d)|(?<=\d)(?=[A-Za-zÄÖÜäöüß])", " ", text)
     out = []
@@ -61,8 +63,8 @@ def normalize(text: str, mehl_is_mail_ok: bool = False) -> list:
             out += r[0].lower().split()
             continue
         core = core.lower().replace("-", "")
-        core = EQUIV.get(core, core)
-        out.append(core.replace("'", ""))
+        core = EQUIV.get(core, core).replace("'", "")
+        out.append(EQUIV.get(core, core))
     # "zwei euro fünfzig euro" -> doppelte Waehrung entfernen
     res = []
     for w in out:

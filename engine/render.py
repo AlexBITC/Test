@@ -675,7 +675,7 @@ def main():
         (ROOT / "out" / f"{slug}_stimmen-check.md").write_text(
             f"# Stimmen-Check: {ep['titel']}\n\nEntfällt: Diese Folge hat auf Wunsch keine Stimme. Untertitel im Lesetempo "
             f"(Kalle 2,8 / Byte 2,6 Wörter/s), Mundbewegung aus Silben-Hüllkurve, Tonspur nur Soundeffekte.\n")
-    elif any("tts" in sz for sz in ep["szenen"]):
+    elif any("tts" in sz for sz in ep["szenen"]) and regie.get("stimme") != "elevenlabs":
         lines, model, cfg = voices_stage_tts(ep, work)
         voice_report_tts(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md")
     else:

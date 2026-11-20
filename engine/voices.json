@@ -81,6 +81,49 @@
     "speed": 0.88,
     "grund": "Take mit 'behalt i' korrekt, aber 3,04 W/s -> langsamer"
    }
+  },
+  "mehlpreis": {
+   "14": {
+    "speech": {
+     "i": "ich"
+    },
+    "grund": "bairisches 'i' wird als 'ihr' gesprochen (siehe black-friday)"
+   },
+   "1": {
+    "speech": {
+     "en": "'n"
+    },
+    "grund": "'en Sack' -> \"für 'n Sack\"; Seed 5101: 'Mehl' klar (Δ Mehl−mehr +6,7), andere Takes klangen wie 'mehr'",
+    "seed": 5101,
+    "speed": 1.0
+   }
+  },
+  "kunde-zahlt-nicht": {
+   "13": {
+    "speech": {
+     "Merk": "Merke"
+    },
+    "grund": "'Merk dir' wurde als 'Merkt ihr' verstanden -> 'Merke dir'; 'verschmitzt, leise' -> ruhiger",
+    "stability": 0.6,
+    "style": 0.1
+   },
+   "1": {
+    "speech": {
+     "verkauft.": "verkauft …",
+     "da.": "da!"
+    },
+    "stability": 0.3,
+    "style": 0.6,
+    "grund": "Stimmung 'verzweifelt, laut' klang flach (−4,1 Halbtöne); Sprechfassung wie Feld 'tts'"
+   },
+   "12": {
+    "speech": {
+     "Ha!": "Haha!"
+    },
+    "stability": 0.3,
+    "style": 0.65,
+    "grund": "'überglücklich, lachend': v2 kann kein [laughs] -> 'Haha!', mehr Ausdruck"
+   }
   }
  },
  "piper": {

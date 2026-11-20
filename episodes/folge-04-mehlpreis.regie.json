@@ -1,6 +1,8 @@
 {
-  "stimme": "keine",
-  "hinweis": "Ohne Stimme: Wortzeiten im Lesetempo, Mund aus Silben-Hüllkurve, Tonspur nur Soundeffekte.",
-  "woerter_pro_sekunde": {"kalle": 2.8, "byte": 2.6},
-  "pause_vor_szene": {"8": 0.3, "11": 0.3}
+ "stimme": "elevenlabs",
+ "hinweis": "Stimmen wie folge-03-website: ElevenLabs eleven_multilingual_v2, Kalle = Brian, Byte = Laura.",
+ "pause_vor_szene": {
+  "8": 0.3,
+  "11": 0.3
+ }
 }
