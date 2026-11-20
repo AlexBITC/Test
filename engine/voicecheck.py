@@ -25,7 +25,9 @@ NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf"
                 "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
 MUST = {"code", "marketing"}
 EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schreib": "schreibe", "hol": "hole", "merk": "merke", "ah": "ha", "haha": "ha", "gibt's": "gibts",
-         "eintausend": "tausend",}
+         "eintausend": "tausend", "stop": "stopp",
+         # bairische Formen (Kalle): gleiche Bedeutung wie Hochdeutsch
+         "i": "ich", "mei": "mein", "behalt": "behalte", "verkauf": "verkaufe", "verlier": "verliere",}
 
 
 def whisper():
@@ -47,7 +49,7 @@ def load16k(path):
 
 
 def normalize(text: str, mehl_is_mail_ok: bool = False) -> list:
-    text = text.replace("€", " Euro ").replace("–", " ").replace("…", " ")
+    text = text.replace("€", " Euro ").replace("–", " ").replace("…", " ").replace("%", " Prozent ")
     text = re.sub(r"(?<=[A-Za-zÄÖÜäöüß])(?=\d)|(?<=\d)(?=[A-Za-zÄÖÜäöüß])", " ", text)
     out = []
     for w in text.split():

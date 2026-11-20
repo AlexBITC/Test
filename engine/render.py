@@ -56,9 +56,11 @@ def voices_stage(ep: dict, work: Path) -> list:
         tag = ""
         attempts = []
         overrides = {k: v for k, v in cfg.get("speech_overrides", {}).items() if k in sz["text"].split()}
-        overrides.update(cfg.get("line_tuning", {}).get(str(i + 1), {}).get("speech", {}))
+        lt_all = cfg.get("line_tuning", {})
+        lt_ep = lt_all.get(ep["slug"], {})               # Feinabstimmung je Folge (Schluessel = slug)
+        overrides.update(lt_ep.get(str(i + 1), {}).get("speech", {}))
         lo, hi = tts.TEMPO[role]
-        tune = cfg.get("line_tuning", {}).get(str(i + 1), {})
+        tune = lt_ep.get(str(i + 1), {})
         speed = tune.get("speed", tts.BASE_SETTINGS[role].get("speed", 1.0))
         for attempt in range(3):
             settings, seed = tts.line_settings(role, attempt, cfg, model)
@@ -410,14 +412,15 @@ def build_timeline(ep: dict, lines: list) -> dict:
         dur = l["check"]["dur"]
         m = re.search(r"plus (\d+(?:,\d+)?) s Halt", sz.get("visual", ""))
         hold = float(m.group(1).replace(",", ".")) if m else 0.0
-        n = int(round((LEAD + dur + TAIL + hold) * FPS))
+        ld = LEAD + l.get("lead", 0.0)                  # Pause vor der Zeile (Regie: pause_vor_szene)
+        n = int(round((ld + dur + TAIL + hold) * FPS))
         words = []
         hl = {h.lower() for h in sz.get("highlight", [])}
         hl |= {_core(x) for h in sz.get("highlight", []) if " " in h for x in h.split()}   # Mehrwort-Highlights
         for w in l["words"]:
-            words.append({"w": w["w"], "start": w["start"] + LEAD, "end": w["end"] + LEAD,
-                          "f0": f + int(round((w["start"] + LEAD) * FPS)),
-                          "f1": f + int(round((w["end"] + LEAD) * FPS)),
+            words.append({"w": w["w"], "start": w["start"] + ld, "end": w["end"] + ld,
+                          "f0": f + int(round((w["start"] + ld) * FPS)),
+                          "f1": f + int(round((w["end"] + ld) * FPS)),
                           "hl": _core(w["w"]) in hl or w["w"].strip(".,!?:").lower() in hl})
         beats = {}
         for phrase in re.findall(r"Beat bei '([^']+)'", sz.get("visual", "")):
@@ -431,7 +434,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
         if l["meta"]["wav"] is None:
             amp, eq = synthetic_envelopes(l["words"], n, LEAD)
         else:
-            amp, eq = _envelopes(ROOT / l["meta"]["wav"], n, LEAD)
+            amp, eq = _envelopes(ROOT / l["meta"]["wav"], n, ld)
         beat_list = []
         for bt in sz.get("beats", []) if isinstance(sz.get("beats"), list) else []:
             core = _core(bt["wort"])
@@ -448,7 +451,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
                        "overlay": sz.get("overlay"), "kamera": sz.get("kamera"), "stimmung": sz.get("stimmung"),
                        "reaktion": sz.get("reaktion", sz.get("reaktion_kalle", "neutral")), "set": sz["set"], "kapitel": sz.get("kapitel"),
                        "visual": sz.get("visual", ""), "f0": f, "f1": f + n, "n": n,
-                       "audio_f": f + int(round(LEAD * FPS)), "audio_start": f / FPS + LEAD,
+                       "audio_f": f + int(round(ld * FPS)), "audio_start": f / FPS + ld,
                        "wav": l["meta"]["wav"], "dur": dur, "hold": hold, "words": words, "beats": beats, "amp": amp, "eq": eq})
         f += n
     return {"slug": ep["slug"], "titel": ep["titel"], "hook": ep.get("hook", ""), "loop": ep.get("loop"), "begriff": ep.get("begriff", ""),
@@ -677,6 +680,8 @@ def main():
         voice_report_tts(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md")
     else:
         lines, model, cfg = voices_stage(ep, work)
+        for k, v in regie.get("pause_vor_szene", {}).items():   # Pause vor Pointen auch mit Stimme
+            lines[int(k) - 1]["lead"] = float(v)
         voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
     if os.environ.get("REUSE_TIMELINE") != "1" or args.stage != "style":
         tl = build_timeline(ep, lines)

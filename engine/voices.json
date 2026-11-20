@@ -1,250 +1,267 @@
 {
-  "model": "eleven_multilingual_v2",
-  "voices": {
-    "kalle": {
-      "voice_id": "nPczCjzI2devNBz1zQrb",
-      "name": "Brian - Deep, Resonant and Comforting",
-      "source": "Auswahl aus GET /v1/voices: männlich, mittleres Alter, warm und tief (F0 ~95 Hz)"
-    },
-    "byte": {
-      "voice_id": "FGY2WhTYpPnrIDTdsKH5",
-      "name": "Laura - Enthusiast, Quirky Attitude",
-      "source": "Auswahl aus GET /v1/voices: hell, freundlich, frech ('quirky'); Casting gegen Jessica/Alice mit Whisper, alle Testsätze fehlerfrei (F0 ~180-210 Hz)"
-    }
+ "model": "eleven_multilingual_v2",
+ "voices": {
+  "kalle": {
+   "voice_id": "nPczCjzI2devNBz1zQrb",
+   "name": "Brian - Deep, Resonant and Comforting",
+   "source": "Auswahl aus GET /v1/voices: männlich, mittleres Alter, warm und tief (F0 ~95 Hz)"
   },
-  "settings": {
-    "kalle": {
-      "stability": 0.4,
-      "similarity_boost": 0.75,
-      "style": 0.35,
-      "use_speaker_boost": true
-    },
-    "byte": {
-      "stability": 0.5,
-      "similarity_boost": 0.75,
-      "style": 0.25,
-      "use_speaker_boost": true
-    }
-  },
-  "speech_overrides": {
-    "i.": "ich."
-  },
-  "speech_alternatives": {
-    "Code": [
-      "Kohd",
-      "Koud"
-    ],
-    "Code.": [
-      "Kohd.",
-      "Koud."
-    ],
-    "Code:": [
-      "Kohd:",
-      "Koud:"
-    ],
-    "Marketing": [
-      "Market-ing",
-      "Marketting"
-    ],
-    "net.": [
-      "nicht."
-    ],
-    "net!": [
-      "nicht!"
-    ]
-  },
-  "pitch_semitones": {},
-  "hinweis": "Schreibweisen gelten nur für die Sprachausgabe; die Untertitel bleiben exakt wie im Episoden-JSON.",
-  "line_tuning": {
-    "8": {
-      "speed": 0.8,
-      "stability": 0.3,
-      "seed": 4300,
-      "speech": {
-        "net!": "net!"
-      },
-      "stretch": 0.79,
-      "grund": "kurzer Ausruf: lebendigste saubere Variante (101 Hz, ±3,5 Halbtöne, 'net' erkannt); auf Zieltempo 2,6 W/s gedehnt (atempo 0,79)"
-    }
-  },
-  "piper": {
-    "hinweis": "Fallback ohne ElevenLabs (Kontingent erschöpft). Kalle = Thorsten (high) bzw. derselbe Sprecher im Emotions-Modell; Byte = Kerstin (weiblich wie bisher). Stimmung steuert Modell/Sprecher/Tempo.",
-    "kalle": {
-      "basis": {
-        "model": "de_DE-thorsten-high",
-        "url_sub": "thorsten/high/",
-        "speaker": null,
-        "length_scale": 1.15,
-        "noise_scale": 0.7,
-        "noise_w": 0.85
-      },
-      "stimmungen": [
-        {
-          "woerter": [
-            "verzweifelt",
-            "laut"
-          ],
-          "stimme": {
-            "length_scale": 1.18,
-            "noise_scale": 0.8
-          }
-        },
-        {
-          "woerter": [
-            "ungläubig",
-            "baff"
-          ],
-          "stimme": {
-            "model": "de_DE-thorsten_emotional-medium",
-            "url_sub": "thorsten_emotional/medium/",
-            "speaker": 6,
-            "length_scale": 1.25
-          }
-        },
-        {
-          "woerter": [
-            "überglücklich",
-            "lachend"
-          ],
-          "stimme": {
-            "model": "de_DE-thorsten_emotional-medium",
-            "url_sub": "thorsten_emotional/medium/",
-            "speaker": 0,
-            "length_scale": 1.0
-          }
-        },
-        {
-          "woerter": [
-            "beeindruckt",
-            "herzlich"
-          ],
-          "stimme": {
-            "length_scale": 1.3,
-            "noise_scale": 0.8,
-            "noise_w": 0.9
-          }
-        },
-        {
-          "woerter": [
-            "empört"
-          ],
-          "stimme": {
-            "length_scale": 1.2,
-            "noise_scale": 0.8,
-            "noise_w": 0.9
-          }
-        },
-        {
-          "woerter": [
-            "verwirrt",
-            "kleinlaut"
-          ],
-          "stimme": {
-            "length_scale": 1.3,
-            "noise_scale": 0.75
-          }
-        }
-      ],
-      "takes": [
-        {
-          "model": "de_DE-thorsten_emotional-medium",
-          "url_sub": "thorsten_emotional/medium/",
-          "speaker": 6,
-          "length_scale": 1.18
-        },
-        {
-          "model": "de_DE-thorsten_emotional-medium",
-          "url_sub": "thorsten_emotional/medium/",
-          "speaker": 1,
-          "length_scale": 1.18
-        }
-      ]
-    },
-    "byte": {
-      "basis": {
-        "model": "de_DE-kerstin-low",
-        "url_sub": "kerstin/low/",
-        "speaker": null,
-        "length_scale": 1.0,
-        "noise_scale": 0.667,
-        "noise_w": 0.8
-      },
-      "stimmungen": [
-        {
-          "woerter": [
-            "frech",
-            "triumph",
-            "gut gelaunt",
-            "flink"
-          ],
-          "stimme": {
-            "noise_scale": 0.8,
-            "noise_w": 0.9
-          }
-        },
-        {
-          "woerter": [
-            "leise",
-            "verschmitzt"
-          ],
-          "stimme": {
-            "length_scale": 0.97,
-            "noise_scale": 0.75
-          }
-        },
-        {
-          "woerter": [
-            "ernst",
-            "ruhig",
-            "präzise",
-            "klar"
-          ],
-          "stimme": {
-            "noise_scale": 0.6
-          }
-        }
-      ],
-      "takes": []
-    },
-    "zeilen": {
-      "4": {
-        "tts": "Drei Rechnungen offen. Jee sechshundertzwanzig Euro, zusammen tausendachthundertsechzig.",
-        "grund": "'Je' wurde als 'Die/Wir' verstanden"
-      },
-      "6": {
-        "tts": "Freitag willl die Mühle tausendfünfhundert Euro. Auf dem Konto neunhundert. Fehlen sechshundert.",
-        "grund": "'will' wurde als 'wird' verstanden; Doppelpunkte erzeugten Pausen > 0,4 s"
-      },
-      "12": {
-        "tts": "Ha! Bait, du bist Gold wert!",
-        "stimme": {
-          "model": "de_DE-thorsten-high",
-          "url_sub": "thorsten/high/",
-          "speaker": null,
-          "length_scale": 1.0,
-          "noise_scale": 0.7,
-          "noise_w": 0.85
-        },
-        "grund": "Emotions-Modell sprach 'Herr Veit'; 'Byte' englisch ausgesprochen ('Bait')"
-      },
-      "13": {
-        "tts": "merk dirr: Viel verkauft … heißt nicht …",
-        "stimme": {
-          "length_scale": 1.05
-        },
-        "grund": "'Merk dir' wurde als 'Merkt ihr' verstanden"
-      },
-      "10": {
-        "tts": "Likwiditäät heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
-        "stimme": {
-          "noise_scale": 0.6
-        },
-        "grund": "'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden",
-        "alternativen": [
-          "Li-quidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
-          "Likwiditäät heißt, Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld."
-        ]
-      }
-    }
+  "byte": {
+   "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+   "name": "Laura - Enthusiast, Quirky Attitude",
+   "source": "Auswahl aus GET /v1/voices: hell, freundlich, frech ('quirky'); Casting gegen Jessica/Alice mit Whisper, alle Testsätze fehlerfrei (F0 ~180-210 Hz)"
   }
+ },
+ "settings": {
+  "kalle": {
+   "stability": 0.4,
+   "similarity_boost": 0.75,
+   "style": 0.35,
+   "use_speaker_boost": true
+  },
+  "byte": {
+   "stability": 0.5,
+   "similarity_boost": 0.75,
+   "style": 0.25,
+   "use_speaker_boost": true
+  }
+ },
+ "speech_overrides": {
+  "i.": "ich.",
+  "1,20.": "einen Euro zwanzig."
+ },
+ "speech_alternatives": {
+  "Code": [
+   "Kohd",
+   "Koud"
+  ],
+  "Code.": [
+   "Kohd.",
+   "Koud."
+  ],
+  "Code:": [
+   "Kohd:",
+   "Koud:"
+  ],
+  "Marketing": [
+   "Market-ing",
+   "Marketting"
+  ],
+  "net.": [
+   "nicht."
+  ],
+  "net!": [
+   "nicht!"
+  ]
+ },
+ "pitch_semitones": {},
+ "hinweis": "Schreibweisen gelten nur für die Sprachausgabe; die Untertitel bleiben exakt wie im Episoden-JSON.",
+ "line_tuning": {
+  "website": {
+   "8": {
+    "speed": 0.8,
+    "stability": 0.3,
+    "seed": 4300,
+    "speech": {
+     "net!": "net!"
+    },
+    "stretch": 0.79,
+    "grund": "kurzer Ausruf: lebendigste saubere Variante (101 Hz, ±3,5 Halbtöne, 'net' erkannt); auf Zieltempo 2,6 W/s gedehnt (atempo 0,79)"
+   }
+  },
+  "black-friday": {
+   "7": {
+    "speech": {
+     "i": "ich",
+     "i?!": "ich?!"
+    },
+    "grund": "bairisches 'i' wird als 'ihr' gesprochen (Whisper 3/3, auch 'ie') -> Sinnfehler; gesprochen 'ich', Untertitel bleibt 'i'"
+   },
+   "14": {
+    "speed": 0.88,
+    "grund": "Take mit 'behalt i' korrekt, aber 3,04 W/s -> langsamer"
+   }
+  }
+ },
+ "piper": {
+  "hinweis": "Fallback ohne ElevenLabs (Kontingent erschöpft). Kalle = Thorsten (high) bzw. derselbe Sprecher im Emotions-Modell; Byte = Kerstin (weiblich wie bisher). Stimmung steuert Modell/Sprecher/Tempo.",
+  "kalle": {
+   "basis": {
+    "model": "de_DE-thorsten-high",
+    "url_sub": "thorsten/high/",
+    "speaker": null,
+    "length_scale": 1.15,
+    "noise_scale": 0.7,
+    "noise_w": 0.85
+   },
+   "stimmungen": [
+    {
+     "woerter": [
+      "verzweifelt",
+      "laut"
+     ],
+     "stimme": {
+      "length_scale": 1.18,
+      "noise_scale": 0.8
+     }
+    },
+    {
+     "woerter": [
+      "ungläubig",
+      "baff"
+     ],
+     "stimme": {
+      "model": "de_DE-thorsten_emotional-medium",
+      "url_sub": "thorsten_emotional/medium/",
+      "speaker": 6,
+      "length_scale": 1.25
+     }
+    },
+    {
+     "woerter": [
+      "überglücklich",
+      "lachend"
+     ],
+     "stimme": {
+      "model": "de_DE-thorsten_emotional-medium",
+      "url_sub": "thorsten_emotional/medium/",
+      "speaker": 0,
+      "length_scale": 1.0
+     }
+    },
+    {
+     "woerter": [
+      "beeindruckt",
+      "herzlich"
+     ],
+     "stimme": {
+      "length_scale": 1.3,
+      "noise_scale": 0.8,
+      "noise_w": 0.9
+     }
+    },
+    {
+     "woerter": [
+      "empört"
+     ],
+     "stimme": {
+      "length_scale": 1.2,
+      "noise_scale": 0.8,
+      "noise_w": 0.9
+     }
+    },
+    {
+     "woerter": [
+      "verwirrt",
+      "kleinlaut"
+     ],
+     "stimme": {
+      "length_scale": 1.3,
+      "noise_scale": 0.75
+     }
+    }
+   ],
+   "takes": [
+    {
+     "model": "de_DE-thorsten_emotional-medium",
+     "url_sub": "thorsten_emotional/medium/",
+     "speaker": 6,
+     "length_scale": 1.18
+    },
+    {
+     "model": "de_DE-thorsten_emotional-medium",
+     "url_sub": "thorsten_emotional/medium/",
+     "speaker": 1,
+     "length_scale": 1.18
+    }
+   ]
+  },
+  "byte": {
+   "basis": {
+    "model": "de_DE-kerstin-low",
+    "url_sub": "kerstin/low/",
+    "speaker": null,
+    "length_scale": 1.0,
+    "noise_scale": 0.667,
+    "noise_w": 0.8
+   },
+   "stimmungen": [
+    {
+     "woerter": [
+      "frech",
+      "triumph",
+      "gut gelaunt",
+      "flink"
+     ],
+     "stimme": {
+      "noise_scale": 0.8,
+      "noise_w": 0.9
+     }
+    },
+    {
+     "woerter": [
+      "leise",
+      "verschmitzt"
+     ],
+     "stimme": {
+      "length_scale": 0.97,
+      "noise_scale": 0.75
+     }
+    },
+    {
+     "woerter": [
+      "ernst",
+      "ruhig",
+      "präzise",
+      "klar"
+     ],
+     "stimme": {
+      "noise_scale": 0.6
+     }
+    }
+   ],
+   "takes": []
+  },
+  "zeilen": {
+   "4": {
+    "tts": "Drei Rechnungen offen. Jee sechshundertzwanzig Euro, zusammen tausendachthundertsechzig.",
+    "grund": "'Je' wurde als 'Die/Wir' verstanden"
+   },
+   "6": {
+    "tts": "Freitag willl die Mühle tausendfünfhundert Euro. Auf dem Konto neunhundert. Fehlen sechshundert.",
+    "grund": "'will' wurde als 'wird' verstanden; Doppelpunkte erzeugten Pausen > 0,4 s"
+   },
+   "12": {
+    "tts": "Ha! Bait, du bist Gold wert!",
+    "stimme": {
+     "model": "de_DE-thorsten-high",
+     "url_sub": "thorsten/high/",
+     "speaker": null,
+     "length_scale": 1.0,
+     "noise_scale": 0.7,
+     "noise_w": 0.85
+    },
+    "grund": "Emotions-Modell sprach 'Herr Veit'; 'Byte' englisch ausgesprochen ('Bait')"
+   },
+   "13": {
+    "tts": "merk dirr: Viel verkauft … heißt nicht …",
+    "stimme": {
+     "length_scale": 1.05
+    },
+    "grund": "'Merk dir' wurde als 'Merkt ihr' verstanden"
+   },
+   "10": {
+    "tts": "Likwiditäät heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
+    "stimme": {
+     "noise_scale": 0.6
+    },
+    "grund": "'Liquidität' wurde als 'Dequitität/Die Qualität' verstanden",
+    "alternativen": [
+     "Li-quidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
+     "Likwiditäät heißt, Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld."
+    ]
+   }
+  }
+ },
+ "hinweis_line_tuning": "line_tuning je Folge: Schlüssel = slug, darunter Szenennummer."
 }

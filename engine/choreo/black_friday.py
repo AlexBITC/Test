@@ -449,6 +449,10 @@ def direct(W):
         T.set(o, "scale", lambda f, tq=tq: (pop(f, tq, 4, 1.25),) * 3, tq - 1, tq + 5)
     cue(snap, "whoosh", 0.9)
     cue(snap + 52, "ding", 1.0)
+    p_off = N - 16                                       # Loop: Plakat erlischt vor dem Ende (Frame 0 ohne Plakat)
+    for q, o in enumerate(plakat.letters):
+        T.set(o, "scale", lambda f, q=q: (unpop(f, p_off + q * 0.1, 4),) * 3, p_off - 1, N)
+    T.set(plakat.frame, "scale", lambda f: (unpop(f, p_off + 4, 5),) * 3, p_off - 1, N)
     T.mul(b.body, "scale", lambda f: (1 + 0.1 * window(f, snap - 2, snap + 6, 1, 4),) * 3, snap - 2, snap + 6)
     C.reaction(T, coll, k, "staunen", hl(12), hold=f1_13 - hl(12), seed=13)
     cam.add_shot(f0_13, f1_13, schwenk(f0_13, f1_13, (TH.p(0.45, -4.0, 1.95), B_TH + V(0, 0, -0.35), 44.0),
