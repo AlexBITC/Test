@@ -1,0 +1,25 @@
+{
+ "hinweis": "Requisiten und Bildschirm-Inhalte je Folge. Neue Requisiten liegen in assets/props/<slug>.py, Bildschirm-Inhalte in assets/screens/<slug>.py (geladen von engine/overlays.screen_frame).",
+ "requisiten": {
+  "mini_kamera": {"datei": "assets/props/viral.py", "funktion": "mini_kamera, rec_blink", "beschreibung": "Mini-Kamera mit blinkendem REC-Licht"},
+  "headset_mini": {"datei": "assets/props/viral.py", "funktion": "headset_mini", "beschreibung": "passt auf Byte (Massstab 1) und Kalle (Massstab ~1,42)"},
+  "ringlicht": {"datei": "assets/props/viral.py", "funktion": "ringlicht, ringlicht_an", "beschreibung": "schaltet sich ein (Ring hell, Lichtschein)"},
+  "regieklappe_mini": {"datei": "assets/props/viral.py", "funktion": "regieklappe_mini, klappe", "beschreibung": "Klappe oeffnet und schlaegt zu"},
+  "posten_knopf": {"datei": "assets/props/viral.py", "funktion": "posten_knopf, knopf_druecken", "beschreibung": "leuchtet, wird gedrueckt"},
+  "aufrufzaehler": {"datei": "assets/props/viral.py", "funktion": "aufrufzaehler, zaehler_laufen", "beschreibung": "mechanische Zahlenwalzen, rattern hoch wie ein Kilometerzaehler"},
+  "herzchen_partikel": {"datei": "assets/props/viral.py", "funktion": "herzchen", "beschreibung": "steigen wie Seifenblasen auf"},
+  "kunden_schlange": {"datei": "assets/props/viral.py", "funktion": "kunden_schlange, kunde_mit_handy", "beschreibung": "Low-Poly-Kunden mit hochgehaltenen Handys"},
+  "fenster_tageszeit": {"datei": "assets/props/viral.py", "funktion": "fenster_tageszeit, tageszeit", "beschreibung": "Nacht mit Mond und Sternen, Daemmerung, Morgen mit Sonne, Tag"},
+  "schreibtischlampe": {"datei": "assets/props/viral.py", "funktion": "schreibtischlampe", "beschreibung": "leuchtende Birne mit Lichtkegel"},
+  "brezelblech": {"datei": "assets/props/viral.py", "funktion": "brezelblech", "beschreibung": "Blech mit sechs Brezeln"},
+  "wanduhr": {"datei": "engine/props.py", "funktion": "wall_clock", "beschreibung": "wiederverwendet (Buero-Uhr)"},
+  "brezel": {"datei": "engine/props.py", "funktion": "pastry('brezel')", "beschreibung": "wiederverwendet"},
+  "muenzen": {"datei": "engine/props.py", "funktion": "burst('coinp'), coin_small", "beschreibung": "wiederverwendet"},
+  "mehlwolke": {"datei": "engine/props.py", "funktion": "burst('puff'/'flourdust')", "beschreibung": "wiederverwendet"}
+ },
+ "bildschirme": {
+  "viral": {"datei": "assets/screens/viral.py", "inhalte": ["rohvideo_wackelig", "schnitt_timeline", "effekte_haekchen", "fertiges_video_hochformat", "erstes_frame_gross"],
+            "standbilder": ["assets/screens/viral/kalle_schlingt.png", "assets/screens/viral/kalle_blind.png"],
+            "quelle_standbilder": "Render dieser Folge (Szene 4, Frame 330: Kalle schlingt mit geschlossenen Augen)"}
+ }
+}

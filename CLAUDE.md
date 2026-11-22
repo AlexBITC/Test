@@ -15,6 +15,12 @@ Bisher verwendete Umgebung für Final-Renders: `RENDER_ENGINE=workbench MB_SUBFR
 - Verwendete Sprachdateien liegen in `out/cache/` (gitignored) und werden mit `git add -f` committet.
 - Episoden-JSON in `episodes/`, Regie-Zusätze (Stimme, Pausen, Hook-Karte) in `episodes/<datei>.regie.json`.
 
+## Folgenspezifische Assets
+- Requisiten: `assets/props/<slug>.py` (Übersicht in `assets/manifest.json`), Import in der Regie über `sys.path`.
+- Bildschirm-Inhalte: `assets/screens/<slug>.py` mit `frame(tl, szene, f)`; `engine/overlays.screen_frame` lädt die Datei
+  automatisch. Die Bildfolge liegt auf dem Studio-Screen; die Regie kann sie per UV auch auf ein Laptop-Display legen
+  (siehe `laptop_display` in `engine/choreo/viral.py`).
+
 ## Engine-Version
 Die aktuelle Version steht in `engine/VERSION`.
 
