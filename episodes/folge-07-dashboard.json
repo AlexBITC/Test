@@ -1,0 +1,127 @@
+{
+  "folge": 7,
+  "slug": "dashboard",
+  "titel": "Kalles Ausgaben-Dashboard",
+  "hook": "4 Jahre bezahlt. Für nichts.",
+  "begriff": "Fixkosten",
+  "kapitel": ["HOCHLADEN", "ANALYSIEREN", "DASHBOARD"],
+  "szenen": [
+    {
+      "sprecher": "byte",
+      "text": "Kalle, du zahlst für eine Kaffeemaschine, die du gar nicht mehr hast.",
+      "highlight": ["Kaffeemaschine"],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte schießt aus dem Laptop und zeigt mit ausgestrecktem Arm hinter Kalle: Dort schwebt eine halbdurchsichtige, bläulich schimmernde Geister-Kaffeemaschine mit klirrenden Ketten und einem Preisschild '49 €/Monat'. Kalle hält eine Tasse Kaffee und erstarrt. [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: '4 Jahre bezahlt. Für nichts.' Kamera: push_in, schnell, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Quatsch. Wie willsch du des überhaupt wissen?",
+      "highlight": ["wissen"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle winkt ab und dreht sich weg, die Geister-Kaffeemaschine schwebt ihm hinterher und schaut ihm über die Schulter. Kalle merkt nichts. Kamera: zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ganz einfach. Zieh deine Kontoauszüge hier rein.",
+      "highlight": ["Ganz einfach"],
+      "reaktion": "neutral",
+      "set": "theke",
+      "kapitel": 0,
+      "visual": "[3D] Kalle schiebt widerwillig einen dicken Ordner 'KONTOAUSZÜGE 2026' Richtung Laptop, die Blätter fliegen heraus und werden vom Bildschirm eingesaugt wie von einem Staubsauger. [Screen] Auf dem Laptop eine große gestrichelte Ablagefläche 'Hier ablegen', Dateien fallen hinein, ein Ladebalken füllt sich in einer Sekunde. Kamera: push_in auf den Laptop."
+    },
+    {
+      "sprecher": "byte",
+      "text": "1.200 Buchungen. In zwei Sekunden sortiert.",
+      "highlight": ["zwei Sekunden"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Kulissenwechsel. Hunderte kleine Buchungs-Kärtchen wirbeln wie ein Tornado um Byte und fliegen dann in fünf beschriftete Fächer: 'MEHL & ZUTATEN', 'PERSONAL', 'ENERGIE', 'MIETE', 'ABOS & VERTRÄGE'. [Screen] Das Dashboard beginnt sich aufzubauen: Zähler rast bis '1.200', daneben ein Ring-Diagramm, dessen fünf farbige Segmente nacheinander einwachsen (nur Kategorienamen, keine Beträge). Kamera: kreisfahrt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Drei rote Punkte. Fixkosten, die du nicht brauchst.",
+      "highlight": ["Fixkosten"],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Byte zeigt auf den Screen, aus dem Fach 'ABOS & VERTRÄGE' springen drei rot pulsierende Warnpunkte hoch und schweben vor ihm. [Screen] Im Dashboard erscheint die Karte 'GELDFRESSER' mit drei leeren Zeilen, jede mit rotem Punkt. Kamera: push_in auf die roten Punkte."
+    },
+    {
+      "sprecher": "byte",
+      "text": "49 Euro Miete für die alte Kaffeemaschine. Seit 2022.",
+      "highlight": ["49 Euro"],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Der erste rote Punkt platzt auf, heraus schwebt die Geister-Kaffeemaschine und rasselt mit den Ketten. [Screen] Zeile 1 der Karte 'GELDFRESSER' füllt sich: Kaffeemaschinen-Symbol, 'Kaffee-Miete', '49 €/Monat', 'seit 2022'. Kamera: schwenk vom Screen zur Geister-Maschine."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Seit 2022?! Die steht doch längst auf'm Schrott!",
+      "highlight": ["Schrott"],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[3D] Kalle verschluckt sich am Kaffee, prustet, die Tasse fällt, Kaffee spritzt in Zeitlupe. Augen springen raus, die Mütze fliegt hoch. Kamera: harter_zoom."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Kassenprogramm doppelt: 29 Euro. Stromvertrag still verlängert: 60 Euro.",
+      "highlight": ["doppelt", "still verlängert"],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Die anderen beiden roten Punkte platzen auf: links zwei identische Software-Boxen 'KASSE PRO', eine davon halbdurchsichtig; rechts ein rasend drehender Stromzähler mit Stempel 'AUTOMATISCH VERLÄNGERT'. [Screen] Zeile 2 und 3 der Karte 'GELDFRESSER' füllen sich: 'Kassenprogramm doppelt – 29 €/Monat' und 'Strom, Altvertrag – 60 €/Monat'. Kamera: fahrt von links nach rechts."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Hier, dein Dashboard. Alles auf einen Blick.",
+      "highlight": ["Dashboard"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Kulissenwechsel. Byte dreht mit beiden Händen den Laptop zu Kalle, ein Lichtschein vom Bildschirm fällt auf Kalles Gesicht. [Screen] Das fertige Dashboard im modernen Dark-Look (siehe DASHBOARD-DESIGN), es füllt den Laptop-Bildschirm. Kamera: über Kalles Schulter auf den Laptop, push_in, bis das Dashboard mindestens zwei Drittel der Bildbreite einnimmt."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "138 Euro im Monat … für nix?",
+      "highlight": ["138 Euro"],
+      "reaktion": "staunen",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Kalle beugt sich ganz nah an den Laptop, die Nase berührt fast den Bildschirm, der Schnurrbart zittert. [Screen] Die rote Kachel 'UNNÖTIG: 138 € / Monat' pulsiert groß. Kamera: zoom_gesicht auf Kalle, Dashboard unscharf im Vordergrund."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ein Klick, drei Kündigungen. Zum nächstmöglichen Termin.",
+      "highlight": ["Ein Klick"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Kalle drückt mit dem Zeigefinger auf das Touchpad. Bei jeder Zeile löst sich das passende Geister-Objekt in Glitzer auf: erst die Kaffeemaschine, dann die doppelte Software-Box, dann der Stromzähler. Drei Briefumschläge 'KÜNDIGUNG' fliegen aus dem Laptop. [Screen] In der Karte 'GELDFRESSER' werden die drei roten Knöpfe 'Kündigen' nacheinander zu grünen Häkchen 'Kündigung vorbereitet'. Kamera: schwenk über die drei verschwindenden Geister."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Über 1.600 Euro im Jahr. Für dich.",
+      "highlight": ["1.600 Euro"],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Kulissenwechsel. Eine goldene Münzsäule schießt nach oben, Byte surft auf der obersten Münze. [Screen] Die grüne Kachel 'ERSPARNIS / JAHR' zählt hoch bis '1.656 €', darüber die Rechnung '138 € × 12'. Kamera: schwenk von unten nach oben."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Byte … was koschtesch eigentlich du im Monat?",
+      "highlight": ["du"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle beugt sich misstrauisch zu Byte runter, Bytes Display-Augen werden zu Zickzack, er schwebt langsam rückwärts in den Laptop. Hinter Kalle flackert ganz kurz noch einmal die Geister-Kaffeemaschine auf. Kamera: endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}

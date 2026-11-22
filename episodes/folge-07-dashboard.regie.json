@@ -1,0 +1,12 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Stimmen wie folge-03-website: ElevenLabs eleven_multilingual_v2, Kalle = Brian, Byte = Laura. Keine Folgennummer, kein Serienname im Bild. Engine eingefroren: keine Feinabstimmung in engine/voices.json.",
+ "pause_vor_szene": {
+  "9": 0.4,
+  "12": 0.3
+ },
+ "hook_karte": {
+  "text_oben": "4 Jahre bezahlt. Für nichts.",
+  "gelb": "nichts"
+ }
+}
