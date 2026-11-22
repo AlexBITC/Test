@@ -152,6 +152,79 @@ class Kalle:
         self.glasses = None
         if extras:
             self._extras(c, m_white)
+        self._details_v22(c)
+
+    def _details_v22(self, c):
+        """Engine 2.2: Augenlider (standardmaessig unsichtbar), Lachfalten, Mehlspuren an Haenden und Unterarmen,
+        Mehlstaub auf der Muetze, Schuerzenbaender am Ruecken, Mundwinkel fuer 'traurig' (standardmaessig unsichtbar)."""
+        m_skin = L.mat("skin", L.SKIN, 0.62)
+        m_line = L.mat("lachfalte", "#B9744F", 0.7)
+        m_flour = L.mat("flourstain", "#FFFFFF", 0.9)
+        m_dust = L.mat("mehlstaub_muetze", "#ECE4D4", 0.8)
+        m_apron = L.mat("apron", L.APRON, 0.66)
+        # Augenlider: Kuppel ueber dem Augapfel, gesenkt ueber Rotation um X (0 = halb zu)
+        self.lid = {}
+        for side in ("R", "L"):
+            bm = bmesh.new()
+            bmesh.ops.create_uvsphere(bm, u_segments=12, v_segments=8, radius=0.095)
+            kill = [v for v in bm.verts if v.co.z < -0.004]
+            bmesh.ops.delete(bm, geom=kill, context="VERTS")
+            bmesh.ops.scale(bm, vec=Vector((1.04, 0.86, 1.12)), verts=bm.verts)
+            piv = L.empty(f"k_lidpiv_{side}", self.eye[side], (0, 0, 0), c)
+            L.from_bm(f"k_lid_{side}", bm, m_skin, piv, (0, 0, 0), c)
+            piv.rotation_euler = (-1.3, 0, 0)
+            piv.scale = (0, 0, 0)
+            self.lid[side] = piv
+        # Lachfalten an den aeusseren Augenwinkeln
+        for side, sx in (("R", -1), ("L", 1)):
+            for j, (dz, rot) in enumerate([(0.03, 0.35), (-0.005, 0.0), (-0.04, -0.35)]):
+                o = L.box(f"k_lachfalte_{side}{j}", (0.045, 0.012, 0.009), m_line, self.head,
+                          (sx * 0.232, -0.2, 0.35 + dz), c)
+                o.rotation_euler = (0, sx * rot, sx * 0.55)
+        # Mehlspuren auf Haenden und Unterarmen
+        rr = random.Random(22)
+        for side in ("R", "L"):
+            for j in range(3):
+                L.sphere(f"k_mehl_arm_{side}{j}", rr.uniform(0.012, 0.018), 6, 4, (1.4, 0.3, 1.0), m_flour, self.el[side],
+                         (rr.uniform(-0.03, 0.03), -0.072, -0.12 - 0.07 * j), c)
+            for j in range(2):
+                L.sphere(f"k_mehl_hand_{side}{j}", rr.uniform(0.012, 0.016), 6, 4, (1.3, 0.35, 1), m_flour, self.hand[side],
+                         (rr.uniform(-0.04, 0.04), -0.088, rr.uniform(-0.03, 0.03)), c)
+        # Mehlstaub auf der Muetze
+        for j in range(8):
+            a = math.radians(-90 + rr.uniform(-60, 60))
+            o = L.sphere(f"k_mehl_muetze{j}", rr.uniform(0.02, 0.032), 6, 4, (1.8, 0.2, 0.8), m_dust, self.hat,
+                         (0.262 * math.cos(a), 0.262 * math.sin(a), rr.uniform(0.02, 0.13)), c)
+            o.rotation_euler = (0, rr.uniform(-0.5, 0.5), a + math.pi / 2)
+        # Schuerzenbaender am Ruecken mit Schleife und haengenden Enden
+        for sx in (-1, 1):
+            o = L.box(f"k_apronband{sx}", (0.33, 0.02, 0.035), m_apron, self.torso, (sx * 0.26, 0.2, 0.36), c)
+            o.rotation_euler = (0, 0, sx * -0.95)
+        self.apron_bow = L.empty("k_apronbow", self.torso, (0, 0.37, 0.36), c)
+        for sx in (-1, 1):
+            lp = L.sphere(f"k_apronloop{sx}", 0.05, 8, 5, (1.2, 0.35, 0.7), m_apron, self.apron_bow, (sx * 0.05, 0, 0), c)
+        L.sphere("k_apronknot", 0.025, 8, 5, (1, 0.6, 1), m_apron, self.apron_bow, (0, 0.005, 0), c)
+        self.apron_ends = []
+        for sx in (-1, 1):
+            e = L.empty(f"k_aproned{sx}", self.apron_bow, (sx * 0.02, 0.01, -0.01), c)
+            L.box(f"k_apronendm{sx}", (0.03, 0.012, 0.22), m_apron, e, (0, 0, -0.11), c)
+            e.rotation_euler = (0, sx * 0.25, 0)
+            self.apron_ends.append(e)
+        # Mundwinkel nach unten (Bogen), nur bei 'traurig' sichtbar
+        self.frown = L.empty("k_frown", self.head, (0, -0.29, 0.072), c)
+        bm = bmesh.new()
+        n = 10
+        pts = []
+        for i in range(n + 1):
+            t = math.pi * i / n
+            pts.append((0.068 * math.cos(t), 0.03 * math.sin(t)))
+        w = 0.018
+        vs_o = [bm.verts.new((x, 0, z + w / 2)) for x, z in pts]
+        vs_i = [bm.verts.new((x * 0.93, 0, z - w / 2)) for x, z in pts]
+        for i in range(n):
+            f = bm.faces.new((vs_i[i], vs_i[i + 1], vs_o[i + 1], vs_o[i]))
+        L.from_bm("k_frownmesh", bm, L.mat("mouth", "#4A1E26", 0.7), self.frown, (0, 0, 0), c)
+        self.frown.scale = (0, 0, 0)
 
     def _extras(self, c, m_white):
         """Merkmale fuer neuere Folgen (zuschaltbar, aeltere Folgen bleiben unveraendert):
@@ -198,6 +271,11 @@ def kalle_idle(T, k, f0, f1, seed=7, blink=True):
     for side, sx in (("R", -1), ("L", 1)):
         T.add(k.sh[side], "rotation_euler", lambda f, s=sx: (0.03 * nz2(f / FPS + s), 0.02 * s * nz(f / FPS + 2), 0),
               f0, f1)
+    if getattr(k, "apron_ends", None):                # 2.2: Schuerzenbaender schwingen mit
+        for j, e in enumerate(k.apron_ends):
+            follow_through(T, e, k.hips, "rotation_euler", 1, 2.2, 4, f0, f1, out_idx=1)
+            follow_through(T, e, k.hips, "rotation_euler", 0, 1.8, 4, f0, f1, out_idx=0)
+            T.add(e, "rotation_euler", lambda f, j=j: (0.05 * math.sin(f * 0.13 + j), 0, 0), f0, f1)
     if blink:
         r = random.Random(seed)
         blinks, t = [], f0 + r.randint(20, 60)
@@ -347,6 +425,9 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False, hat=True):
             T.add(k.sh[side], "rotation_euler", lambda x, s=sx: (0, -s * 0.5 * window(x, f, f + hold, 3, 15), 0),
                   f, f + hold)
         return
+    if kind == "traurig":
+        kalle_traurig(T, k, f - 6, f + hold, speaking=speaking)
+        return
     if kind == "jubel":
         a0 = f - 5
         def up(x):
@@ -368,6 +449,57 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False, hat=True):
         for side in ("R", "L"):
             T.add(k.brow[side], "location", lambda x: (0, 0, 0.05 * window(x, f, f + hold, 3, 12)), f, f + hold)
         return
+
+
+# Erlaubte Werte fuer "reaktion" (Episoden-JSON): neutral, zweifel, staunen, schock, jubel, traurig (ab 2.2)
+REAKTIONEN = ("neutral", "zweifel", "staunen", "schock", "jubel", "traurig")
+
+
+def kalle_traurig(T, k, f0, f1, speaking=False, ramp=14, staerke=1.0):
+    """Traurig (2.2): Lider halb gesenkt, Brauen schraeg nach innen, Mundwinkel nach unten, Schultern haengen,
+    Kopf gesenkt, Blick nach unten. Langsame Rampe (ramp Frames)."""
+    env = lambda x: staerke * window(x, f0, f1, ramp, ramp)  # noqa: E731
+    for side, sx in (("R", -1), ("L", 1)):
+        T.set(k.lid[side], "scale", lambda x: (1, 1, 1) if env(x) > 0.01 else (0, 0, 0), f0 - 1, f1 + 1)
+        T.set(k.lid[side], "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+        T.add(k.lid[side], "rotation_euler", lambda x: (1.3 * env(x), 0, 0), f0, f1)
+        T.add(k.brow[side], "rotation_euler", lambda x, sx=sx: (0, sx * 0.42 * env(x), 0), f0, f1)
+        T.add(k.brow[side], "location", lambda x, sx=sx: (-sx * 0.012 * env(x), 0, 0.012 * env(x)), f0, f1)
+        T.add(k.sh[side], "location", lambda x: (0, 0.02 * env(x), -0.06 * env(x)), f0, f1)
+        T.add(k.sh[side], "rotation_euler", lambda x, sx=sx: (0.12 * env(x), 0, sx * 0.08 * env(x)), f0, f1)
+        T.add(k.pupil[side], "rotation_euler", lambda x: (0.32 * env(x), 0, 0), f0, f1)
+    T.add(k.head, "rotation_euler", lambda x: (0.26 * env(x), 0, 0), f0, f1)
+    T.add(k.hips, "rotation_euler", lambda x: (0.1 * env(x), 0, 0), f0, f1)
+    T.add(k.neck, "location", lambda x: (0, -0.02 * env(x), -0.03 * env(x)), f0, f1)
+    T.set(k.frown, "scale", lambda x: (1, 1, 1) if env(x) > 0.25 else (0, 0, 0), f0 - 1, f1 + 1)
+    T.set(k.frown, "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+    if not speaking:
+        T.mul(k.mouth, "scale", lambda x: (1 - 0.35 * env(x), 1, 1 - 0.4 * env(x)), f0, f1)
+    T.add(k.stache, "location", lambda x: (0, 0, -0.012 * env(x)), f0, f1)
+
+
+def kalle_haende(T, k, art, f0, f1, ramp=6):
+    """Haende (2.2): 'kneten' (beide Haende druecken abwechselnd), 'greifen' (Finger eingerollt),
+    'stuetzen' (Haende flach auf den Tisch gestuetzt)."""
+    if art == "stuetzen":
+        pose(T, k, {"sh_R": (-0.55, 0, 0.25), "sh_L": (-0.55, 0, -0.25), "el_R": (-0.35, 0, 0), "el_L": (-0.35, 0, 0),
+                    "hips": (0.12, 0, 0)}, f0, f1, ramp, ramp)
+        for side in ("R", "L"):
+            T.add(k.hand[side], "rotation_euler", lambda x: (-0.9 * window(x, f0, f1, ramp, ramp), 0, 0), f0, f1 + ramp)
+        return
+    if art == "kneten":
+        pose(T, k, {"sh_R": (-0.85, 0, 0.3), "sh_L": (-0.85, 0, -0.3), "el_R": (-0.75, 0, 0), "el_L": (-0.75, 0, 0)},
+             f0, f1, ramp, ramp)
+        for side, ph in (("R", 0.0), ("L", math.pi)):
+            T.add(k.sh[side], "rotation_euler",
+                  lambda x, ph=ph: (0.18 * math.sin(x * 0.45 + ph) * window(x, f0, f1, ramp, ramp), 0, 0), f0, f1)
+            T.add(k.hand[side], "rotation_euler",
+                  lambda x, ph=ph: (-0.4 - 0.3 * math.sin(x * 0.45 + ph), 0, 0) if f0 <= x <= f1 else (0, 0, 0), f0, f1)
+        return
+    if art == "greifen":
+        for side in ("R", "L"):
+            T.mul(k.finger[side], "scale", lambda x: (1, 1, 1 - 0.5 * window(x, f0, f1, 3, 3)), f0, f1)
+            T.add(k.finger[side], "rotation_euler", lambda x: (-1.2 * window(x, f0, f1, 3, 3), 0, 0), f0, f1)
 
 
 def reaction(T, coll, k, kind, f, hold=40, speaking=False, seed=0, hat=True):
@@ -432,7 +564,7 @@ def _eye_cells(kind):
 EXPRS = ["neutral", "happy", "serious", "surprised", "wink", "curious", "worried"]
 
 # ------------------------------------------------------------------ Byte 2.1: Display-Augen je Reaktion
-BYTE_EYES = ["neutral", "jubel", "staunen", "schock", "zweifel", "wink"]
+BYTE_EYES = ["neutral", "jubel", "staunen", "schock", "zweifel", "wink", "traurig"]
 # aeltere Ausdrucksnamen der Regie-Dateien -> Reaktion (Byte 2.1)
 EYE_ALIAS = {"happy": "jubel", "surprised": "staunen", "curious": "staunen", "worried": "schock",
              "serious": "zweifel", "rund": "neutral"}
@@ -491,6 +623,14 @@ def _eye_polys(kind, cx, cz, outer):
     if kind == "schock":                   # Zickzack
         pts = [(cx - 0.036 + 0.012 * k, cz + (0.011 if k % 2 else -0.011)) for k in range(7)]
         return _stroke(pts, 0.009), []
+    if kind == "traurig":                  # 2.2: flache, nach unten gebogene Boegen, aussen tiefer (haengend)
+        pts = []
+        for i in range(9):
+            t = i / 8
+            x = cx + outer * (-0.034 + 0.068 * t)          # von innen nach aussen
+            z = cz - 0.002 + 0.007 * math.sin(math.pi * t) - 0.034 * t
+            pts.append((x, z))
+        return _stroke(pts, 0.011), []
     if kind == "zweifel":                  # schraeg, halb geschlossen (aussen hoch, innen tief)
         r = 0.031
         hi, lo = 0.016, -0.002
@@ -915,6 +1055,17 @@ def byte_face(T, b, schedule, f0, f1):
                 lc = fr
         return lc
 
+    if getattr(b, "v21", False) or "traurig" in b.expr:
+        spans, cur = [], None
+        for fr, e in schedule + [(f1 + 1, "_ende")]:
+            if e == "traurig" and cur is None:
+                cur = fr
+            elif e != "traurig" and cur is not None:
+                spans.append((max(f0, cur), min(f1, fr)))
+                cur = None
+        for a, z in spans:
+            byte_traurig(T, b, a, z)
+
     for e, obj in b.expr.items():
         def sc(f, e=e):
             if active(f) != e:
@@ -925,6 +1076,19 @@ def byte_face(T, b, schedule, f0, f1):
             s = ease_out_back(min(1, t), 2.5) if last_change(f) > schedule[0][0] - 1 else 1
             return (1, 1, max(0.05, s))
         T.set(obj, "scale", sc, f0, f1)
+
+
+def byte_traurig(T, b, f0, f1, ramp=20):
+    """2.2: Antenne knickt langsam ein, Brust-LED pulsiert langsamer und gedimmt (ohne v21: nur die Antenne)."""
+    env = lambda x: window(x, f0, f1, ramp, ramp)  # noqa: E731
+    T.add(b.ant, "rotation_euler", lambda x: (0.75 * env(x), 0.15 * env(x), 0), f0, f1)
+    if getattr(b, "ant2", None) is not None:
+        T.add(b.ant2, "rotation_euler", lambda x: (0.85 * env(x), 0, 0), f0, f1)
+    if getattr(b, "v21", False):
+        T.mul(b.led, "scale", lambda x: (1 - env(x) * (0.25 - 0.15 * math.sin(2 * math.pi * 0.25 * x / FPS)),) * 3, f0, f1)
+        for k_ in range(3):
+            T.mul(b.m_led, "diffuse_color", lambda x: 1 - 0.55 * env(x), f0, f1, index=k_)
+        T.mul(b.halo, "scale", lambda x: (1 - 0.35 * env(x),) * 3, f0, f1)
 
 
 def byte_code_face(T, b, f0, f1, speed=0.09):

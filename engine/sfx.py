@@ -1,4 +1,4 @@
-"""Soundeffekte (Pop, Whoosh, Ding, Buzz) – mit ffmpeg aus Sinus und Rauschen erzeugt – und Audio-Mix.
+"""Soundeffekte (Pop, Whoosh, Ding, Buzz; ab 2.2 Knistern und Ticken als leise Atmosphaere) – mit ffmpeg aus Sinus und Rauschen erzeugt – und Audio-Mix.
 Keine Musik. Lautheit: loudnorm I=-14 LUFS, TP=-1.5 dBTP (zwei Durchlaeufe)."""
 from __future__ import annotations
 
@@ -23,6 +23,11 @@ RECIPES = {
                "afade=t=in:d=0.18,afade=t=out:st=0.25:d=0.25,highpass=f=180"),
     "ding": ("aevalsrc=exprs='0.55*exp(-t*4.5)*(sin(2*PI*1318*t)+0.45*sin(2*PI*2637*t)+0.2*sin(2*PI*3955*t))'"
              ":s=48000:d=1.1", "afade=t=in:d=0.004"),
+    # 2.2: leise Raumatmosphaere (Backstube): Knistern der Glut (2 s), Ticken der Uhr (ein Tick)
+    "knistern": ("aevalsrc=exprs='0.9*gt(random(0)\\,0.9985)*(random(1)-0.5)*2+0.04*(random(2)-0.5)'"
+                 ":s=48000:d=2.0", "highpass=f=400,lowpass=f=4500,afade=t=in:d=0.1,afade=t=out:st=1.8:d=0.2"),
+    "ticken": ("aevalsrc=exprs='0.8*exp(-t*600)*sin(2*PI*2600*t)+0.4*exp(-t*300)*sin(2*PI*1200*t)'"
+               ":s=48000:d=0.06", "afade=t=out:st=0.04:d=0.02"),
     "buzz": ("aevalsrc=exprs='0.32*(sgn(sin(2*PI*110*t))+0.6*sgn(sin(2*PI*165*t)))*(0.6+0.4*sin(2*PI*22*t))'"
              ":s=48000:d=0.38", "lowpass=f=2200,afade=t=in:d=0.01,afade=t=out:st=0.28:d=0.1"),
 }
@@ -47,7 +52,7 @@ def _load(p):
     return y
 
 
-SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22}
+SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22, "knistern": 0.18, "ticken": 0.12}
 
 
 def build_mix(tl: dict, work: Path) -> Path:

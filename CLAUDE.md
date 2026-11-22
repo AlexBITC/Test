@@ -24,6 +24,27 @@ Bisher verwendete Umgebung für Final-Renders: `RENDER_ENGINE=workbench MB_SUBFR
 ## Engine-Version
 Die aktuelle Version steht in `engine/VERSION`.
 
+### Erlaubte Werte im Episoden-JSON
+- `reaktion`: `neutral`, `zweifel`, `staunen`, `schock`, `jubel`, `traurig` (ab 2.2), siehe `characters.REAKTIONEN`
+- `set`: `theke`, `buero`, `studio`, `backstube` (ab 2.2)
+- `licht` (optional, ab 2.2): `nacht`, `frueh`, `morgen` für `backstube` und `theke`. Ohne Feld: Theke wie bisher,
+  Backstube `frueh`.
+
+### 2.2 – Kalle detaillierter, Reaktion „traurig“, Set „backstube“, Lichtstimmungen
+| Bereich | Umsetzung |
+|---|---|
+| Kalle (`Kalle._details_v22`) | Augenlider (`k.lid`, standardmäßig unsichtbar), Lachfalten an den Augen, Mehlspuren auf Händen und Unterarmen, Mehlstaub auf dem Mützenband, Schürzenbänder mit Schleife am Rücken (Enden schwingen in `kalle_idle` nach), Mundwinkel-Bogen für „traurig“ (`k.frown`) |
+| Kalle Hände | `kalle_haende(T, k, art, f0, f1)`: `kneten`, `greifen`, `stuetzen` |
+| Kalle „traurig“ | `kalle_react(..., "traurig")` bzw. `kalle_traurig`: Lider halb gesenkt, Brauen schräg nach innen, Mundwinkel nach unten, Schultern hängen, Kopf und Blick gesenkt (langsame Rampe) |
+| Byte „traurig“ | Display-Augen als flache, nach außen abfallende Bögen; `byte_face` mit Ausdruck `traurig` ruft `byte_traurig` auf: Antenne knickt langsam ein, Brust-LED pulsiert langsamer und gedimmt, Halo kleiner |
+| Set `backstube` (`build_world.build_backstube`) | Ursprung (120, 0, 0). Gemauerter Holzofen mit Glut (Rückwand links, Maul zur Kamera), Arbeitstisch mit Mehl, Teigresten, Teigschaber und Nudelholz, Teigknetmaschine „KNETER“, Blechwagen mit Brezeln, Mehlsäcke „WEIZEN 550“, Fenster zur Straße, Neonröhre, Mehl auf dem Boden, offene Tür mit Blick auf den Verkaufsraum und die Theke von hinten. Kameras: `S.cams["totale"]` (Ofen bis Tür), `S.cams["nah"]` (Arbeitstisch). Glut: `build_world.glut(T, S, f0, f1, level_fn)` |
+| Lichtstimmungen (`build_world.apply_licht`) | Feld `licht` pro Szene. Workbench kennt kein Licht: die Stimmung tönt die Objektfarben aller Materialien (außer Byte und Leuchtteilen) während der Szene. `nacht`: dunkel, blaues Mondlicht durchs Fenster, nur Glut und Byte leuchten; `frueh`: Neonröhre an, kühl; `morgen`: warme Sonne, Lichtstrahl mit tanzendem Mehlstaub. In der Theke nur die Tönung |
+| Sound (`engine/sfx.py`) | zwei leise Atmosphäre-Geräusche: `knistern` (Glut), `ticken` (Uhr) |
+| Timeline (`engine/render.py`) | Szenenfeld `licht` wird durchgereicht |
+
+Bisherige Folgen sind unverändert, bis auf Kalles neue Details (Lachfalten, Mehlspuren, Mehlstaub auf der Mütze,
+Schürzenbänder). Die Backstube liegt weit entfernt und ist in anderen Folgen nicht im Bild.
+
 ### 2.1 – Byte-Upgrade (nur Byte geändert)
 Byte bekommt mehr Details, Form, Farbe, Größe und Antenne bleiben gleich. Alle Änderungen liegen in
 `engine/characters.py` (Klasse `Byte`, Funktionen `byte_*`, `antenna_spring`). Die Helfer-Bytes aus

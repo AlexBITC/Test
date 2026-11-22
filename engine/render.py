@@ -450,6 +450,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
                        "ausdruck_byte": sz.get("ausdruck_byte"), "screen": sz.get("screen"),
                        "overlay": sz.get("overlay"), "kamera": sz.get("kamera"), "stimmung": sz.get("stimmung"),
                        "reaktion": sz.get("reaktion", sz.get("reaktion_kalle", "neutral")), "set": sz["set"], "kapitel": sz.get("kapitel"),
+                       "licht": sz.get("licht"),
                        "visual": sz.get("visual", ""), "f0": f, "f1": f + n, "n": n,
                        "audio_f": f + int(round(ld * FPS)), "audio_start": f / FPS + ld,
                        "wav": l["meta"]["wav"], "dur": dur, "hold": hold, "words": words, "beats": beats, "amp": amp, "eq": eq})

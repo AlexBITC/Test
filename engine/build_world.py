@@ -22,7 +22,8 @@ from anim import ease_in, ease_out, window, Noise
 
 FPS = 30
 
-ORIGIN = {"theke": Vector((0, 0, 0)), "buero": Vector((40, 0, 0)), "studio": Vector((80, 0, 0))}
+ORIGIN = {"theke": Vector((0, 0, 0)), "buero": Vector((40, 0, 0)), "studio": Vector((80, 0, 0)),
+          "backstube": Vector((120, 0, 0))}
 
 
 def tile_mat(name, c1, c2, mortar, scale=6.0, mortar_size=0.02, rough=0.6, brick_w=0.5, row_h=0.25, offset=0.5,
@@ -312,6 +313,295 @@ def build_buero(coll):
     return S
 
 
+# =================================================================== BACKSTUBE (2.2)
+def build_backstube(coll):
+    """Backstube hinter dem Verkaufsraum (neuer Winkel auf dieselbe Baeckerei): gemauerter Holzofen mit Glut,
+    Arbeitstisch mit Mehl, Teigknetmaschine, Blechwagen mit Brezeln, Mehlsaecke 'WEIZEN 550', Fenster zur Strasse,
+    offene Tuer mit Blick auf die Theke von hinten. Alle Materialien heissen 'bs_*' (Lichtstimmungen: apply_licht).
+    Kamera-Standpunkte: S.cams['totale'] (vom Ofen Richtung Tuer), S.cams['nah'] (am Arbeitstisch)."""
+    S = SetData("backstube", ORIGIN["backstube"])
+    c = coll
+    m = lambda n, col, r=0.6, **kw: L.mat(f"bs_{n}", col, r, **kw)  # noqa: E731
+    floor = tile_mat("bs_floor", "#A86A47", "#9C6040", "#6E4330", scale=2.6, mortar_size=0.02, brick_w=0.5, row_h=0.5,
+                     offset=0.0, rough=0.7)
+    plane("bs_floor", (10, 10), floor, S.p(0, 0.5, -0.01), coll=c)
+    wall = tile_mat("bs_wall", "#D8C7A8", "#CFBC9C", "#A8957A", scale=4.5, mortar_size=0.02, brick_w=0.6, row_h=0.3,
+                    rough=0.7)
+    wdark = m("wood_dark", L.WOOD_DARK, 0.65)
+    wood = m("wood", L.WOOD, 0.62)
+    wlight = m("wood_light", L.WOOD_LIGHT, 0.55)
+    # Rueckwand mit Tueroeffnung (x 0.3 .. 1.5, Hoehe 2.5)
+    DX = 0.9
+    L.box("bs_wall_l", (4.3, 0.12, 4.0), wall, None, S.p(-1.85, 3.2, 2.0), c)
+    L.box("bs_wall_r", (2.9, 0.12, 4.0), wall, None, S.p(2.95, 3.2, 2.0), c)
+    L.box("bs_wall_t", (1.2, 0.12, 1.5), wall, None, S.p(DX, 3.2, 3.25), c)
+    L.box("bs_skirting", (10, 0.06, 0.14), wdark, None, S.p(0, 3.13, 0.07), c)
+    plane("bs_wall_left", (10, 4.0), wall, S.p(-4.0, 0, 2.0), rot=(math.pi / 2, 0, math.pi / 2), coll=c)
+    plane("bs_wall_right", (10, 4.0), wall, S.p(4.4, 0, 2.0), rot=(math.pi / 2, 0, math.pi / 2), coll=c)
+    L.box("bs_ceiling", (10, 10, 0.1), m("ceiling", "#5A4636", 0.7), None, S.p(0, 0.5, 3.95), c)
+    for k in range(5):
+        L.box(f"bs_beam{k}", (10, 0.18, 0.2), wdark, None, S.p(0, -1.5 + k * 1.2, 3.82), c)
+    # Tuerrahmen und offene Tuer (Blatt nach innen geklappt)
+    for x in (DX - 0.65, DX + 0.65):
+        L.box(f"bs_doorpost{x}", (0.1, 0.18, 2.55), wdark, None, S.p(x, 3.2, 1.27), c)
+    L.box("bs_doortop", (1.4, 0.18, 0.1), wdark, None, S.p(DX, 3.2, 2.55), c)
+    leaf = L.empty("bs_doorleaf", None, S.p(DX + 0.6, 3.12, 0), c)
+    leaf.rotation_euler = (0, 0, math.radians(-105))
+    L.box("bs_doorleafm", (1.15, 0.06, 2.4), m("door_panel", "#4E6B8A", 0.6), leaf, (-0.58, 0, 1.22), c)
+    L.box("bs_doorglass", (0.6, 0.07, 0.8), m("doorglass", "#D9E7F2", 0.4), leaf, (-0.58, 0, 1.7), c)
+    S.objs["door"] = leaf
+    # Kulisse: Verkaufsraum mit der Theke von hinten (gleiche Farben wie das Set 'theke')
+    plane("bs_k_floor", (4.0, 4.6), tile_mat("bs_k_floor", "#7A5236", "#6C4830", "#4E3424", scale=3.0, mortar_size=0.01,
+                                            brick_w=1.6, row_h=0.18, offset=0.5, rough=0.62), S.p(DX, 5.4, -0.005), coll=c)
+    kw = tile_mat("bs_k_wall", "#DCCFB9", "#D2C4AC", "#A89A83", scale=5.5, mortar_size=0.025, brick_w=0.5, row_h=0.5,
+                  offset=0.0, rough=0.55)
+    for x in (DX - 2.0, DX + 2.0):
+        plane(f"bs_k_side{x}", (4.6, 4.0), kw, S.p(x, 5.4, 2.0), rot=(math.pi / 2, 0, math.pi / 2), coll=c)
+    L.box("bs_k_front", (4.2, 0.1, 1.0), m("k_wainscot", "#3F5A78", 0.62), None, S.p(DX, 7.6, 0.5), c)
+    L.box("bs_k_window", (4.0, 0.08, 2.6), m("k_shopwindow", "#FFE7BF", 0.4, emit="#FFE7BF", strength=1.5), None,
+          S.p(DX, 7.65, 2.3), c)
+    L.box("bs_k_wtop", (4.2, 0.1, 0.4), kw, None, S.p(DX, 7.6, 3.8), c)
+    ctr = L.empty("bs_k_theke", None, S.p(DX, 5.3, 0), c)
+    L.box("bs_k_counter", (3.3, 0.72, 0.98), m("k_counter", "#E9DFCC", 0.62), ctr, (0, 0, 0.49), c)
+    L.box("bs_k_countertop", (3.45, 0.86, 0.07), m("k_countertop", L.WOOD_LIGHT, 0.55), ctr, (0, 0, 1.015), c, bevel=0.015)
+    L.box("bs_k_backpanel", (3.2, 0.04, 0.85), m("k_shelfdark", "#4E3424", 0.7), ctr, (0, -0.37, 0.48), c)
+    for k in range(3):
+        L.box(f"bs_k_shelf{k}", (3.1, 0.3, 0.03), wood, ctr, (0, -0.3, 0.15 + 0.3 * k), c)
+        for j in range(4):
+            L.box(f"bs_k_bag{k}{j}", (0.16, 0.1, 0.2), m("k_paperbag", "#D7B98C", 0.8), ctr,
+                  (-1.2 + j * 0.75 + 0.1 * k, -0.32, 0.27 + 0.3 * k), c)
+    reg = L.empty("bs_k_register", ctr, (-1.18, 0.1, 1.05), c)
+    L.box("bs_k_regbase", (0.56, 0.48, 0.14), m("k_register", "#46496E", 0.5), reg, (0, 0, 0.07), c, bevel=0.02)
+    L.box("bs_k_regbody", (0.5, 0.32, 0.26), m("k_register", "#46496E", 0.5), reg, (0, 0.06, 0.27), c, bevel=0.03)
+    L.box("bs_k_regdisplay", (0.3, 0.06, 0.12), m("k_register", "#46496E", 0.5), reg, (0, 0.17, 0.5), c)
+    L.cyl("bs_k_basket", 0.3, 0.16, 12, m("k_wicker", "#B0773B", 0.75), ctr, (0.9, 0.1, 1.13), c, r2=0.36)
+    lap = L.empty("bs_k_laptop", ctr, (0.36, 0.1, 1.05), c)
+    L.box("bs_k_lapbase", (0.62, 0.42, 0.03), m("k_laptop", "#9AA0B8", 0.45), lap, (0, 0, 0.015), c)
+    L.box("bs_k_laplid", (0.62, 0.025, 0.4), m("k_laptop", "#9AA0B8", 0.45), lap, (0, -0.2, 0.22), c)
+    for x in (DX - 1.0, DX + 1.0):
+        L.cyl(f"bs_k_lampcord{x}", 0.008, 1.0, 5, m("cord", "#222222", 0.7), None, S.p(x, 5.9, 3.45), c)  # noqa
+        L.cyl(f"bs_k_lampshade{x}", 0.08, 0.22, 12, m("lampshade", "#2F4A5E", 0.55), None, S.p(x, 5.9, 2.88), c, r2=0.25)
+        L.sphere(f"bs_k_bulb{x}", 0.07, 8, 5, (1, 1, 1), m("k_bulb", "#FFE7BF", 0.4, emit="#FFD9A0", strength=8), None,
+                 S.p(x, 5.9, 2.76), c)
+    # Grosser gemauerter Holzofen (linke Wand), Maul zeigt in den Raum (+X)
+    brick = tile_mat("bs_brick", "#9C4A32", "#8E422C", "#5C2E22", scale=6.0, mortar_size=0.03, brick_w=0.5, row_h=0.25,
+                     rough=0.8)
+    ov = S.p(-2.55, 2.4, 0)                       # Ofen an der Rueckwand links, Maul zur Kamera (-Y)
+    L.box("bs_oven_base", (2.1, 1.6, 1.0), brick, None, ov + Vector((0, 0, 0.5)), c)
+    L.sphere("bs_oven_dome", 1.0, 14, 8, (1.2, 0.85, 0.85), brick, None, ov + Vector((0, 0.05, 1.0)), c)
+    L.box("bs_oven_front", (2.1, 0.16, 0.95), brick, None, ov + Vector((0, -0.74, 1.45)), c)
+    L.box("bs_oven_chimney", (0.5, 0.5, 2.2), brick, None, ov + Vector((0.5, 0.35, 2.85)), c)
+    L.box("bs_oven_ledge", (2.5, 0.4, 0.08), m("stone", "#8A8478", 0.7), None, ov + Vector((0, -0.95, 1.0)), c)
+    mouth = ov + Vector((0, -0.83, 1.4))
+    L.box("bs_oven_mouth", (1.0, 0.06, 0.62), m("oven_mouth", "#120806", 0.9), None, mouth, c)
+    L.cyl("bs_oven_arch", 0.5, 0.07, 14, m("oven_mouth", "#120806", 0.9), None, mouth + Vector((0, 0, 0.31)), c, axis="Y")
+    m_glut = L.mat("bs_glut", "#FF7A2E", 0.4, emit="#FF7A2E", strength=6.0)
+    glut = L.empty("bs_glutbed", None, mouth + Vector((0, -0.07, -0.22)), c)
+    rg = random.Random(31)
+    embers = []
+    for k in range(16):
+        e = L.ico(f"bs_ember{k}", rg.uniform(0.06, 0.1), 1, (1, 0.6, 0.7), m_glut, glut,
+                  (rg.uniform(-0.4, 0.4), rg.uniform(-0.03, 0.0), rg.uniform(0, 0.16)), c)
+        embers.append(e)
+    for k in range(4):
+        lg = L.cyl(f"bs_ovenlog{k}", 0.05, 0.5, 7, m("charcoal", "#2B1A14", 0.8), glut,
+                   (-0.25 + 0.17 * k, -0.02, 0.24), c, axis="X")
+        lg.rotation_euler = (0, 0, 0.3 * (k - 1.5))
+    L.box("bs_oven_door", (0.8, 0.06, 0.55), m("iron", "#3A3A44", 0.45, metallic=0.6), None,
+          ov + Vector((1.45, -1.05, 0.32)), c).rotation_euler = (0.25, 0, -0.3)
+    gl = L.light("bs_glutlight", "POINT", 120, "#FF8A3D", mouth + Vector((0, -0.4, 0)), size=0.4, coll=c, cutoff=6,
+                 shadow=False)
+    S.objs.update(glut=glut, embers=embers, glut_mat=m_glut, glut_light=gl, oven_mouth=mouth, oven=ov)
+    # Holzstapel neben dem Ofen
+    for k in range(6):
+        L.cyl(f"bs_woodpile{k}", 0.07, 0.6, 7, m("log", "#8A5A3A", 0.7), None,
+              ov + Vector((-1.35 + 0.15 * (k % 3), -1.15, 0.07 + 0.13 * (k // 3))), c, axis="Y")
+    # Arbeitstisch aus Holz mit Mehl
+    T0 = S.p(0.1, 0.5, 0)
+    S.table_z = 0.96
+    L.box("bs_table_top", (2.4, 1.1, 0.08), wlight, None, T0 + Vector((0, 0, 0.92)), c, bevel=0.02)
+    for x in (-1.1, 1.1):
+        for y in (-0.45, 0.45):
+            L.box(f"bs_table_leg{x}{y}", (0.08, 0.08, 0.9), wdark, None, T0 + Vector((x, y, 0.45)), c)
+    L.box("bs_table_shelf", (2.2, 0.9, 0.04), wood, None, T0 + Vector((0, 0, 0.25)), c)
+    m_mehl = m("mehl", "#F7F3EA", 0.9)
+    rm = random.Random(8)
+    for k in range(7):
+        o = L.cyl(f"bs_tablemehl{k}", rm.uniform(0.12, 0.3), 0.01, 10, m_mehl, None,
+                  T0 + Vector((rm.uniform(-1.0, 1.0), rm.uniform(-0.4, 0.4), 0.965)), c)
+        o.scale = (1, rm.uniform(0.5, 1.0), 1)
+    L.sphere("bs_dough", 0.16, 10, 6, (1.2, 1.0, 0.55), m("dough", "#EBD3A8", 0.7), None, T0 + Vector((-0.5, 0.05, 1.02)), c)
+    L.box("bs_scraper", (0.14, 0.01, 0.1), m("metal", L.METAL, 0.4, metallic=0.6), None, T0 + Vector((-0.15, -0.25, 0.98)),
+          c).rotation_euler = (math.pi / 2, 0, 0.5)
+    L.box("bs_scraper_grip", (0.14, 0.03, 0.03), wdark, None, T0 + Vector((-0.15, -0.25, 1.01)), c).rotation_euler = (0, 0, 0.5)
+    L.cyl("bs_rollpin", 0.04, 0.5, 10, wlight, None, T0 + Vector((0.55, 0.15, 1.0)), c, axis="X").rotation_euler = (0, 0, 0.3)
+    for k in range(5):
+        L.ico(f"bs_doughscrap{k}", 0.03, 1, (1.2, 1, 0.5), m("dough", "#EBD3A8", 0.7), None,
+              T0 + Vector((rm.uniform(-0.9, 0.9), rm.uniform(-0.4, 0.4), 0.975)), c)
+    # Mehl auf dem Boden
+    for k in range(10):
+        o = L.cyl(f"bs_floormehl{k}", rm.uniform(0.15, 0.4), 0.006, 10, m_mehl, None,
+                  S.p(rm.uniform(-2.2, 2.6), rm.uniform(-1.5, 2.6), 0.004), c)
+        o.scale = (1, rm.uniform(0.4, 1.0), 1)
+    # Teigknetmaschine
+    km = S.p(2.1, -0.95, 0)
+    m_mach = m("machine", "#5E8C8A", 0.45)
+    m_met = m("metal", L.METAL, 0.4, metallic=0.6)
+    L.box("bs_kneader_base", (0.7, 0.6, 0.75), m_mach, None, km + Vector((0, 0, 0.375)), c, bevel=0.03)
+    L.box("bs_kneader_col", (0.22, 0.22, 0.9), m_mach, None, km + Vector((0, 0.22, 1.2)), c, bevel=0.03)
+    L.box("bs_kneader_head", (0.3, 0.6, 0.2), m_mach, None, km + Vector((0, 0.0, 1.62)), c, bevel=0.04)
+    L.cyl("bs_kneader_bowl", 0.3, 0.32, 16, m_met, None, km + Vector((0, -0.08, 0.91)), c, r2=0.26)
+    L.sphere("bs_kneader_dough", 0.25, 10, 6, (1, 1, 0.45), m("dough", "#EBD3A8", 0.7), None, km + Vector((0, -0.08, 1.05)), c)
+    hook = L.empty("bs_kneader_hook", None, km + Vector((0, -0.1, 1.5)), c)
+    L.cyl("bs_kneader_hookm", 0.02, 0.45, 6, m_met, hook, (0, 0, -0.22), c)
+    S.objs["kneader_hook"] = hook
+    L.box("bs_kneader_plate", (0.36, 0.01, 0.1), m("plate", "#F5F1E8", 0.5), None, km + Vector((0, -0.31, 0.6)), c)
+    L.text("bs_kneader_lab", "KNETER", 0.07, m("ink", "#141228", 0.5), None, tuple(km + Vector((0, -0.318, 0.59))), c,
+           extrude=0.003, font=L.font())
+    # Blechwagen mit Brezeln
+    bw = S.p(2.25, 1.15, 0)
+    for x in (-0.32, 0.32):
+        for y in (-0.42, 0.42):
+            L.box(f"bs_rack_post{x}{y}", (0.04, 0.04, 1.8), m_met, None, bw + Vector((x, y, 0.95)), c)
+            L.cyl(f"bs_rack_wheel{x}{y}", 0.05, 0.04, 8, m("rubber", "#222", 0.7), None, bw + Vector((x, y, 0.05)), c,
+                  axis="X")
+    for k in range(5):
+        z = 0.35 + 0.32 * k
+        L.box(f"bs_rack_tray{k}", (0.62, 0.86, 0.02), m("tray", "#8E93A8", 0.4, metallic=0.6), None, bw + Vector((0, 0, z)), c)
+        for j in range(3):
+            PR.pastry(c, f"bs_rack_brezel{k}{j}", "brezel", None, tuple(bw + Vector((0, -0.28 + 0.28 * j, z + 0.01))), 0.9)
+    # Mehlsaecke 'WEIZEN 550' an der Rueckwand
+    for k, (x, z, rz) in enumerate([(2.05, 0, 0.1), (2.75, 0, -0.08), (2.4, 0.62, 0.05)]):
+        sk = PR.flour_sack(c, f"bs_sack{k}", label=True, scale=1.0, text1="WEIZEN", text2="550")
+        sk.root.location = S.p(x, 2.85, z)
+        sk.root.rotation_euler = (0, 0, rz)
+    # Fenster zur Strasse (Rueckwand links)
+    wpos = S.p(-0.6, 3.12, 1.95)
+    m_win = L.mat("bs_window", "#8CA3CF", 0.4, emit="#8CA3CF", strength=2.0)
+    L.box("bs_window_glass", (1.3, 0.06, 1.1), m_win, None, wpos, c)
+    for dx, dz, w, h in [(0, 0.58, 1.46, 0.08), (0, -0.58, 1.46, 0.1), (-0.69, 0, 0.08, 1.2), (0.69, 0, 0.08, 1.2),
+                         (0, 0, 0.05, 1.1), (0, 0, 1.3, 0.05)]:
+        L.box(f"bs_window_frame{dx}{dz}{w}", (w, 0.1, h), m("winframe", "#F0EADD", 0.6), None,
+              wpos + Vector((dx, -0.03, dz)), c)
+    moon = L.cyl("bs_moon", 0.13, 0.01, 18, L.mat("bs_moon", "#E8F0FF", 0.4, emit="#E8F0FF", strength=5.0), None,
+                 wpos + Vector((0.32, -0.045, 0.25)), c, axis="Y")
+    sun = L.cyl("bs_sun", 0.22, 0.01, 20, L.mat("bs_sunglow", "#FFD36B", 0.4, emit="#FFD36B", strength=5.0), None,
+                wpos + Vector((-0.3, -0.045, -0.2)), c, axis="Y")
+    # Lichtstrahl durchs Fenster (Mond blau, Morgensonne warm)
+    tgt = S.p(0.6, 0.4, 0.95)
+    d = tgt - wpos
+    beams = {}
+    for nm, col, al in (("moon", "#6E8FE0", 0.08), ("sun", "#FFD9A0", 0.11)):
+        piv = L.empty(f"bs_beam_{nm}", None, wpos, c)
+        piv.rotation_euler = d.to_track_quat("Z", "Y").to_euler()
+        L.cyl(f"bs_beamm_{nm}", 0.45, d.length * 1.1, 12, L.mat(f"bs_glow_beam_{nm}", col, 0.4, emit=col, strength=1.0,
+                                                                alpha=al), piv, (0, 0, d.length * 0.55), c, r2=0.7, cap=False)
+        beams[nm] = piv
+    S.objs.update(window_mat=m_win, moon=moon, sun=sun, beams=beams, window=wpos, beam_target=tgt)
+    # Neonroehre an der Decke
+    m_neon = L.mat("bs_neon", "#2A2E3A", 0.4, emit="#E8F4FF", strength=6.0)
+    L.box("bs_neon_housing", (1.8, 0.2, 0.08), m("lampbox", "#C9CED8", 0.5), None, S.p(0.1, 0.5, 3.7), c)
+    L.box("bs_neon_tube", (1.6, 0.08, 0.06), m_neon, None, S.p(0.1, 0.5, 3.64), c)
+    S.objs["neon_mat"] = m_neon
+    # Regalbrett mit Schuesseln (Wand rechts vorn)
+    L.box("bs_shelf", (0.35, 1.4, 0.04), wood, None, S.p(4.22, -0.8, 1.7), c)
+    for k in range(3):
+        L.cyl(f"bs_bowl{k}", 0.13, 0.12, 12, m("bowl", "#E9E2D3", 0.55), None, S.p(4.22, -1.3 + 0.45 * k, 1.78), c, r2=0.09)
+    _lights(S, c, key=(-2.4, -3.0, 3.6), fill=(3.0, -2.6, 2.0), rim=(1.6, 2.4, 3.4), key_e=300, fill_e=80, rim_e=200)
+    S.kalle = S.p(0.1, 1.35, 0.0)
+    S.byte = S.p(0.9, 0.5, 1.6)
+    S.top_z = S.table_z
+    S.cams = {"totale": (S.p(-1.4, -5.6, 2.5), S.p(-0.55, 2.0, 1.4), 28.0),
+              "nah": (S.p(0.4, -1.7, 1.75), S.p(0.1, 0.6, 1.15), 42.0)}
+    return S
+
+
+# ------------------------------------------------------------------ Lichtstimmungen (2.2)
+LICHT = {"nacht": (0.055, 0.065, 0.15), "frueh": (0.9, 0.95, 1.05), "morgen": (1.06, 0.98, 0.86)}
+LICHT_STANDARD = {"backstube": "frueh"}           # theke: ohne Feld 'licht' wie bisher (keine Toenung)
+LICHT_AUSNAHMEN = ("byte", "antenna", "codeseg", "screen_display", "trail", "bs_glut", "bs_window", "bs_neon",
+                   "bs_moon", "bs_sun", "bs_glow", "helper", "spark", "sparkt", "bang", "pix", "badge", "digit")
+
+
+def apply_licht(W):
+    """Feld 'licht' pro Szene ('nacht' | 'frueh' | 'morgen') fuer die Sets backstube und theke.
+    Workbench kennt kein Licht: die Stimmung toent die Objektfarben aller Materialien (ausser Leuchtteilen und Byte)
+    waehrend der Szene; die Backstube schaltet dazu Neonroehre, Fensterfarbe, Mond/Sonne, Lichtstrahl und Staub."""
+    T = W.T
+    spans = []
+    for s in W.tl["scenes"]:
+        mood = s.get("licht") or LICHT_STANDARD.get(s["set"])
+        if s["set"] in ("backstube", "theke") and mood in LICHT:
+            spans.append((s["f0"], s["f1"], s["set"], mood))
+    W.licht_spans = spans
+    if not spans:
+        return
+
+    def mood_at(f):
+        for a, b, st, md in spans:
+            if a <= f < b:
+                return st, md
+        return None, None
+
+    def tint(f, k):
+        st, md = mood_at(f)
+        return LICHT[md][k] if md else 1.0
+    lo, hi = min(a for a, _, _, _ in spans), max(b for _, b, _, _ in spans)
+    for m in list(bpy.data.materials):
+        if m.name.startswith(LICHT_AUSNAHMEN) or "_shellmat" in m.name or "_pixmat" in m.name or "_tipmat" in m.name \
+                or "_ledmat" in m.name:
+            continue
+        for k in range(3):
+            T.mul(m, "diffuse_color", lambda f, k=k: tint(f, k), lo - 1, hi, index=k)
+    S = W.sets.get("backstube")
+    if S is None or not any(st == "backstube" for _, _, st, _ in spans):
+        return
+    win = {"nacht": L.srgb("#3E5FA8"), "frueh": L.srgb("#9DB1D8"), "morgen": L.srgb("#FFE3A6")}
+    neon_on, neon_off = L.srgb("#F2F8FF"), L.srgb("#2A2E3A")
+
+    def bs_mood(f):
+        st, md = mood_at(f)
+        return md if st == "backstube" else None
+    T.set(S.objs["window_mat"], "diffuse_color", lambda f: win.get(bs_mood(f) or "frueh"), lo - 1, hi)
+    T.set(S.objs["neon_mat"], "diffuse_color", lambda f: neon_on if bs_mood(f) == "frueh" else neon_off, lo - 1, hi)
+    T.set(S.objs["moon"], "scale", lambda f: (1, 1, 1) if bs_mood(f) == "nacht" else (0, 0, 0), lo - 1, hi)
+    T.set(S.objs["sun"], "scale", lambda f: (1, 1, 1) if bs_mood(f) == "morgen" else (0, 0, 0), lo - 1, hi)
+    T.set(S.objs["beams"]["moon"], "scale", lambda f: (1, 1, 1) if bs_mood(f) == "nacht" else (0, 0, 0), lo - 1, hi)
+    T.set(S.objs["beams"]["sun"], "scale", lambda f: (1, 1, 1) if bs_mood(f) == "morgen" else (0, 0, 0), lo - 1, hi)
+    # Mehlstaub tanzt im Morgenlicht (im Lichtstrahl)
+    wpos, tgt = S.objs["window"], S.objs["beam_target"]
+    motes = PR.ambient_motes(T, W.coll, "bs_beamdust", tuple(wpos.lerp(tgt, 0.55)), (0.45, 0.35, 0.45), 40, 2201, lo, hi,
+                             drift=0.05, scale=0.9)
+    for o in motes:
+        T.mul(o, "scale", lambda f: (1.0,) * 3 if bs_mood(f) == "morgen" else (0.0,) * 3, lo, hi)
+    for lt in S.lights:
+        e0 = lt.data.energy
+        T.set(lt.data, "energy", lambda f, e0=e0: e0 * {"nacht": 0.15, "frueh": 0.9, "morgen": 1.1}.get(bs_mood(f), 1.0),
+              lo - 1, hi)
+
+
+def glut(T, S, f0, f1, level_fn, seed=0):
+    """Ofenglut der Backstube: Flackern (Farbe und Groesse der Glutstuecke), Staerke level_fn(f) 0..1."""
+    r = random.Random(seed)
+    hot, cold = L.srgb("#FFB347"), L.srgb("#3A1A10")
+    base = L.srgb("#FF7A2E")
+
+    def col(f):
+        lv = max(0.0, min(1.0, level_fn(f)))
+        fl = 0.85 + 0.15 * math.sin(f * 0.9 + 1.3) * math.sin(f * 0.37)
+        c = tuple(cold[k] + (base[k] - cold[k]) * lv * fl for k in range(3))
+        if lv > 0.85:
+            t = (lv - 0.85) / 0.15
+            c = tuple(c[k] + (hot[k] - c[k]) * t * fl for k in range(3))
+        return c + (1.0,)
+    T.set(S.objs["glut_mat"], "diffuse_color", col, f0, f1)
+    for k, e in enumerate(S.objs["embers"]):
+        ph = r.uniform(0, 6.28)
+        T.set(e, "scale", lambda f, ph=ph: ((0.55 + 0.45 * max(0.0, min(1.2, level_fn(f)))) * (1 + 0.15 * math.sin(f * 0.6 + ph)),) * 3,
+              f0, f1)
+    T.set(S.objs["glut_light"].data, "energy", lambda f: 160 * max(0.05, level_fn(f)), f0, f1)
+
+
 # =================================================================== STUDIO
 def build_studio(coll, screen_dir=None, n_frames=1):
     S = SetData("studio", ORIGIN["studio"])
@@ -492,7 +782,7 @@ def build(tl, screen_dir):
     coll = sc.collection
     W.coll = coll
     W.sets = {"theke": build_theke(coll), "buero": build_buero(coll),
-              "studio": build_studio(coll, screen_dir, W.n)}
+              "studio": build_studio(coll, screen_dir, W.n), "backstube": build_backstube(coll)}
     extras = tl["slug"] not in ("drei-helfer", "website")     # neue Merkmale ab dieser Folge
     W.kalle = C.Kalle(coll, extras=extras)
     W.byte = C.Byte(coll, light_energy=26.0)
@@ -510,6 +800,7 @@ def build(tl, screen_dir):
     except ModuleNotFoundError:
         mod = importlib.import_module("choreo.generic")
     mod.direct(W)
+    apply_licht(W)                                   # 2.2: Lichtstimmung pro Szene (Feld 'licht')
     W.cam.register(W.T)
     t0 = time.time()
     n = W.T.bake(0, W.n - 1, loop_frames=getattr(W, "loop_frames", 0))
