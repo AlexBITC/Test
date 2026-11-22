@@ -124,6 +124,28 @@
     "style": 0.65,
     "grund": "'überglücklich, lachend': v2 kann kein [laughs] -> 'Haha!', mehr Ausdruck"
    }
+  },
+  "viral": {
+   "2": {
+    "speech": {
+     "I": "Ich"
+    },
+    "grund": "schwäbisches 'I' wird als 'ihr' gesprochen -> 'Ich', Untertitel bleibt 'I'"
+   },
+   "8": {
+    "speech": {
+     "i!": "ich!"
+    },
+    "grund": "'i' -> 'ich' (siehe black-friday)"
+   },
+   "14": {
+    "speech": {
+     "i": "ich",
+     "da": "da,",
+     "no": "noch"
+    },
+    "grund": "'i' -> 'ich' (siehe black-friday); 'no' klang nach 'nur'/'neue' -> 'noch'; Komma nach 'da', sonst verschluckt; 'hätt', 'au', 'a' bleiben schwäbisch"
+   }
   }
  },
  "piper": {

@@ -548,10 +548,30 @@ def _t(img, xy, s, size, col, alpha=1.0, anchor="lm"):
     d.text(xy, s, font=font(size), fill=(*col, int(255 * alpha)), anchor=anchor)
 
 
+_EP_SCREENS = {}
+
+
+def episode_screens(slug):
+    """Folgenspezifische Bildschirm-Inhalte: assets/screens/<slug>.py mit frame(tl, szene, f) -> Bild oder None."""
+    if slug not in _EP_SCREENS:
+        p = Path(__file__).resolve().parent.parent / "assets" / "screens" / f"{slug.replace('-', '_')}.py"
+        mod = None
+        if p.exists():
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(f"ep_screens_{slug}", p)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+        _EP_SCREENS[slug] = mod
+    return _EP_SCREENS[slug]
+
+
 def screen_frame(tl, f):
     sc = tl["scenes"]
     s = chapter_state(tl, f)
     i = sc.index(s)
+    ep = episode_screens(tl["slug"])
+    if ep is not None:
+        return ep.frame(tl, s, f)
     if s["set"] != "studio" and not s.get("screen"):
         return None
     img = _screen_bg(f, flicker=max(0.0, 1 - (f - s["f0"]) / 12) if i > 0 and sc[i - 1]["set"] != "studio" else 0.0)

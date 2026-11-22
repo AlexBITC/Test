@@ -28,7 +28,9 @@ EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schr
          "eintausend": "tausend", "stop": "stopp",
          # bairische Formen (Kalle): gleiche Bedeutung wie Hochdeutsch
          "i": "ich", "mei": "mein", "behalt": "behalte", "verkauf": "verkaufe", "verlier": "verliere",
-         "en": "einen", "spinnet": "spinnen", "isch": "ist", "mi": "mich", "telefonier": "telefoniere", "brauch": "brauche", "n": "einen",}
+         "en": "einen", "spinnet": "spinnen", "isch": "ist", "mi": "mich", "telefonier": "telefoniere", "brauch": "brauche", "n": "einen",
+         # schwaebische Formen (Folge viral)
+         "koi": "kein", "hätt": "hätte", "au": "auch", "no": "noch", "a": "eine",}
 
 
 def whisper():
