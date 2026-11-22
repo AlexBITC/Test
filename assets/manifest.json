@@ -54,7 +54,7 @@
   "brezelblech": {
    "datei": "assets/props/viral.py",
    "funktion": "brezelblech",
-   "beschreibung": "Blech mit sechs Brezeln"
+   "beschreibung": "wiederverwendbar"
   },
   "wanduhr": {
    "datei": "engine/props.py",
@@ -140,6 +140,81 @@
    "datei": "engine/props.py",
    "funktion": "stempel",
    "beschreibung": "wiederverwendet"
+  },
+  "bewerbungsmappe": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "bewerbungsmappe, mappe_grau, mappe_gold",
+   "beschreibung": "37 als Faecher, klappt grau zu oder leuchtet golden (Haekchen, 'Gespräch mit Kalle')"
+  },
+  "ermittlungs_pinnwand": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "ermittlungs_pinnwand, faeden_schwingen",
+   "beschreibung": "Foto 'BÄCKEREI AM MARKTPLATZ', Zettel, rote Faeden, Preisschild '1,10 €'"
+  },
+  "sterne_leiste": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "sterne_leiste, sterne_fuellen",
+   "beschreibung": "fuellt sich bis zu einem einstellbaren Wert (z. B. 4,8)"
+  },
+  "auftrags_papierflieger": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "auftrags_papierflieger",
+   "beschreibung": "Papierflieger mit gruenem Stempel 'BESTÄTIGT'"
+  },
+  "thermoskanne": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "thermoskanne",
+   "beschreibung": "Aufschrift 'KAFFEE'"
+  },
+  "wanduhr_backstube": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "wanduhr_backstube, uhr_stellen",
+   "beschreibung": "Zeiger plus Digitalanzeige '4:12'"
+  },
+  "bewertungskarte": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "bewertungskarte",
+   "beschreibung": "fuenf Sterne, beschriftbarer Text"
+  },
+  "teigklumpen": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "teigklumpen, klumpen_kippen",
+   "beschreibung": "schiefer Klumpen, kippt um"
+  },
+  "holzscheit": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "holzscheit",
+   "beschreibung": "Scheit fuer den Ofen"
+  },
+  "schuerzenhaken": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "schuerzenhaken",
+   "beschreibung": "Brett 'SCHÜRZEN' mit Haken, Schuerze zuschaltbar"
+  },
+  "stapel": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "mappen_stapel, auftrags_stapel",
+   "beschreibung": "Stapel 'BEWERBUNGEN' und 'AUFTRÄGE'"
+  },
+  "pinzette": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "pinzette",
+   "beschreibung": "fuer das Preisschild"
+  },
+  "schluesselbund": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "schluesselbund",
+   "beschreibung": "Kalles Schluessel"
+  },
+  "mehlsack": {
+   "datei": "engine/props.py",
+   "funktion": "flour_sack",
+   "beschreibung": "wiederverwendet ('WEIZEN 550')"
+  },
+  "preisschild": {
+   "datei": "engine/props.py",
+   "funktion": "preisschild",
+   "beschreibung": "wiederverwendet"
   }
  },
  "bildschirme": {
@@ -175,6 +250,15 @@
     "11": "Knoepfe -> Haekchen",
     "12": "Ersparnis 1.656 €"
    }
+  },
+  "nachtschicht": {
+   "datei": "assets/screens/nachtschicht.py",
+   "inhalte": [
+    "bewerber_37_zu_3",
+    "preisvergleich_brezel",
+    "sterne_vergleich",
+    "bestellungen_62"
+   ]
   }
  }
 }

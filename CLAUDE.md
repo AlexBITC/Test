@@ -41,6 +41,9 @@ Die aktuelle Version steht in `engine/VERSION`.
 | Lichtstimmungen (`build_world.apply_licht`) | Feld `licht` pro Szene. Workbench kennt kein Licht: die Stimmung tönt die Objektfarben aller Materialien (außer Byte und Leuchtteilen) während der Szene. `nacht`: dunkel, blaues Mondlicht durchs Fenster, nur Glut und Byte leuchten; `frueh`: Neonröhre an, kühl; `morgen`: warme Sonne, Lichtstrahl mit tanzendem Mehlstaub. In der Theke nur die Tönung |
 | Sound (`engine/sfx.py`) | zwei leise Atmosphäre-Geräusche: `knistern` (Glut), `ticken` (Uhr) |
 | Timeline (`engine/render.py`) | Szenenfeld `licht` wird durchgereicht |
+| Licht-Abschnitte der Regie | `W.licht_extra = [(f0, f1, set, stimmung), ...]` hat Vorrang vor dem Feld `licht` (Neonröhre flackert an, Zeitraffer) |
+| Culling (`engine/scene.py`) | `SET_X` kennt die Backstube |
+| Hook-Karte (`engine/overlays.py`) | `gelb` aus mehreren Wörtern wird auch über einen Zeilenumbruch hervorgehoben (nur wenn das Stück in keiner Zeile ganz steht; bisherige Folgen unverändert) |
 
 Bisherige Folgen sind unverändert, bis auf Kalles neue Details (Lachfalten, Mehlspuren, Mehlstaub auf der Mütze,
 Schürzenbänder). Die Backstube liegt weit entfernt und ist in anderen Folgen nicht im Bild.
