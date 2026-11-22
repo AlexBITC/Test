@@ -1,25 +1,180 @@
 {
  "hinweis": "Requisiten und Bildschirm-Inhalte je Folge. Neue Requisiten liegen in assets/props/<slug>.py, Bildschirm-Inhalte in assets/screens/<slug>.py (geladen von engine/overlays.screen_frame).",
  "requisiten": {
-  "mini_kamera": {"datei": "assets/props/viral.py", "funktion": "mini_kamera, rec_blink", "beschreibung": "Mini-Kamera mit blinkendem REC-Licht"},
-  "headset_mini": {"datei": "assets/props/viral.py", "funktion": "headset_mini", "beschreibung": "passt auf Byte (Massstab 1) und Kalle (Massstab ~1,42)"},
-  "ringlicht": {"datei": "assets/props/viral.py", "funktion": "ringlicht, ringlicht_an", "beschreibung": "schaltet sich ein (Ring hell, Lichtschein)"},
-  "regieklappe_mini": {"datei": "assets/props/viral.py", "funktion": "regieklappe_mini, klappe", "beschreibung": "Klappe oeffnet und schlaegt zu"},
-  "posten_knopf": {"datei": "assets/props/viral.py", "funktion": "posten_knopf, knopf_druecken", "beschreibung": "leuchtet, wird gedrueckt"},
-  "aufrufzaehler": {"datei": "assets/props/viral.py", "funktion": "aufrufzaehler, zaehler_laufen", "beschreibung": "mechanische Zahlenwalzen, rattern hoch wie ein Kilometerzaehler"},
-  "herzchen_partikel": {"datei": "assets/props/viral.py", "funktion": "herzchen", "beschreibung": "steigen wie Seifenblasen auf"},
-  "kunden_schlange": {"datei": "assets/props/viral.py", "funktion": "kunden_schlange, kunde_mit_handy", "beschreibung": "Low-Poly-Kunden mit hochgehaltenen Handys"},
-  "fenster_tageszeit": {"datei": "assets/props/viral.py", "funktion": "fenster_tageszeit, tageszeit", "beschreibung": "Nacht mit Mond und Sternen, Daemmerung, Morgen mit Sonne, Tag"},
-  "schreibtischlampe": {"datei": "assets/props/viral.py", "funktion": "schreibtischlampe", "beschreibung": "leuchtende Birne mit Lichtkegel"},
-  "brezelblech": {"datei": "assets/props/viral.py", "funktion": "brezelblech", "beschreibung": "Blech mit sechs Brezeln"},
-  "wanduhr": {"datei": "engine/props.py", "funktion": "wall_clock", "beschreibung": "wiederverwendet (Buero-Uhr)"},
-  "brezel": {"datei": "engine/props.py", "funktion": "pastry('brezel')", "beschreibung": "wiederverwendet"},
-  "muenzen": {"datei": "engine/props.py", "funktion": "burst('coinp'), coin_small", "beschreibung": "wiederverwendet"},
-  "mehlwolke": {"datei": "engine/props.py", "funktion": "burst('puff'/'flourdust')", "beschreibung": "wiederverwendet"}
+  "mini_kamera": {
+   "datei": "assets/props/viral.py",
+   "funktion": "mini_kamera, rec_blink",
+   "beschreibung": "Mini-Kamera mit blinkendem REC-Licht"
+  },
+  "headset_mini": {
+   "datei": "assets/props/viral.py",
+   "funktion": "headset_mini",
+   "beschreibung": "passt auf Byte (Massstab 1) und Kalle (Massstab ~1,42)"
+  },
+  "ringlicht": {
+   "datei": "assets/props/viral.py",
+   "funktion": "ringlicht, ringlicht_an",
+   "beschreibung": "schaltet sich ein (Ring hell, Lichtschein)"
+  },
+  "regieklappe_mini": {
+   "datei": "assets/props/viral.py",
+   "funktion": "regieklappe_mini, klappe",
+   "beschreibung": "Klappe oeffnet und schlaegt zu"
+  },
+  "posten_knopf": {
+   "datei": "assets/props/viral.py",
+   "funktion": "posten_knopf, knopf_druecken",
+   "beschreibung": "leuchtet, wird gedrueckt"
+  },
+  "aufrufzaehler": {
+   "datei": "assets/props/viral.py",
+   "funktion": "aufrufzaehler, zaehler_laufen",
+   "beschreibung": "mechanische Zahlenwalzen, rattern hoch wie ein Kilometerzaehler"
+  },
+  "herzchen_partikel": {
+   "datei": "assets/props/viral.py",
+   "funktion": "herzchen",
+   "beschreibung": "steigen wie Seifenblasen auf"
+  },
+  "kunden_schlange": {
+   "datei": "assets/props/viral.py",
+   "funktion": "kunden_schlange, kunde_mit_handy",
+   "beschreibung": "Low-Poly-Kunden mit hochgehaltenen Handys"
+  },
+  "fenster_tageszeit": {
+   "datei": "assets/props/viral.py",
+   "funktion": "fenster_tageszeit, tageszeit",
+   "beschreibung": "Nacht mit Mond und Sternen, Daemmerung, Morgen mit Sonne, Tag"
+  },
+  "schreibtischlampe": {
+   "datei": "assets/props/viral.py",
+   "funktion": "schreibtischlampe",
+   "beschreibung": "leuchtende Birne mit Lichtkegel"
+  },
+  "brezelblech": {
+   "datei": "assets/props/viral.py",
+   "funktion": "brezelblech",
+   "beschreibung": "Blech mit sechs Brezeln"
+  },
+  "wanduhr": {
+   "datei": "engine/props.py",
+   "funktion": "wall_clock",
+   "beschreibung": "wiederverwendet (Buero-Uhr)"
+  },
+  "brezel": {
+   "datei": "engine/props.py",
+   "funktion": "pastry('brezel')",
+   "beschreibung": "wiederverwendet"
+  },
+  "muenzen": {
+   "datei": "engine/props.py",
+   "funktion": "burst('coinp'), coin_small",
+   "beschreibung": "wiederverwendet"
+  },
+  "mehlwolke": {
+   "datei": "engine/props.py",
+   "funktion": "burst('puff'/'flourdust')",
+   "beschreibung": "wiederverwendet"
+  },
+  "geister_kaffeemaschine": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "geister_kaffeemaschine, geist_schweben, aufloesen",
+   "beschreibung": "halbdurchsichtig, schimmernd, Ketten, Preisschild beschriftbar, loest sich in Glitzer auf"
+  },
+  "ordner_kontoauszuege": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "ordner_kontoauszuege, blaetter_einsaugen",
+   "beschreibung": "Ordner 'KONTOAUSZÜGE 2026', Blaetter fliegen heraus und werden eingesaugt"
+  },
+  "buchungs_kaertchen": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "kaertchen_tornado",
+   "beschreibung": "Partikel-Schwarm: Tornado um Byte, dann in die Faecher"
+  },
+  "kategorien_faecher": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "kategorien_faecher",
+   "beschreibung": "5 beschriftete Faecher"
+  },
+  "warnpunkt_rot": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "warnpunkt_rot, warnpunkt_pulsieren, warnpunkt_platzen",
+   "beschreibung": "pulsiert, kann aufplatzen"
+  },
+  "software_box": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "software_box",
+   "beschreibung": "beschriftbar ('KASSE PRO'), auch als Geister-Variante"
+  },
+  "stromzaehler": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "stromzaehler, zaehler_drehen",
+   "beschreibung": "Scheibe dreht schnell, Stempel-Abdruck 'AUTOMATISCH VERLÄNGERT'"
+  },
+  "briefumschlag_kuendigung": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "briefumschlag_kuendigung, umschlag_fliegen",
+   "beschreibung": "Umschlag 'KÜNDIGUNG' fliegt"
+  },
+  "kaffeetasse": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "kaffeetasse, kaffee_spritzer",
+   "beschreibung": "kann fallen, Kaffee spritzt in Zeitlupe"
+  },
+  "glitzer_partikel": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "glitzer",
+   "beschreibung": "goldene und tuerkise Funken"
+  },
+  "ladenfront": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "ladenfront",
+   "beschreibung": "Vorderwand mit Schaufenster (Hintergrund fuer Blick ueber Kalles Schulter)"
+  },
+  "muenzsaeule": {
+   "datei": "engine/props.py",
+   "funktion": "coin_column",
+   "beschreibung": "wiederverwendet"
+  },
+  "stempel": {
+   "datei": "engine/props.py",
+   "funktion": "stempel",
+   "beschreibung": "wiederverwendet"
+  }
  },
  "bildschirme": {
-  "viral": {"datei": "assets/screens/viral.py", "inhalte": ["rohvideo_wackelig", "schnitt_timeline", "effekte_haekchen", "fertiges_video_hochformat", "erstes_frame_gross"],
-            "standbilder": ["assets/screens/viral/kalle_schlingt.png", "assets/screens/viral/kalle_blind.png"],
-            "quelle_standbilder": "Render dieser Folge (Szene 4, Frame 330: Kalle schlingt mit geschlossenen Augen)"}
+  "viral": {
+   "datei": "assets/screens/viral.py",
+   "inhalte": [
+    "rohvideo_wackelig",
+    "schnitt_timeline",
+    "effekte_haekchen",
+    "fertiges_video_hochformat",
+    "erstes_frame_gross"
+   ],
+   "standbilder": [
+    "assets/screens/viral/kalle_schlingt.png",
+    "assets/screens/viral/kalle_blind.png"
+   ],
+   "quelle_standbilder": "Render dieser Folge (Szene 4, Frame 330: Kalle schlingt mit geschlossenen Augen)"
+  },
+  "dashboard": {
+   "datei": "assets/screens/dashboard.py",
+   "inhalte": [
+    "upload_ablage",
+    "screen_dashboard"
+   ],
+   "baustein": "assets/props/screen_dashboard.py (render(zustand), upload_ablage(t)); Schrift Inter (assets/fonts, OFL)",
+   "aufbaustufen": {
+    "4": "Zaehler 1.200 + Ring",
+    "5": "leere Karte GELDFRESSER",
+    "6": "Zeile 1",
+    "8": "Zeilen 2 und 3",
+    "9": "Kacheln, komplett",
+    "10": "rote Kachel pulsiert",
+    "11": "Knoepfe -> Haekchen",
+    "12": "Ersparnis 1.656 €"
+   }
+  }
  }
 }
