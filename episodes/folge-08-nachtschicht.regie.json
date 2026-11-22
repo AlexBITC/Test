@@ -1,0 +1,12 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Stimmen wie folge-03-website: ElevenLabs eleven_multilingual_v2, Kalle = Brian, Byte = Laura. Keine Folgennummer, kein Serienname im Bild. Pausen vor Szene 8 (0,6 s) und 9 (0,5 s) nicht kürzen.",
+ "pause_vor_szene": {
+  "8": 0.6,
+  "9": 0.5
+ },
+ "hook_karte": {
+  "text_oben": "Byte hat die ganze Nacht gearbeitet.",
+  "gelb": "ganze Nacht"
+ }
+}

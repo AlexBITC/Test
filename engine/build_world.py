@@ -525,6 +525,7 @@ LICHT_AUSNAHMEN = ("byte", "antenna", "codeseg", "screen_display", "trail", "bs_
 
 def apply_licht(W):
     """Feld 'licht' pro Szene ('nacht' | 'frueh' | 'morgen') fuer die Sets backstube und theke.
+    Die Regie kann W.licht_extra = [(f0, f1, set, stimmung), ...] setzen; diese Abschnitte haben Vorrang.
     Workbench kennt kein Licht: die Stimmung toent die Objektfarben aller Materialien (ausser Leuchtteilen und Byte)
     waehrend der Szene; die Backstube schaltet dazu Neonroehre, Fensterfarbe, Mond/Sonne, Lichtstrahl und Staub."""
     T = W.T
@@ -533,6 +534,8 @@ def apply_licht(W):
         mood = s.get("licht") or LICHT_STANDARD.get(s["set"])
         if s["set"] in ("backstube", "theke") and mood in LICHT:
             spans.append((s["f0"], s["f1"], s["set"], mood))
+    extra = [tuple(e) for e in getattr(W, "licht_extra", [])]     # Regie: kurze Abschnitte (Flackern, Zeitraffer)
+    spans = extra + spans
     W.licht_spans = spans
     if not spans:
         return

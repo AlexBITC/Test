@@ -146,6 +146,21 @@
     },
     "grund": "'i' -> 'ich' (siehe black-friday); 'no' klang nach 'nur'/'neue' -> 'noch'; Komma nach 'da', sonst verschluckt; 'hätt', 'au', 'a' bleiben schwäbisch"
    }
+  },
+  "nachtschicht": {
+   "8": {
+    "stability": 0.72,
+    "style": 0.05,
+    "speed": 0.88,
+    "grund": "Szene 8 (traurig): leiser und langsamer, nicht weinerlich – hoehere Stability, wenig Style, langsamer"
+   },
+   "5": {
+    "speech": {
+     "4,8": "vier Komma acht",
+     "4,1.": "vier Komma eins."
+    },
+    "grund": "'4,8 gegen 4,1' wurde als '4,80 Euro gegen 4,10 Euro' gesprochen (Bewertungen, keine Preise)"
+   }
   }
  },
  "piper": {

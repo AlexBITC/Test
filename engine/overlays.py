@@ -249,6 +249,13 @@ def draw_hook_card(img, tl, f):
         if gelb and gelb in ln:
             pre, post = ln.split(gelb, 1)
             segs = [(pre, (255, 255, 255)), (gelb, YELLOW), (post, (255, 255, 255))]
+        elif gelb and " " in gelb and not any(gelb in p_ for p_ in parts):
+            # 2.2: Hervorhebung ueber einen Zeilenumbruch hinweg (Wort fuer Wort)
+            gw = {w.strip(".,!?:") for w in gelb.split()}
+            segs = []
+            for j, w in enumerate(ln.split(" ")):
+                segs.append((w + (" " if j < len(ln.split(" ")) - 1 else ""),
+                             YELLOW if w.strip(".,!?:") in gw else (255, 255, 255)))
         else:
             segs = [(ln, (255, 255, 255))]
         total = sum(fnt.getlength(t) for t, _ in segs)
