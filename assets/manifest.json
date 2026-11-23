@@ -290,6 +290,86 @@
    "datei": "assets/props/filiale.py",
    "funktion": "screen_tafel",
    "beschreibung": "schwebende Tafel ueber der Stadtkarte mit der Bildschirm-Bildfolge"
+  },
+  "brezel_missglueckt": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "brezel_missglueckt, reihe_missglueckt",
+   "beschreibung": "9 Varianten: knoten, acht, klumpen, herz, brille (Brillengestell), schlange, spirale, doppelknoten, ohr"
+  },
+  "brezel_roh_perfekt": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "brezel_roh_perfekt",
+   "beschreibung": "dicker Bauch, dünne Ärmchen, roh"
+  },
+  "brezel_gebacken": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "brezel_gebacken, salz_glitzern",
+   "beschreibung": "glänzend braun, Salzkörner glitzern"
+  },
+  "teigstrang": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "teigstrang, teigstrang_form, form_gerade, form_brezel, form_schwung, form_mischen",
+   "beschreibung": "Perlen-Strang, rollbar, dreht sich in der Luft, legt sich zur Brezel"
+  },
+  "kamera_antenne": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "kamera_antenne, kamera_ausklappen",
+   "beschreibung": "klappt aus Bytes Antenne, REC-Licht (viral.mini_kamera, rec_blink)"
+  },
+  "hand_standbild_3d": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "hand_standbild_3d",
+   "beschreibung": "leuchtendes Standbild von Kalles Händen, Nummer im Kreis, beschriftbar"
+  },
+  "bewegungsbahn": {
+   "datei": "engine/ar.py",
+   "funktion": "bahn, bahn_zeichnen, bogen_punkte",
+   "beschreibung": "Engine 2.4: dünne Bahn, türkis (mit Glühen) oder grau, Form über Punkte"
+  },
+  "eisberg_wissen": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "eisberg_wissen",
+   "beschreibung": "Gipfel 'WAS KALLE SAGT' mit Schild, Unterwasserteil 'WAS KALLE KANN' mit Symbolen"
+  },
+  "ar_brille": {
+   "datei": "engine/lea.py",
+   "funktion": "Lea.brille, lea_brille",
+   "beschreibung": "Engine 2.4: schmal, transparent, türkiser Rand; auf der Nase oder in der Stirn, Gläser leuchten auf"
+  },
+  "siegerpodest_mini": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "siegerpodest_mini",
+   "beschreibung": "1-2-3-Podest"
+  },
+  "mehlfleck_schuerze": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "mehlfleck_schuerze",
+   "beschreibung": "erster Mehlfleck (Handabdruck) auf Leas Schürze"
+  },
+  "mehlstrich_stirn": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "mehlstrich_stirn",
+   "beschreibung": "Mehlstrich auf Leas Stirn, bleibt"
+  },
+  "schildchen_handschrift": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "schildchen_handschrift",
+   "beschreibung": "beschriftbar, z. B. 'VON LEA', 'Versuch 10'"
+  },
+  "papiertuete": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "papiertuete",
+   "beschreibung": "Brötchentüte 'KALLE'"
+  },
+  "kundin_lowpoly": {
+   "datei": "engine/props.py",
+   "funktion": "customer, customer_walk",
+   "beschreibung": "Low-Poly-Kundin (wie die Kunden der Kundenschlange)"
+  },
+  "auslage_theke": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "auslage_theke",
+   "beschreibung": "Auslage hinter dem Schaufenster mit Glasfront und Gebäck"
   }
  },
  "bildschirme": {
@@ -342,6 +422,15 @@
     "rechnung_8000_3prozent"
    ],
    "beschreibung": "Tafel ueber der Stadtkarte: '3 von 100' (Szene 9), '8.000 × 3 % = 240 Kunden/Tag' (Szene 10)"
+  },
+  "brezel-geheimnis": {
+   "datei": "assets/screens/brezel_geheimnis.py",
+   "inhalte": [
+    "zeitlupe_kalle",
+    "bahnen_vergleich",
+    "wissen"
+   ],
+   "beschreibung": "Studio-Screen: Zeitlupe 0,25x (Szene 5), Bahnen KALLE/LEA (Szene 6), Titel 'IMPLIZITES WISSEN' (Szene 8)"
   }
  }
 }

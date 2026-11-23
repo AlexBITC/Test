@@ -1,0 +1,249 @@
+{
+  "folge": 10,
+  "slug": "brezel-geheimnis",
+  "titel": "Das Geheimnis in Kalles Händen",
+  "hook": "Lea schafft die Brezel nicht.",
+  "begriff": "Implizites Wissen",
+  "kapitel": [
+    "FILMEN",
+    "ENTDECKEN",
+    "LERNEN"
+  ],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "Zum zehnten Mal: Bauch dick, Ärmchen dünn!",
+      "sprechtext": "Zum zehnten Mal: Bauch dick … Ärmchen dünn!",
+      "ton": "genervt",
+      "betonung": "zehnten",
+      "tempo": "schnell",
+      "musik": "hektisch",
+      "highlight": [
+        "zehnten Mal"
+      ],
+      "reaktion": "schock",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Totale vom Ofen: Lea und Kalle am Arbeitstisch. Vor Lea liegen neun missglückte Brezeln in einer Reihe: Knoten, Acht, Klumpen, eine sieht aus wie ein Herz, eine wie ein Brillengestell. Lea hält gerade die zehnte hoch, sie sackt in sich zusammen. Kalle rauft sich unter der Mütze die Haare, Mehl staubt. Er schaut dabei auf die Brezeln, nicht auf Lea. [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: 'Lea schafft die Brezel nicht.' Kamera: push_in, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "lea",
+      "text": "Ich krieg's einfach nicht hin.",
+      "sprechtext": "Ich krieg's … einfach nicht hin.",
+      "ton": "enttaeuscht",
+      "betonung": "nicht",
+      "tempo": "langsam",
+      "musik": "stille",
+      "highlight": [
+        "nicht hin"
+      ],
+      "reaktion": "traurig",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Lea lässt die Hände sinken, Teig klebt an ihren Fingern, der Zopf fällt nach vorn. Sie schaut auf die Reihe missglückter Brezeln und wischt sich mit dem Handrücken über die Stirn, dabei bleibt ein Mehlstrich zurück. Sie weicht Kalles Blick aus. Kamera: zoom_gesicht auf Lea, langsam. Keine Soundeffekte, nur das Ticken der Wanduhr."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Hey … so war des net gmeint.",
+      "sprechtext": "Hey … so war des net gmeint.",
+      "ton": "ruhig",
+      "betonung": "net",
+      "tempo": "langsam",
+      "musik": "stille",
+      "highlight": [
+        "net gmeint"
+      ],
+      "reaktion": "traurig",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Kalle merkt, dass er zu laut war. Er lässt die Arme sinken, nimmt die Mütze ab und dreht sie verlegen in den Händen. Zum ersten Mal schaut er Lea direkt an. Byte schwebt im Hintergrund vorsichtig näher. Kamera: Nahe am Arbeitstisch, schwenk von Kalle zu Lea. Keine Soundeffekte."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Kalle, mach's noch mal. Ganz langsam. Ich film mit.",
+      "sprechtext": "Kalle, mach's noch mal. Ganz langsam. Ich film mit.",
+      "ton": "ruhig",
+      "betonung": "langsam",
+      "tempo": "normal",
+      "musik": "neugierig",
+      "highlight": [
+        "Ich film mit"
+      ],
+      "reaktion": "neutral",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": 0,
+      "visual": "[3D] Byte schwebt zwischen die beiden, aus seiner Antenne klappt eine kleine Kamera mit rotem REC-Licht. Er positioniert sich direkt über Kalles Händen. Kalle setzt die Mütze wieder auf, nimmt einen Teigstrang und rollt ihn aus. Lea schaut zum ersten Mal wieder hoch. Kamera: rueckfahrt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Kalles Brezel. In fünf Schritten. In Zeitlupe.",
+      "sprechtext": "Kalles Brezel. In fünf Schritten … in Zeitlupe.",
+      "ton": "neugierig",
+      "betonung": "Zeitlupe",
+      "tempo": "normal",
+      "musik": "neugierig",
+      "highlight": [
+        "fünf Schritten"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Kulissenwechsel. Auf dem Studio-Screen läuft Kalles Schlingen in extremer Zeitlupe, Mehlstaub schwebt. Vor dem Screen setzt Byte die Bewegung aus fünf leuchtenden 3D-Standbildern von Kalles Händen zusammen, jedes mit einer Nummer im Kreis: '1 Rollen', '2 Formen', '3 Schlingen', '4 Andrücken', '5 Ablegen'. Kamera: zeitlupe_haende, dann rueckfahrt auf die fünf Standbilder."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Und da: Du machst einen kleinen Schwung aus dem Handgelenk. Lea nicht.",
+      "sprechtext": "Und da … du machst einen kleinen Schwung aus dem Handgelenk. Lea nicht.",
+      "ton": "nachdenklich",
+      "betonung": "Schwung",
+      "tempo": "langsam",
+      "musik": "neugierig",
+      "highlight": [
+        "Schwung"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Byte stoppt Standbild 3, zoomt auf Kalles Handgelenk, eine türkise Bewegungsbahn zeichnet einen kleinen Bogen nach, der Teigstrang dreht sich dabei in der Luft wie von selbst. Daneben Leas Bewegung als graue Bahn: flach, ohne Bogen. [Screen] Zwei Bahnen übereinander: 'KALLE' mit Bogen, 'LEA' flach. Kamera: zeitlupe_haende auf Kalles Handgelenk."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Echt? Des mach i einfach so.",
+      "sprechtext": "Echt? Des mach i … einfach so.",
+      "ton": "fragend",
+      "betonung": "Echt",
+      "tempo": "normal",
+      "musik": "neugierig",
+      "highlight": [
+        "einfach so"
+      ],
+      "reaktion": "staunen",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": 1,
+      "visual": "[3D] Kulissenwechsel. Kalle schaut verblüfft auf seine eigene Hand, dreht sie hin und her, als würde er sie zum ersten Mal sehen. Er macht den Schwung probehalber in der Luft, ohne Teig. Lea macht ihn neben ihm leise nach. Kamera: zoom_gesicht auf Kalle, Hand im Vordergrund."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Das ist implizites Wissen. Du kannst es, aber du kannst es nicht erklären.",
+      "sprechtext": "Das ist implizites Wissen. Du kannst es … aber du kannst es nicht erklären.",
+      "ton": "ueberzeugt",
+      "betonung": "erklären",
+      "tempo": "normal",
+      "musik": "neugierig",
+      "highlight": [
+        "implizites Wissen"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Kulissenwechsel. Ein Low-Poly-Eisberg schwimmt vor Byte: oben ein kleiner Gipfel mit Aufschrift 'WAS KALLE SAGT' und darauf das Schild 'Bauch dick, Ärmchen dünn', unter Wasser ein riesiger Teil 'WAS KALLE KANN' mit leuchtenden Symbolen: Handgelenk-Schwung, Gefühl für den Teig, Takt. Kamera: schwenk vom Gipfel nach unten unter die Wasserlinie."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Lea, setz mal die Brille auf.",
+      "sprechtext": "Lea, setz mal die Brille auf.",
+      "ton": "verschmitzt",
+      "betonung": "Brille",
+      "tempo": "normal",
+      "musik": "aufsteigend",
+      "highlight": [
+        "Brille"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": 2,
+      "visual": "[3D] Kulissenwechsel. Warmes Morgenlicht fällt durchs Fenster. Byte reicht Lea mit beiden Händen eine schmale AR-Brille mit türkisem Rand. Sie setzt sie zögernd auf, die Gläser leuchten kurz türkis auf. Kalle stellt sich hinter sie, die Arme verschränkt, aber mit einem kleinen aufmunternden Nicken. Kamera: push_in auf Lea."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Rollen. Formen. Und jetzt: Schwung.",
+      "sprechtext": "Rollen. … Formen. … Und jetzt … Schwung!",
+      "ton": "begeistert",
+      "betonung": "Schwung",
+      "tempo": "langsam",
+      "musik": "aufsteigend",
+      "highlight": [
+        "Schwung"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": 2,
+      "visual": "[AR] POV durch Leas Brille: Über ihren echten Händen schweben Kalles türkise Holo-Hände und machen jeden Schritt vor, mit Schritt-Nummern 1, 2, 3 im Kreis. Bei 'Schwung' zeichnet sich der leuchtende Bogen am Handgelenk, Leas echte Hand folgt ihm, und der Teigstrang dreht sich in der Luft und legt sich perfekt. Leas Hand zittert beim ersten Schritt leicht und wird dann ruhig. [/AR] Kamera: pov."
+    },
+    {
+      "sprecher": "lea",
+      "text": "Sie ist … perfekt!",
+      "sprechtext": "Sie ist … perfekt!",
+      "ton": "begeistert",
+      "betonung": "perfekt",
+      "tempo": "normal",
+      "musik": "aufsteigend",
+      "highlight": [
+        "perfekt"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": 2,
+      "visual": "[3D] Auf dem Blech liegt Leas erste perfekte Brezel, noch roh: dicker Bauch, dünne Ärmchen, sauber geschlungen. Lea schiebt die Brille in die Stirn, schlägt die Hände vor den Mund, die Augen strahlen, der Zopf wippt. Daneben die neun missglückten Brezeln, die perfekte liegt wie eine Siegerin auf einem Mini-Podest. Kamera: rueckfahrt."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Die isch besser als mei erschte.",
+      "sprechtext": "Die isch … besser als mei erschte.",
+      "ton": "geruehrt",
+      "betonung": "besser",
+      "tempo": "langsam",
+      "musik": "warm",
+      "highlight": [
+        "besser"
+      ],
+      "reaktion": "geruehrt",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": null,
+      "visual": "[3D] Kalle betrachtet die rohe Brezel lange, Mehlstaub tanzt im Sonnenstrahl. Er lächelt still, die Augen glänzen. Dann legt er Lea die Hand auf die Schulter, Mehl staubt von seiner Hand auf ihre saubere Schürze: ihr erster Mehlfleck. Lea schaut auf den Fleck und dann zu Kalle. Kamera: zoom_gesicht, sehr langsam. Vor dieser Szene 0,5 s Stille. Keine Soundeffekte, nur Ofenknistern."
+    },
+    {
+      "sprecher": "lea",
+      "text": "Die hat grad jemand gekauft. Meine Brezel.",
+      "sprechtext": "Die hat grad jemand gekauft. … Meine Brezel.",
+      "ton": "stolz",
+      "betonung": "Meine",
+      "tempo": "langsam",
+      "musik": "warm",
+      "highlight": [
+        "Meine Brezel"
+      ],
+      "reaktion": "geruehrt",
+      "set": "theke",
+      "licht": "morgen",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel in den Verkaufsraum, Kamera erst durchs_fenster von außen: In der Auslage liegt Leas Brezel, jetzt gebacken, glänzend braun mit Salzkörnern, davor ein handgeschriebenes Schildchen 'VON LEA'. Eine Low-Poly-Kundin zeigt darauf, die Verkaufshand reicht sie in einer Papiertüte über die Theke. Dann Schnitt nach innen: Lea steht in der Tür zur Backstube, die Brille in der Stirn, mit dem Mehlfleck auf der Schürze, und schaut der Kundin nach. Byte schwebt neben ihr. Kamera: durchs_fenster, dann push_in auf Lea."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Byte … film mi glei nochmal. Beim Stollen.",
+      "sprechtext": "Byte … film mi glei nochmal. Beim Stollen.",
+      "ton": "verschmitzt",
+      "betonung": "Stollen",
+      "tempo": "normal",
+      "musik": "warm",
+      "highlight": [
+        "Stollen"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel zurück in die Backstube. Kalle krempelt die Ärmel hoch und schiebt Lea einen großen Stollenteig hin, beide grinsen. Byte klappt die REC-Kamera wieder aus, Lea setzt die Brille auf. Auf dem Tisch liegt schon die nächste Reihe Teig. Kamera: endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}
