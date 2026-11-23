@@ -215,6 +215,81 @@
    "datei": "engine/props.py",
    "funktion": "preisschild",
    "beschreibung": "wiederverwendet"
+  },
+  "stadtplan_rolle": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "stadtplan_rolle, rollen",
+   "beschreibung": "Stadtplan mit Rolle, rollt auf und wieder zusammen (Running Gag)"
+  },
+  "lichtwirbel_portal": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "lichtwirbel_portal, wirbel",
+   "beschreibung": "leuchtender Spiralwirbel mit Funken, steigt aus dem Laptop"
+  },
+  "pin_nummer": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "pin, pin_steigen, pin_farbe",
+   "beschreibung": "Datenebene der Stadtkarte (Engine 2.3): nummerierter Pin mit Namensschild, steigt aus dem Boden, Farbe gruen/gelb/grau"
+  },
+  "konkurrenz_marker": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "konkurrenz, marker_setzen",
+   "beschreibung": "Datenebene (Engine 2.3): graue Brezel-Marker"
+  },
+  "info_karte_schwebend": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "info_karte, karte_zeigen",
+   "beschreibung": "Datenebene (Engine 2.3): schwebende Karte, beschriftbar, hoechstens 3 Zeilen"
+  },
+  "personen_lichtpunkte": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "personen",
+   "beschreibung": "Datenebene (Engine 2.3): leuchtende Punkte auf Strassen, Dichte einstellbar"
+  },
+  "heatmap_schleier": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "heatmap",
+   "beschreibung": "Datenebene (Engine 2.3): Schleier rot (belebt) / blau (ruhig)"
+  },
+  "zaehler_schwebend": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "zaehler_schwebend",
+   "beschreibung": "Tafel 'PASSANTEN / MORGEN'; Ziffern als Overlay-Zaehler (W.labels) bis 8.000"
+  },
+  "punktraster_100": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "punktraster_100",
+   "beschreibung": "10 x 10 Punkte, drei golden"
+  },
+  "kundenschlange_gold": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "kundenschlange_gold",
+   "beschreibung": "goldene Punkte fliegen zusammen und reihen sich bis zur Ladentuer ein"
+  },
+  "schild_filiale": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "schild_filiale, aufklappen",
+   "beschreibung": "Klappschild 'FILIALE 2?'"
+  },
+  "kiosk_hologramm": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "kiosk_hologramm, holo_an",
+   "beschreibung": "halbtransparenter Mini-Kiosk mit Schild 'KIOSK' und Scanlinien"
+  },
+  "broetchen_plastik": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "broetchen_plastik",
+   "beschreibung": "blasses, plattes Aufback-Broetchen in Folie, Etikett 'AUFGEBACKEN'"
+  },
+  "brezel_glaenzend": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "brezel_glaenzend, glitzern",
+   "beschreibung": "frische Brezel mit Glanzlichtern und glitzerndem Salz (nutzt engine/props.pastry 'brezel')"
+  },
+  "screen_tafel": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "screen_tafel",
+   "beschreibung": "schwebende Tafel ueber der Stadtkarte mit der Bildschirm-Bildfolge"
   }
  },
  "bildschirme": {
@@ -259,6 +334,14 @@
     "sterne_vergleich",
     "bestellungen_62"
    ]
+  },
+  "filiale": {
+   "datei": "assets/screens/filiale.py",
+   "inhalte": [
+    "drei_von_hundert",
+    "rechnung_8000_3prozent"
+   ],
+   "beschreibung": "Tafel ueber der Stadtkarte: '3 von 100' (Szene 9), '8.000 × 3 % = 240 Kunden/Tag' (Szene 10)"
   }
  }
 }

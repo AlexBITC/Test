@@ -1,0 +1,209 @@
+{
+  "folge": 9,
+  "slug": "filiale",
+  "titel": "Wo kommt Filiale Nr. 2 hin?",
+  "hook": "Wo würdest du die zweite Bäckerei aufmachen?",
+  "begriff": "Standortanalyse",
+  "kapitel": [
+    "ALTSTADT",
+    "BAHNHOF",
+    "RECHNUNG"
+  ],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "Byte, i will a zweite Filiale!",
+      "sprechtext": "Byte, i will a zweite Filiale!",
+      "ton": "begeistert",
+      "betonung": "zweite",
+      "tempo": "normal",
+      "highlight": [
+        "zweite Filiale"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle knallt einen zusammengerollten Stadtplan auf die Theke, der rollt sich auf und rollt sich sofort wieder zusammen. Kalle strahlt, die Mütze sitzt kerzengerade. [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: 'Wo würdest du die zweite Bäckerei aufmachen?' Kamera: push_in, schnell, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Gute Idee. Ich zeig dir die Stadt. Von oben.",
+      "sprechtext": "Gute Idee. Ich zeig dir die Stadt … von oben.",
+      "ton": "verschmitzt",
+      "betonung": "oben",
+      "tempo": "normal",
+      "highlight": [
+        "Von oben"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte schnippt, der Stadtplan wird angesaugt und verwandelt sich in einen Lichtwirbel, der aus dem Laptop nach oben schießt. Kamera: rueckfahrt nach oben, Übergang durch den Lichtwirbel ins nächste Set."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Drei Plätze kommen in Frage. Altstadt, Neubaugebiet, Bahnhof.",
+      "sprechtext": "Drei Plätze kommen in Frage. Altstadt … Neubaugebiet … Bahnhof.",
+      "ton": "ueberzeugt",
+      "betonung": "Drei",
+      "tempo": "normal",
+      "highlight": [
+        "Drei Plätze"
+      ],
+      "reaktion": "neutral",
+      "set": "stadtkarte",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel: Totale von oben auf das Stadt-Diorama, das sich langsam dreht. Bei jedem genannten Viertel schiebt sich ein nummerierter Pin aus dem Boden: '1 ALTSTADT', '2 NEUBAUGEBIET', '3 BAHNHOF'. Kalles Bäckerei leuchtet mit rotem Brezel-Pin. Kamera: totale_oben, langsame Drehung."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Altstadt! Da isch's am schönsten.",
+      "sprechtext": "Altstadt! Da isch's am schönsten.",
+      "ton": "begeistert",
+      "betonung": "schönsten",
+      "tempo": "schnell",
+      "highlight": [
+        "Altstadt"
+      ],
+      "reaktion": "jubel",
+      "set": "stadtkarte",
+      "kapitel": 0,
+      "visual": "[3D] Drohnenflug in die Altstadt: Fachwerkhäuser, der Kirchturm, Lichterketten. Kalle wird im Vordergrund eingeblendet, er deutet begeistert auf den Pin 1 und schwärmt mit verträumtem Blick. Kamera: drohnenflug zur Altstadt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Schön, ja. Aber da gibt's schon zwei Bäckereien.",
+      "sprechtext": "Schön, ja. Aber da gibt's schon … zwei Bäckereien.",
+      "ton": "nachdenklich",
+      "betonung": "zwei",
+      "tempo": "normal",
+      "highlight": [
+        "zwei Bäckereien"
+      ],
+      "reaktion": "zweifel",
+      "set": "stadtkarte",
+      "kapitel": 0,
+      "visual": "[3D] Kamera auf Dachhöhe in der Altstadt. Zwei graue Konkurrenz-Marker in Brezelform ploppen über zwei Läden auf, der Pin 1 färbt sich gelb. Info-Karte über Pin 1: 'Schön · teuer · 2 Bäckereien'. Kamera: tief_viertel, schwenk von Marker zu Marker."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Im Neubaugebiet ist es ruhig. Zu ruhig.",
+      "sprechtext": "Im Neubaugebiet ist es ruhig. Zu ruhig.",
+      "ton": "ruhig",
+      "betonung": "Zu",
+      "tempo": "langsam",
+      "highlight": [
+        "Zu ruhig"
+      ],
+      "reaktion": "neutral",
+      "set": "stadtkarte",
+      "kapitel": 1,
+      "visual": "[3D] Drohnenflug ins Neubaugebiet: weiße Würfelhäuser, eine leere Straße, nur zwei einzelne Lichtpunkte schleichen vorbei. Eine Grille zirpt. Blauer Heatmap-Schleier. Pin 2 wird grau. Info-Karte: 'Wenig Laufkundschaft'. Kamera: drohnenflug, langsam."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Aber am Bahnhof … laufen jeden Morgen 8.000 Leute vorbei.",
+      "sprechtext": "Aber am Bahnhof … laufen jeden Morgen achttausend Leute vorbei.",
+      "ton": "begeistert",
+      "betonung": "achttausend",
+      "tempo": "normal",
+      "highlight": [
+        "8.000 Leute"
+      ],
+      "reaktion": "staunen",
+      "set": "stadtkarte",
+      "kapitel": 1,
+      "visual": "[3D] Drohnenflug zum Bahnhof: Ein Zug fährt ein, Türen öffnen sich, und ein Strom aus Hunderten leuchtenden Punkten flutet die Straßen. Ein roter Heatmap-Schleier breitet sich aus. Die Bahnhofsuhr zeigt '7:15'. Ein Zähler über Pin 3 rattert bis '8.000'. Kamera: drohnenflug, dann harter Stopp über dem Bahnhof."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Und wie viele davon kaufet bei mir?",
+      "sprechtext": "Und wie viele davon kaufet bei mir?",
+      "ton": "fragend",
+      "betonung": "mir",
+      "tempo": "normal",
+      "highlight": [
+        "wie viele"
+      ],
+      "reaktion": "zweifel",
+      "set": "stadtkarte",
+      "kapitel": 1,
+      "visual": "[3D] Kalle im Vordergrund, er beugt sich über den Rand der Platte und schaut skeptisch auf das Gewusel am Bahnhof, kratzt sich unter der Mütze. Kamera: zoom_gesicht auf Kalle, Bahnhof unscharf dahinter."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Wenn nur drei von hundert stehen bleiben …",
+      "sprechtext": "Wenn nur drei von hundert stehen bleiben …",
+      "ton": "nachdenklich",
+      "betonung": "drei",
+      "tempo": "langsam",
+      "highlight": [
+        "drei von hundert"
+      ],
+      "reaktion": "neutral",
+      "set": "stadtkarte",
+      "kapitel": 2,
+      "visual": "[3D] Kamera auf Dachhöhe am Bahnhof: Der Strom der Lichtpunkte zieht vorbei, und von je hundert Punkten biegen drei ab und leuchten golden. Über dem Strom schwebt ein Raster aus 100 Punkten, drei davon golden. [Screen] Info-Karte: '3 von 100'. Kamera: tief_viertel, langsamer push_in."
+    },
+    {
+      "sprecher": "byte",
+      "text": "… sind das 240 Kunden. Jeden Tag.",
+      "sprechtext": "… sind das zweihundertvierzig Kunden. Jeden Tag.",
+      "ton": "ueberzeugt",
+      "betonung": "zweihundertvierzig",
+      "tempo": "normal",
+      "highlight": [
+        "240 Kunden"
+      ],
+      "reaktion": "jubel",
+      "set": "stadtkarte",
+      "kapitel": 2,
+      "visual": "[3D] Alle goldenen Punkte fliegen zusammen zu einer goldenen Kundenschlange, die sich zu einem leeren Ladenlokal am Bahnhof schlängelt. Dort klappt ein Schild auf: 'FILIALE 2?'. Pin 3 leuchtet grün. [Screen] '8.000 × 3 % = 240 Kunden/Tag'. Kamera: rueckfahrt auf totale_oben."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Und warum hat da noch koiner a Bäckerei?",
+      "sprechtext": "Und warum hat da noch koiner a Bäckerei?",
+      "ton": "fragend",
+      "betonung": "warum",
+      "tempo": "normal",
+      "highlight": [
+        "warum"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Kulissenwechsel zurück an die Theke. Kalle hat die Arme verschränkt und eine Augenbraue gehoben, misstrauisch wie ein Detektiv. Kamera: zoom_gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Da gibt's nur einen Kiosk. Mit aufgebackenen Brötchen.",
+      "sprechtext": "Da gibt's nur einen Kiosk. Mit … aufgebackenen Brötchen.",
+      "ton": "verschmitzt",
+      "betonung": "aufgebackenen",
+      "tempo": "normal",
+      "highlight": [
+        "aufgebackenen"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Neben Byte erscheint ein kleines Hologramm des Kiosks, aus dessen Fenster ein blasses, plattgedrücktes Brötchen in Plastikfolie herausschaut. Byte hält es mit spitzen Fingern hoch und verzieht das Display-Gesicht. Kamera: push_in."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Dann zeig i denen mal, was a echte Brezel isch!",
+      "sprechtext": "Dann zeig i denen mal, was a echte Brezel isch!",
+      "ton": "begeistert",
+      "betonung": "echte",
+      "tempo": "schnell",
+      "highlight": [
+        "echte Brezel"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle reißt eine frische, glänzende Brezel vom Blech und hält sie hoch wie eine Trophäe, Salzkörner glitzern. Dann schnappt er sich den Stadtplan und knallt ihn wieder auf die Theke. Kamera: endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}
