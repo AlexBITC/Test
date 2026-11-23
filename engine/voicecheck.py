@@ -19,7 +19,7 @@ _UTMOS_ERR = None
 NAMES = "Kalle, Byte."
 # Schwaebische Woerter duerfen abweichen (zaehlen nicht als Wortfehler)
 DIALECT = {"net", "nicht", "i", "ich", "des", "das", "verschlamp", "verschlampe"}
-DIALECT_REF = {"net", "i", "des", "verschlamp"}
+DIALECT_REF = {"net", "i", "des", "verschlamp", "kaufet", "koiner"}
 # Zahlwoerter und Pflichtbegriffe: muessen exakt erkannt werden
 NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun",
                 "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
@@ -30,7 +30,14 @@ EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schr
          "i": "ich", "mei": "mein", "behalt": "behalte", "verkauf": "verkaufe", "verlier": "verliere",
          "en": "einen", "spinnet": "spinnen", "isch": "ist", "mi": "mich", "telefonier": "telefoniere", "brauch": "brauche", "n": "einen",
          # schwaebische Formen (Folge viral)
-         "koi": "kein", "hätt": "hätte", "au": "auch", "no": "noch", "a": "eine",}
+         "koi": "kein", "hätt": "hätte", "au": "auch", "no": "noch", "a": "eine",
+         # schwaebische Formen (ab 2.3)
+         "kaufet": "kaufen", "koiner": "keiner",}
+
+
+ORDINAL = {1: "erste", 2: "zweite", 3: "dritte", 4: "vierte", 5: "fünfte", 6: "sechste", 7: "siebte", 8: "achte",
+           9: "neunte", 10: "zehnte"}
+ORD_ART = {"a", "eine", "ein", "einen", "die", "der", "das", "den", "dem", "zur", "zum", "am", "im"}
 
 
 def whisper():
@@ -56,7 +63,13 @@ def normalize(text: str, mehl_is_mail_ok: bool = False) -> list:
     text = text.replace("€", " Euro ").replace("–", " ").replace("…", " ").replace("%", " Prozent ")
     text = re.sub(r"(?<=[A-Za-zÄÖÜäöüß])(?=\d)|(?<=\d)(?=[A-Za-zÄÖÜäöüß])", " ", text)
     out = []
-    for w in text.split():
+    toks = text.split()
+    for j, w in enumerate(toks):
+        # 2.3: Ordinalzahl nach Artikel ("a 2. Filiale" -> "a zweite Filiale"), Whisper schreibt "zweite" als "2."
+        if re.fullmatch(r"\d{1,2}\.", w) and 0 < j < len(toks) - 1 and toks[j - 1].lower() in ORD_ART \
+                and toks[j + 1][:1].isalpha() and int(w[:-1]) in ORDINAL:
+            out.append(ORDINAL[int(w[:-1])])
+            continue
         core = re.sub(r"^[^\w]+|[^\w']+$", "", w)
         if not core:
             continue

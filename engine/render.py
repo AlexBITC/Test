@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
-from . import tts
+from . import tts, stimme
 
 ROOT = Path(__file__).resolve().parent.parent
 ENGINE = Path(__file__).resolve().parent
@@ -52,6 +52,15 @@ def voices_stage(ep: dict, work: Path) -> list:
     quota_notes = []
     for i, sz in enumerate(ep["szenen"]):
         role = sz["sprecher"]
+        if model != "piper" and stimme.hat_felder(sz):
+            # Engine 2.3: Felder ton/betonung/tempo/sprechtext -> eigener Weg mit erweitertem Check
+            l = stimme.zeile(i, sz, ep, cfg, model, lambda *a: log(*a))
+            l["check"]["ok"] = not l["fails"]
+            l["check"]["fails"] = list(l["fails"])
+            l["tag"] = l["meta"].get("tag", "")
+            l["all_attempts"] = []
+            lines.append(l)
+            continue
         vid = role if model == "piper" else cfg["voices"][role]["voice_id"]
         tag = ""
         attempts = []
@@ -683,7 +692,10 @@ def main():
         lines, model, cfg = voices_stage(ep, work)
         for k, v in regie.get("pause_vor_szene", {}).items():   # Pause vor Pointen auch mit Stimme
             lines[int(k) - 1]["lead"] = float(v)
-        voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
+        if any(stimme.hat_felder(sz) for sz in ep["szenen"]):
+            stimme.bericht(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md", log)
+        else:
+            voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
     if os.environ.get("REUSE_TIMELINE") != "1" or args.stage != "style":
         tl = build_timeline(ep, lines)
         tl["model"] = model

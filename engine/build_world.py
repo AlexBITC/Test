@@ -23,7 +23,7 @@ from anim import ease_in, ease_out, window, Noise
 FPS = 30
 
 ORIGIN = {"theke": Vector((0, 0, 0)), "buero": Vector((40, 0, 0)), "studio": Vector((80, 0, 0)),
-          "backstube": Vector((120, 0, 0))}
+          "backstube": Vector((120, 0, 0)), "stadtkarte": Vector((160, 0, 0))}
 
 
 def tile_mat(name, c1, c2, mortar, scale=6.0, mortar_size=0.02, rough=0.6, brick_w=0.5, row_h=0.25, offset=0.5,
@@ -786,6 +786,9 @@ def build(tl, screen_dir):
     W.coll = coll
     W.sets = {"theke": build_theke(coll), "buero": build_buero(coll),
               "studio": build_studio(coll, screen_dir, W.n), "backstube": build_backstube(coll)}
+    if any(s["set"] == "stadtkarte" for s in tl["scenes"]):      # 2.3: nur bauen, wenn die Folge es nutzt
+        import stadtkarte as SK
+        W.sets["stadtkarte"] = SK.build_stadtkarte(coll, ORIGIN["stadtkarte"])
     extras = tl["slug"] not in ("drei-helfer", "website")     # neue Merkmale ab dieser Folge
     W.kalle = C.Kalle(coll, extras=extras)
     W.byte = C.Byte(coll, light_energy=26.0)

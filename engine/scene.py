@@ -138,7 +138,7 @@ def export_anchors(W, out_path):
         json.dump(res, fh)
 
 
-SET_X = {"theke": 0.0, "buero": 40.0, "studio": 80.0, "backstube": 120.0}
+SET_X = {"theke": 0.0, "buero": 40.0, "studio": 80.0, "backstube": 120.0, "stadtkarte": 160.0}
 
 
 def cull(W, f):

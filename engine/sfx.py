@@ -1,4 +1,4 @@
-"""Soundeffekte (Pop, Whoosh, Ding, Buzz; ab 2.2 Knistern und Ticken als leise Atmosphaere) – mit ffmpeg aus Sinus und Rauschen erzeugt – und Audio-Mix.
+"""Soundeffekte (Pop, Whoosh, Ding, Buzz; ab 2.2 Knistern und Ticken, ab 2.3 Stadtrauschen, Zug und Grillen als leise Atmosphaere) – mit ffmpeg aus Sinus und Rauschen erzeugt – und Audio-Mix.
 Keine Musik. Lautheit: loudnorm I=-14 LUFS, TP=-1.5 dBTP (zwei Durchlaeufe)."""
 from __future__ import annotations
 
@@ -28,6 +28,15 @@ RECIPES = {
                  ":s=48000:d=2.0", "highpass=f=400,lowpass=f=4500,afade=t=in:d=0.1,afade=t=out:st=1.8:d=0.2"),
     "ticken": ("aevalsrc=exprs='0.8*exp(-t*600)*sin(2*PI*2600*t)+0.4*exp(-t*300)*sin(2*PI*1200*t)'"
                ":s=48000:d=0.06", "afade=t=out:st=0.04:d=0.02"),
+    # 2.3: Stadt (Set 'stadtkarte'): leises Stadtrauschen (3 s), Zug (Rumpeln + Schienenstoesse, 3 s), Grillen (1,5 s)
+    "stadtrauschen": ("aevalsrc=exprs='0.6*(random(0)-0.5)*(0.75+0.25*sin(2*PI*0.33*t))"
+                      "+0.05*sin(2*PI*92*t)*(0.6+0.4*sin(2*PI*0.21*t))':s=48000:d=3.0",
+                      "lowpass=f=900,highpass=f=70,afade=t=in:d=0.5,afade=t=out:st=2.5:d=0.5"),
+    "zug": ("aevalsrc=exprs='0.35*(random(0)-0.5)*(0.5+0.5*min(1\\,t/1.2))"
+            "+0.9*exp(-mod(t\\,0.42)*38)*sin(2*PI*120*t)+0.7*exp(-mod(t+0.13\\,0.42)*38)*sin(2*PI*150*t)'"
+            ":s=48000:d=3.0", "lowpass=f=1400,highpass=f=40,afade=t=in:d=0.8,afade=t=out:st=2.2:d=0.8"),
+    "grillen": ("aevalsrc=exprs='0.5*sin(2*PI*4300*t)*gt(sin(2*PI*28*t)\\,0)*lt(mod(t\\,0.55)\\,0.16)'"
+                ":s=48000:d=1.5", "highpass=f=2500,afade=t=in:d=0.05,afade=t=out:st=1.35:d=0.15"),
     "buzz": ("aevalsrc=exprs='0.32*(sgn(sin(2*PI*110*t))+0.6*sgn(sin(2*PI*165*t)))*(0.6+0.4*sin(2*PI*22*t))'"
              ":s=48000:d=0.38", "lowpass=f=2200,afade=t=in:d=0.01,afade=t=out:st=0.28:d=0.1"),
 }
@@ -52,7 +61,8 @@ def _load(p):
     return y
 
 
-SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22, "knistern": 0.18, "ticken": 0.12}
+SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22, "knistern": 0.18, "ticken": 0.12,
+            "stadtrauschen": 0.15, "zug": 0.25, "grillen": 0.10}
 
 
 def build_mix(tl: dict, work: Path) -> Path:

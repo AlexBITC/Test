@@ -26,9 +26,28 @@ Die aktuelle Version steht in `engine/VERSION`.
 
 ### Erlaubte Werte im Episoden-JSON
 - `reaktion`: `neutral`, `zweifel`, `staunen`, `schock`, `jubel`, `traurig` (ab 2.2), siehe `characters.REAKTIONEN`
-- `set`: `theke`, `buero`, `studio`, `backstube` (ab 2.2)
+- `set`: `theke`, `buero`, `studio`, `backstube` (ab 2.2), `stadtkarte` (ab 2.3)
 - `licht` (optional, ab 2.2): `nacht`, `frueh`, `morgen` für `backstube` und `theke`. Ohne Feld: Theke wie bisher,
   Backstube `frueh`.
+- Stimme (optional, ab 2.3): `ton` (`begeistert`, `ruhig`, `nachdenklich`, `neugierig`, `verschmitzt`, `ueberzeugt`,
+  `fragend`), `betonung` (ein Wort aus dem Text), `tempo` (`langsam`, `normal`, `schnell`), `sprechtext` (nur für die
+  Sprachausgabe, Untertitel bleiben `text`). Ohne diese Felder klingt eine Zeile wie bisher.
+
+### 2.3 – Set „stadtkarte“, natürlichere Stimme
+| Bereich | Umsetzung |
+|---|---|
+| Set `stadtkarte` (`engine/stadtkarte.py`) | Ursprung (160, 0, 0), wird nur gebaut, wenn eine Szene das Set nutzt. Low-Poly-Kleinstadt auf schwebender runder Platte (Radius `S.r` 2,6, Oberfläche `S.pz` auf Thekenhöhe, leuchtender Rand), Fluss mit Brücke, Straßen. Viertel (`S.viertel`): `altstadt` (Fachwerkhäuser, Kirchturm, Marktplatz mit Weihnachtsbaum, zwei kleine Bäckereien mit Markisen = `S.baeckereien`), `neubaugebiet` (weiße Würfelhäuser, Rasen, Bäume, leere Straßen), `bahnhof` (Bahnhof mit Turmuhr und Anzeigetafel „7:15“, Gleise, Zug, Bushaltestelle, Kiosk, leerer Laden `S.laden`). Kalles Bäckerei vorn links mit rotem Brezel-Pin (`S.kalle_bk`). Lokale Koordinaten → Welt: `S.welt(x, y, z, f)` (berücksichtigt das Drehen der Platte) |
+| Bewegung | `leben` (Wellen, Weihnachtskugeln funkeln, Kalle-Pin schwebt), `drehen(T, S, f0, f1, fn)` (Platte dreht sich, Datenebenen folgen), `bahnhofsuhr(T, S, minuten_fn, …)`, `zug_fahrt(T, S, f0, f_halt, f1)` |
+| Datenebenen | `personen` (leuchtende Punkte auf Pfaden, Dichte `dichte_fn` 0..1), `pin` + `pin_steigen` + `pin_farbe` (nummerierte Pins mit Namensschild, steigen aus dem Boden, Farbe gelb/grau/grün), `konkurrenz` + `marker_setzen` (graue Brezel-Marker), `heatmap` (Schleier `rot`/`blau`), `info_karte` + `karte_zeigen` (schwebend, höchstens 3 Zeilen). Pins, Marker und Karten drehen sich zur Kamera (`billboard`). `ebenen_aus_visual(visual)` liest die nötigen Ebenen aus dem Feld `visual` |
+| Kamera | `totale_oben(S)` (ganze Stadt), `tief_viertel(S, viertel, …)` (Dachhöhe), `drohnenflug(keys, ziele, lens, bank)` (Catmull-Rom-Flug, Schräglage in Kurven aus der geglätteten Gierrate, höchstens ±0,22 rad). Figuren: `S.kalle` (vorn an der Plattenkante), `S.byte` (schwebt darüber) |
+| Culling (`engine/scene.py`) | `SET_X` kennt die Stadtkarte |
+| Sound (`engine/sfx.py`) | `stadtrauschen` (3 s, leise), `zug` (Rumpeln und Schienenstöße), `grillen` (Zirpen) |
+| Stimme (`engine/stimme.py`, `engine/render.py`) | Zeilen mit `ton`/`betonung`/`tempo`/`sprechtext` laufen über `stimme.zeile`, alle anderen unverändert über den bisherigen Weg. `ton` → stability/style (begeistert 0,30/0,50, ruhig 0,60/0,15, nachdenklich 0,55/0,25, neugierig 0,40/0,35, verschmitzt 0,35/0,45, ueberzeugt 0,45/0,35, fragend 0,40/0,30), similarity_boost aus `engine/voices.json`. `tempo` (langsam 2,0–2,2, normal 2,3–2,6, schnell 2,6–2,9 Wörter/s) über ElevenLabs `speed`, kein Zeitstrecken. Zahlen im Sprechtext werden immer als Wörter ausgeschrieben. `betonung`: fällt die Betonung durch, bekommt das Wort im nächsten Versuch eine kleine Pause (Komma) davor (nur im Sprechtext). Untertitel-Wörter werden per Abgleich auf den Sprechtext abgebildet (Wort-Timing aus `/with-timestamps`) |
+| Erweiterter Stimmen-Check (`stimme.messen`/`bewerten`) | Whisper (WER ≤ 10 %, schwäbische Wörter frei, Zahlen und Begriff exakt), Spannweite der Satzmelodie ≥ 4 Halbtöne (5.–95. Perzentil, pYIN), Frage steigt / Aussage fällt (letztes Wort gegen den Rest der Zeile; Zeilen, die mit „…“ enden, sind frei), Betonungswort ≥ +2 dB oder ≥ +1,5 Halbtöne, Tempo im Zielbereich, kein Übersteuern, keine Pause > 0,6 s mitten im Satz außer nach „…“, Abstand Kalle/Byte ≥ 4 Halbtöne. Höchstens 3 Versuche; für Zeilen mit `ton` zusätzlich eine eleven_v3-Variante (mit Stimmungs-Tag), übernommen nur, wenn sie besser abschneidet. Bericht: `out/<slug>_stimmen-check.md` |
+| Whisper-Check (`engine/voicecheck.py`) | schwäbisch `kaufet`, `koiner` als erlaubte Abweichung |
+
+Bisherige Folgen sind unverändert: Die Stadtkarte wird dort nicht gebaut, und Zeilen ohne die neuen Felder nutzen den
+bisherigen Stimmen-Weg.
 
 ### 2.2 – Kalle detaillierter, Reaktion „traurig“, Set „backstube“, Lichtstimmungen
 | Bereich | Umsetzung |
