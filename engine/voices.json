@@ -10,6 +10,11 @@
    "voice_id": "FGY2WhTYpPnrIDTdsKH5",
    "name": "Laura - Enthusiast, Quirky Attitude",
    "source": "Auswahl aus GET /v1/voices: hell, freundlich, frech ('quirky'); Casting gegen Jessica/Alice mit Whisper, alle Testsätze fehlerfrei (F0 ~180-210 Hz)"
+  },
+  "lea": {
+   "voice_id": "EXAVITQu4vr4xnSDxMaL",
+   "name": "Sarah - Mature, Reassuring, Confident",
+   "source": "Casting 2.4 aus GET /v1/voices (Jessica, Sarah, Matilda): jung, warm, natürlich; größter Klangfarben-Abstand zu Byte (MFCC-Distanz 43 gegen 32/37), 12 Halbtöne über Kalle, beide Testsätze von Whisper fehlerfrei erkannt"
   }
  },
  "settings": {
@@ -23,6 +28,12 @@
    "stability": 0.5,
    "similarity_boost": 0.75,
    "style": 0.25,
+   "use_speaker_boost": true
+  },
+  "lea": {
+   "stability": 0.5,
+   "similarity_boost": 0.75,
+   "style": 0.3,
    "use_speaker_boost": true
   }
  },

@@ -21,12 +21,23 @@ import numpy as np
 from . import tts, voicecheck
 
 TON = {"begeistert": (0.30, 0.50), "ruhig": (0.60, 0.15), "nachdenklich": (0.55, 0.25), "neugierig": (0.40, 0.35),
-       "verschmitzt": (0.35, 0.45), "ueberzeugt": (0.45, 0.35), "fragend": (0.40, 0.30)}
+       "verschmitzt": (0.35, 0.45), "ueberzeugt": (0.45, 0.35), "fragend": (0.40, 0.30),
+       # 2.4: feinere Gefuehle
+       "genervt": (0.35, 0.45), "enttaeuscht": (0.60, 0.20), "geruehrt": (0.65, 0.20), "stolz": (0.45, 0.35)}
 TEMPO = {"langsam": (2.0, 2.2), "normal": (2.3, 2.6), "schnell": (2.6, 2.9)}
 SPEED0 = {"langsam": 0.84, "normal": 0.92, "schnell": 1.0}
 V3_TAG = {"begeistert": "[excited]", "ruhig": "[calm]", "nachdenklich": "[thoughtful]", "neugierig": "[curious]",
-          "verschmitzt": "[playful]", "ueberzeugt": "[confident]", "fragend": "[curious]"}
+          "verschmitzt": "[playful]", "ueberzeugt": "[confident]", "fragend": "[curious]",
+          "genervt": "[annoyed]", "enttaeuscht": "[sad]", "geruehrt": "[softly]", "stolz": "[proud]"}
 FELDER = ("ton", "betonung", "tempo", "sprechtext")
+TON_24 = ("genervt", "enttaeuscht", "geruehrt", "stolz")
+
+
+def v24(ep: dict) -> bool:
+    """Folge nutzt Merkmale ab Engine 2.4 (Lea, Musikbett, neue Toene oder 'geruehrt'): dann bleiben Atmer erhalten.
+    Folgen bis 2.3 klingen dadurch unveraendert."""
+    return any(sz.get("sprecher") == "lea" or sz.get("musik") or sz.get("ton") in TON_24 or sz.get("reaktion") == "geruehrt"
+               for sz in ep.get("szenen", []))
 
 
 def hat_felder(sz: dict) -> bool:
@@ -206,12 +217,73 @@ def _score(fails, chk, mm, sz):
     return (len(fails) + 2.0 * dev + 10.0 * chk["wer"], -mm["spannweite"])
 
 
+# ------------------------------------------------------------------ Atmer (2.4)
+def _atmer(meta):
+    """Atmer vor dem ersten Wort finden (Pegel > -50 dB unter der Spitze, 0,12-0,9 s lang, direkt vor dem Wort).
+    Rueckgabe: (lead fuer tts.tighten, Laenge des Atmers in s oder 0). Ohne Atmer: Standard-lead 0,04 s."""
+    import soundfile as sf
+    y, sr = sf.read(str(tts.ROOT / meta["wav"]), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    off = (len(meta["tag"]) + 1) if meta.get("tag") else 0
+    chars, st = meta["chars"], meta["starts"]
+    first = next((i for i in range(off, len(chars)) if chars[i].isalnum()), None)
+    if first is None or not len(y):
+        return 0.04, 0.0
+    w0 = st[first]
+    hop = int(0.01 * sr)
+    rms = np.array([np.sqrt(np.mean(y[i:i + hop] ** 2)) for i in range(0, len(y), hop)]) + 1e-9
+    db = 20 * np.log10(rms / rms.max())
+    loud36 = np.nonzero(db > -36)[0]
+    first_loud = loud36[0] * 0.01 if len(loud36) else w0
+    i = int(w0 / 0.01) - 1
+    j = i
+    while j > 0 and db[j] > -50:
+        j -= 1
+    dauer = w0 - j * 0.01
+    if 0.12 <= dauer <= 0.9:
+        return max(0.04, first_loud - j * 0.01 + 0.03), dauer
+    return 0.04, 0.0
+
+
+def _atmer_daempfen(meta, dauer, grenze=-14.0):
+    """Atmer bleibt erhalten; nur ein lauter, stoerender Atmer (Pegel > grenze dB unter der Sprache) wird bis auf
+    die Grenze gedaempft. Rueckgabe: Daempfung in dB (0 = unveraendert)."""
+    import soundfile as sf
+    p = tts.ROOT / meta["wav"]
+    y, sr = sf.read(str(p), dtype="float32")
+    off = (len(meta["tag"]) + 1) if meta.get("tag") else 0
+    first = next((i for i in range(off, len(meta["chars"])) if meta["chars"][i].isalnum()), None)
+    w0 = meta["starts"][first] if first is not None else 0.0
+    n = int(max(0.0, w0 - 0.02) * sr)
+    if n < int(0.08 * sr):
+        return 0.0
+    b = y[:n]
+    s_ = y[n:]
+    lb = 20 * np.log10(np.sqrt(np.mean(b ** 2)) + 1e-9)
+    ls = 20 * np.log10(np.sqrt(np.mean(s_ ** 2)) + 1e-9)
+    ueber = (lb - ls) - grenze
+    if ueber <= 0:
+        return 0.0
+    g = 10 ** (-ueber / 20)
+    ramp = np.ones(n, np.float32) * g
+    k = min(n, int(0.03 * sr))
+    ramp[-k:] = np.linspace(g, 1.0, k)
+    y[:n] = b * ramp
+    sf.write(str(p), y, sr, subtype="PCM_16")
+    return round(float(ueber), 1)
+
+
 # ------------------------------------------------------------------ Erzeugen
-def _erzeuge(sz, ep, role, vid, model, settings, tag, seed, sp_text, spans, pitch=0.0):
+def _erzeuge(sz, ep, role, vid, model, settings, tag, seed, sp_text, spans, pitch=0.0):  # noqa: C901
     """Synthese, Stille kuerzen, Tempo-Rest tonhoehenerhaltend korrigieren (atempo, hoechstens tts.STRETCH_LIMIT),
     dann Whisper-Check und Messungen."""
     lo, hi = TEMPO.get(sz.get("tempo", "normal"), TEMPO["normal"])
-    meta = tts.tighten(tts.synth(sp_text, vid, model, settings, tag, seed=seed))
+    meta0 = tts.synth(sp_text, vid, model, settings, tag, seed=seed)
+    lead, atem = _atmer(meta0) if v24(ep) else (0.04, 0.0)
+    meta = tts.tighten(meta0, lead=lead)
+    if atem:
+        meta["atmer"] = _atmer_daempfen(meta, atem)
     raw = tts.word_times(meta, spans)
     sp = [w for w in raw if re.search(r"\w", w["w"]) and w["end"] > w["start"]]
     n_w = len([w for w in tts.split_words(sz["text"]) if re.search(r"\w", w)])
@@ -298,7 +370,60 @@ def zeile(i: int, sz: dict, ep: dict, cfg: dict, model: str, log, v3_test: bool 
 
 
 # ------------------------------------------------------------------ Bericht
-def bericht(ep: dict, lines: list, path, log=print):
+def _klangfarbe(wavs):
+    """Mittlere MFCC (2-20) ueber die stimmhaften Abschnitte mehrerer Zeilen (Klangfarbe, ohne Lautstaerke)."""
+    import librosa
+    acc = []
+    for w in wavs:
+        y, sr = librosa.load(str(tts.ROOT / w), sr=16000)
+        mf = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=20)
+        rms = librosa.feature.rms(y=y)[0]
+        keep = rms > rms.max() * 0.1
+        acc.append(mf[1:, keep[:mf.shape[1]]].mean(axis=1))
+    return np.mean(acc, axis=0)
+
+
+def pegel_db(wav):
+    """Pegel der gesprochenen Abschnitte (RMS der 10-ms-Fenster ueber -40 dB unter der Spitze) in dBFS."""
+    import soundfile as sf
+    y, sr = sf.read(str(tts.ROOT / wav), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    hop = int(0.01 * sr)
+    r = np.array([np.sqrt(np.mean(y[i:i + hop] ** 2)) for i in range(0, len(y) - hop, hop)]) + 1e-9
+    act = r[r > r.max() * 10 ** (-40 / 20)]
+    return float(20 * np.log10(np.sqrt(np.mean(act ** 2))))
+
+
+def pegel_anwenden(line, db):
+    """Zeile leiser/lauter abmischen (Regie 'pegel_db'): neue Datei <wav>_g<db>.wav, Wort-Timing bleibt."""
+    import soundfile as sf
+    src = tts.ROOT / line["meta"]["wav"]
+    dst = src.with_name(f"{src.stem}_g{db:+.1f}.wav".replace("+", "p").replace("-", "m"))
+    y, sr = sf.read(str(src), dtype="float32")
+    sf.write(str(dst), np.clip(y * 10 ** (db / 20), -1, 1), sr, subtype="PCM_16")
+    line["meta"] = dict(line["meta"], wav=str(dst.relative_to(tts.ROOT)))
+    line["pegel_db"] = db
+    return line
+
+
+def zuruecknahme(ep, lines, regie):
+    """Zusatz-Check aus der Regie: {'zeilen': [..], 'db': -3, 'wps_max': 2.2} -> Liste (zeile, dB rel., W/s, ok)."""
+    z = regie.get("zuruecknahme")
+    if not z:
+        return None
+    pegel = [pegel_db(l["meta"]["wav"]) for l in lines]
+    mittel = float(np.mean(pegel))
+    out = []
+    for n in z["zeilen"]:
+        l = lines[n - 1]
+        rel = pegel[n - 1] - mittel
+        wps = l["check"]["wps"]
+        out.append((n, rel, wps, rel <= z.get("db", -3.0) and wps < z.get("wps_max", 2.2)))
+    return {"mittel": mittel, "zeilen": out, "db": z.get("db", -3.0), "wps_max": z.get("wps_max", 2.2)}
+
+
+def bericht(ep: dict, lines: list, path, log=print, regie=None):
     f0 = {}
     for sz, l in zip(ep["szenen"], lines):
         if l.get("mess"):
@@ -310,7 +435,7 @@ def bericht(ep: dict, lines: list, path, log=print):
     n_v3_test = sum(1 for l in lines if l.get("v3"))
     r = [f"# Stimmen-Check: {ep['titel']}", "",
          "Erweiterter Check (Engine 2.3) für Zeilen mit `ton`/`betonung`/`tempo`/`sprechtext`. Stimmen: ElevenLabs, "
-         "Kalle = Brian, Byte = Laura. Kriterien: Wortfehler ≤ 10 % (schwäbische Wörter frei), Zahlen und Begriff exakt, "
+         "Kalle = Brian, Byte = Laura, Lea = Sarah (ab 2.4). Atmer am Satzanfang bleiben erhalten (laute werden gedämpft). Kriterien: Wortfehler ≤ 10 % (schwäbische Wörter frei), Zahlen und Begriff exakt, "
          "Spannweite der Satzmelodie ≥ 4 Halbtöne (5.–95. Perzentil), Frage steigt / Aussage fällt (letztes Wort gegen "
          "den Rest der Zeile), Betonungswort ≥ +2 dB oder ≥ +1,5 Halbtöne gegenüber dem Durchschnitt aller Wörter der "
          "Zeile (je Wort Spitzenpegel = 95. Perzentil, Tonhöhe = 90. Perzentil), Tempo im "
@@ -340,6 +465,34 @@ def bericht(ep: dict, lines: list, path, log=print):
     if abstand is not None:
         r.append(f"Kalle und Byte: mittlere Tonhöhe {np.median(f0['kalle']):.0f} Hz gegen {np.median(f0['byte']):.0f} Hz, "
                  f"Abstand {abstand:.1f} Halbtöne → {'✓ klar unterscheidbar' if abstand >= 4 else '✗ zu ähnlich'} (Ziel ≥ 4).")
+    if "lea" in f0:                                       # 2.4: Lea gegen Kalle (Tonhoehe) und Byte (Klangfarbe)
+        r.append("")
+        if "kalle" in f0:
+            a_k = 12 * np.log2(np.median(f0["lea"]) / np.median(f0["kalle"]))
+            r.append(f"Lea und Kalle: {np.median(f0['lea']):.0f} Hz gegen {np.median(f0['kalle']):.0f} Hz, Lea liegt "
+                     f"{a_k:.1f} Halbtöne höher → {'✓' if a_k >= 4 else '✗'} (Ziel ≥ 4).".replace(".", ",", 1))
+        if "byte" in f0:
+            wl = [l["meta"]["wav"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "lea"]
+            wb = [l["meta"]["wav"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "byte"]
+            wk = [l["meta"]["wav"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "kalle"]
+            cl, cb = _klangfarbe(wl), _klangfarbe(wb)
+            d_lb = float(np.linalg.norm(cl - cb))
+            d_kb = float(np.linalg.norm(_klangfarbe(wk) - cb)) if wk else None
+            a_b = 12 * np.log2(np.median(f0["lea"]) / np.median(f0["byte"]))
+            r.append(f"Lea und Byte: Tonhöhe {np.median(f0['lea']):.0f} Hz gegen {np.median(f0['byte']):.0f} Hz "
+                     f"({a_b:+.1f} Halbtöne); Klangfarbe (Abstand der mittleren MFCC 2–20): {d_lb:.1f}"
+                     + (f", zum Vergleich Kalle–Byte {d_kb:.1f}" if d_kb else "")
+                     + f" → {'✓ klar unterscheidbar (Klangfarbe)' if d_lb >= 25 else '✗ Klangfarbe zu ähnlich'} (Ziel ≥ 25).")
+    zr = zuruecknahme(ep, lines, regie or {})
+    if zr:
+        r += ["", "## Zurücknahme (Zusatz-Check dieser Folge)", "",
+              f"Zeilen müssen mindestens {abs(zr['db']):.0f} dB leiser als der Durchschnitt der Folge "
+              f"({zr['mittel']:.1f} dBFS, gesprochene Abschnitte) und langsamer als {zr['wps_max']:.1f} Wörter/s sein.".replace(".", ","),
+              "", "| # | Sprecher | Pegel gegen Durchschnitt | W/s | Abmischung | Status |", "|---|---|---|---|---|---|"]
+        for n, rel, wps, ok in zr["zeilen"]:
+            l = lines[n - 1]
+            r.append(f"| {n} | {ep['szenen'][n - 1]['sprecher']} | {rel:+.1f} dB | {wps:.2f} | "
+                     f"{('%+.1f dB' % l['pegel_db']) if l.get('pegel_db') else '–'} | {'OK' if ok else 'FAIL'} |".replace(".", ","))
     r += ["", "## Sprechtext und Versuche", ""]
     for k, (sz, l) in enumerate(zip(ep["szenen"], lines)):
         if not l.get("alle"):

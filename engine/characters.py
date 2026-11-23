@@ -153,6 +153,12 @@ class Kalle:
         if extras:
             self._extras(c, m_white)
         self._details_v22(c)
+        self._details_v24(c)
+
+    def _details_v24(self, c):
+        """Engine 2.4: weiches Laecheln mit geschlossenem Mund (Bogen nach oben) und feuchter Augenglanz fuer
+        'geruehrt'. Beides standardmaessig unsichtbar."""
+        _geruehrt_teile(self, c, "k", mouth_z=0.098, mouth_w=0.07)
 
     def _details_v22(self, c):
         """Engine 2.2: Augenlider (standardmaessig unsichtbar), Lachfalten, Mehlspuren an Haenden und Unterarmen,
@@ -428,6 +434,9 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False, hat=True):
     if kind == "traurig":
         kalle_traurig(T, k, f - 6, f + hold, speaking=speaking)
         return
+    if kind == "geruehrt":
+        kalle_geruehrt(T, k, f - 6, f + hold, speaking=speaking)
+        return
     if kind == "jubel":
         a0 = f - 5
         def up(x):
@@ -451,8 +460,54 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False, hat=True):
         return
 
 
-# Erlaubte Werte fuer "reaktion" (Episoden-JSON): neutral, zweifel, staunen, schock, jubel, traurig (ab 2.2)
-REAKTIONEN = ("neutral", "zweifel", "staunen", "schock", "jubel", "traurig")
+# Erlaubte Werte fuer "reaktion" (Episoden-JSON): neutral, zweifel, staunen, schock, jubel, traurig (ab 2.2),
+# geruehrt (ab 2.4)
+REAKTIONEN = ("neutral", "zweifel", "staunen", "schock", "jubel", "traurig", "geruehrt")
+
+
+def _geruehrt_teile(k, c, pre, mouth_z, mouth_w, smile_y=None):
+    """Laecheln-Bogen (k.smile) und feuchter Augenglanz (k.wet[side]) fuer 'geruehrt' (2.4), unsichtbar."""
+    m_mouth = L.mat("mouth", "#4A1E26", 0.7)
+    k.smile = L.empty(f"{pre}_smile", k.head, (0, smile_y if smile_y is not None else -0.29, mouth_z), c)
+    bm = bmesh.new()
+    n = 10
+    pts = [(mouth_w * math.cos(math.pi + math.pi * i / n), 0.026 * math.sin(math.pi + math.pi * i / n)) for i in range(n + 1)]
+    w = 0.016
+    vo = [bm.verts.new((x, 0, z - w / 2)) for x, z in pts]
+    vi = [bm.verts.new((x * 0.93, 0, z + w / 2)) for x, z in pts]
+    for i in range(n):
+        bm.faces.new((vi[i], vi[i + 1], vo[i + 1], vo[i]))
+    L.from_bm(f"{pre}_smilemesh", bm, m_mouth, k.smile, (0, 0, 0), c)
+    k.smile.scale = (0, 0, 0)
+    m_wet = L.mat("augenglanz", "#FFFFFF", 0.2, emit="#E9FBFF", strength=4.0)
+    k.wet = {}
+    for side in ("R", "L"):
+        wt = L.empty(f"{pre}_wet_{side}", k.pupil[side], (0, 0, 0), c)
+        L.sphere(f"{pre}_wetmain_{side}", 0.017, 8, 5, (1.3, 0.4, 0.8), m_wet, wt, (-0.016, -0.093, -0.02), c)
+        L.sphere(f"{pre}_wetdot_{side}", 0.008, 6, 4, (1, 0.4, 1), m_wet, wt, (0.02, -0.094, -0.028), c)
+        wt.scale = (0, 0, 0)
+        k.wet[side] = wt
+
+
+def kalle_geruehrt(T, k, f0, f1, speaking=False, ramp=12, staerke=1.0):
+    """Geruehrt (2.4): weiches Laecheln mit geschlossenem Mund, glaenzende Augen (feiner Lichtreflex), Brauen leicht
+    hochgezogen und innen angehoben, Kopf leicht geneigt, Lider ein wenig gesenkt. Fuer Kalle und Lea."""
+    env = lambda x: staerke * window(x, f0, f1, ramp, ramp)  # noqa: E731
+    for side, sx in (("R", -1), ("L", 1)):
+        T.set(k.lid[side], "scale", lambda x: (1, 1, 1) if env(x) > 0.01 else (0, 0, 0), f0 - 1, f1 + 1)
+        T.set(k.lid[side], "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+        T.add(k.lid[side], "rotation_euler", lambda x: (0.55 * env(x), 0, 0), f0, f1)
+        T.add(k.brow[side], "rotation_euler", lambda x, sx=sx: (0, sx * 0.3 * env(x), 0), f0, f1)
+        T.add(k.brow[side], "location", lambda x: (0, 0, 0.03 * env(x)), f0, f1)
+        T.set(k.wet[side], "scale", lambda x: ((1.0 + 0.08 * math.sin(x * 0.4)) * min(1.0, 1.4 * env(x)),) * 3, f0 - 1, f1 + 1)
+        T.set(k.wet[side], "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+    T.add(k.head, "rotation_euler", lambda x: (0.05 * env(x), 0.14 * env(x), 0), f0, f1)
+    T.set(k.smile, "scale", lambda x: (min(1.0, 1.3 * env(x)),) * 3, f0 - 1, f1 + 1)
+    T.set(k.smile, "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+    if not speaking:
+        T.mul(k.mouth, "scale", lambda x: (1, 1, 1 - 0.6 * env(x)), f0, f1)
+    if getattr(k, "stache", None) is not None:
+        T.add(k.stache, "location", lambda x: (0, 0, 0.008 * env(x)), f0, f1)
 
 
 def kalle_traurig(T, k, f0, f1, speaking=False, ramp=14, staerke=1.0):
@@ -564,7 +619,7 @@ def _eye_cells(kind):
 EXPRS = ["neutral", "happy", "serious", "surprised", "wink", "curious", "worried"]
 
 # ------------------------------------------------------------------ Byte 2.1: Display-Augen je Reaktion
-BYTE_EYES = ["neutral", "jubel", "staunen", "schock", "zweifel", "wink", "traurig"]
+BYTE_EYES = ["neutral", "jubel", "staunen", "schock", "zweifel", "wink", "traurig", "geruehrt"]
 # aeltere Ausdrucksnamen der Regie-Dateien -> Reaktion (Byte 2.1)
 EYE_ALIAS = {"happy": "jubel", "surprised": "staunen", "curious": "staunen", "worried": "schock",
              "serious": "zweifel", "rund": "neutral"}
@@ -631,6 +686,8 @@ def _eye_polys(kind, cx, cz, outer):
             z = cz - 0.002 + 0.007 * math.sin(math.pi * t) - 0.034 * t
             pts.append((x, z))
         return _stroke(pts, 0.011), []
+    if kind == "geruehrt":                 # 2.4: weiche, nach oben gebogene Boegen mit kleinem Glanzpunkt
+        return _arc(cx, cz - 0.016, 0.03, 0.012, 0.15, math.pi - 0.15, 14), [_disc(cx + 0.012 * outer, cz + 0.004, 0.007, 12)]
     if kind == "zweifel":                  # schraeg, halb geschlossen (aussen hoch, innen tief)
         r = 0.031
         hi, lo = 0.016, -0.002
@@ -1065,6 +1122,16 @@ def byte_face(T, b, schedule, f0, f1):
                 cur = None
         for a, z in spans:
             byte_traurig(T, b, a, z)
+    if "geruehrt" in b.expr:                       # 2.4: Brust-LED pulsiert langsam und warm
+        spans, cur = [], None
+        for fr, e in schedule + [(f1 + 1, "_ende")]:
+            if e == "geruehrt" and cur is None:
+                cur = fr
+            elif e != "geruehrt" and cur is not None:
+                spans.append((max(f0, cur), min(f1, fr)))
+                cur = None
+        for a, z in spans:
+            byte_geruehrt(T, b, a, z)
 
     for e, obj in b.expr.items():
         def sc(f, e=e):
@@ -1089,6 +1156,19 @@ def byte_traurig(T, b, f0, f1, ramp=20):
         for k_ in range(3):
             T.mul(b.m_led, "diffuse_color", lambda x: 1 - 0.55 * env(x), f0, f1, index=k_)
         T.mul(b.halo, "scale", lambda x: (1 - 0.35 * env(x),) * 3, f0, f1)
+
+
+def byte_geruehrt(T, b, f0, f1, ramp=16):
+    """2.4: Brust-LED pulsiert langsam (0,3 Hz) und warm (Gold), Antenne neigt sich leicht."""
+    env = lambda x: window(x, f0, f1, ramp, ramp)  # noqa: E731
+    warm = L.srgb("#F2B45A")
+    T.add(b.ant, "rotation_euler", lambda x: (0.2 * env(x), -0.12 * env(x), 0), f0, f1)
+    T.add(b.body, "rotation_euler", lambda x: (0, 0.12 * env(x), 0), f0, f1)
+    if getattr(b, "v21", False):
+        T.mul(b.led, "scale", lambda x: (1 + env(x) * 0.25 * math.sin(2 * math.pi * 0.3 * x / FPS),) * 3, f0, f1)
+        for k_ in range(3):
+            T.add(b.m_led, "diffuse_color", lambda x, k_=k_: env(x) * (warm[k_] - b.led_dim[k_]) *
+                  (0.75 + 0.25 * math.sin(2 * math.pi * 0.3 * x / FPS)), f0, f1, index=k_)
 
 
 def byte_code_face(T, b, f0, f1, speed=0.09):

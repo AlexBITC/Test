@@ -44,11 +44,33 @@ def hblur(a, radius):
     return (c[:, k:] - c[:, :-k]) / k
 
 
-def compose_one(tl, f, frames_dir, overlay_dir, out_path=None, scale=None, whips=()):
+def _frame3d(frames_dir, f):
     img = Image.open(Path(frames_dir) / f"{f:05d}.png").convert("RGB")
     sub = Path(frames_dir) / f"{f:05d}_b.png"
     if sub.exists():                                   # Motion Blur: Unterbilder mitteln
         img = Image.blend(img, Image.open(sub).convert("RGB"), 0.5)
+    return img
+
+
+def blend_state(f, blenden):
+    """2.4: weiche Ueberblendung an einer Schnittgrenze fb ueber dur Frames (Regie: W.cam.blenden = [(fb, dur)]).
+    Rueckgabe (Frame A, Frame B, Anteil B) oder None. Vor der Grenze steht das erste Bild der neuen Einstellung,
+    danach das letzte der alten (beide Einstellungen sind nur auf ihrer Seite gerendert)."""
+    for fb, dur in blenden:
+        h = dur // 2
+        if fb - h <= f < fb + dur - h:
+            t = (f - (fb - h) + 0.5) / dur
+            t = t * t * (3 - 2 * t)
+            return (min(f, fb - 1), max(f, fb), t)
+    return None
+
+
+def compose_one(tl, f, frames_dir, overlay_dir, out_path=None, scale=None, whips=(), blenden=()):
+    bs = blend_state(f, blenden) if blenden else None
+    if bs:
+        img = Image.blend(_frame3d(frames_dir, bs[0]), _frame3d(frames_dir, bs[1]), bs[2])
+    else:
+        img = _frame3d(frames_dir, f)
     if img.size != (W, H):
         img = img.resize((W, H), Image.LANCZOS).filter(ImageFilter.UnsharpMask(radius=1.6, percent=55, threshold=2))
     a = np.asarray(img, dtype=np.float32)
@@ -73,23 +95,24 @@ def compose_one(tl, f, frames_dir, overlay_dir, out_path=None, scale=None, whips
 _G = {}
 
 
-def _init(tl, fd, od, whips):
-    _G.update(tl=tl, fd=fd, od=od, whips=whips)
+def _init(tl, fd, od, whips, blenden=()):
+    _G.update(tl=tl, fd=fd, od=od, whips=whips, blenden=blenden)
 
 
 def _work(f):
-    return compose_one(_G["tl"], f, _G["fd"], _G["od"], whips=_G["whips"]).tobytes()
+    return compose_one(_G["tl"], f, _G["fd"], _G["od"], whips=_G["whips"], blenden=_G.get("blenden", ())).tobytes()
 
 
 def encode(tl, frames_dir, overlay_dir, audio, out_mp4, scale, procs=4):
     anchors = json.loads((Path(frames_dir).parent / "anchors.json").read_text())
     whips = anchors.get("whips", [])
+    blenden = anchors.get("blenden", [])
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
            "-i", "-", "-i", str(audio), "-map", "0:v", "-map", "1:a", "-vf", DENOISE,
            "-c:v", "libx264", "-profile:v", "high", "-pix_fmt", "yuv420p", "-crf", "20", "-preset", "veryfast",
            "-c:a", "aac", "-b:a", "160k", "-ar", "48000", "-shortest", "-movflags", "+faststart", str(out_mp4)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
-    with Pool(procs, initializer=_init, initargs=(tl, str(frames_dir), str(overlay_dir), whips)) as pool:
+    with Pool(procs, initializer=_init, initargs=(tl, str(frames_dir), str(overlay_dir), whips, blenden)) as pool:
         for buf in pool.imap(_work, range(tl["frames"]), chunksize=4):
             p.stdin.write(buf)
     p.stdin.close()

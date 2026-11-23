@@ -198,7 +198,8 @@ def _score(v: dict, role: str) -> float:
 def load_voices(model: str | None = None) -> dict:
     """voices.json lesen bzw. anlegen. ENV-Variablen haben Vorrang."""
     cfg = json.loads(VOICES_FILE.read_text()) if VOICES_FILE.exists() else {}
-    env = {"kalle": os.environ.get("ELEVENLABS_VOICE_KALLE"), "byte": os.environ.get("ELEVENLABS_VOICE_BYTE")}
+    env = {"kalle": os.environ.get("ELEVENLABS_VOICE_KALLE"), "byte": os.environ.get("ELEVENLABS_VOICE_BYTE"),
+           "lea": os.environ.get("ELEVENLABS_VOICE_LEA")}
     need = [r for r in ("kalle", "byte") if not env[r] and r not in cfg.get("voices", {})]
     if need:
         voices = api("GET", "/v1/voices")["voices"]
@@ -208,7 +209,7 @@ def load_voices(model: str | None = None) -> dict:
             best = max((v for v in voices if v["voice_id"] != other), key=lambda v: _score(v, r))
             cfg["voices"][r] = {"voice_id": best["voice_id"], "name": best["name"], "source": "auto (GET /v1/voices)"}
         VOICES_FILE.write_text(json.dumps(cfg, indent=2, ensure_ascii=False) + "\n")
-    for r in ("kalle", "byte"):
+    for r in ("kalle", "byte", "lea"):           # 2.4: Lea (Azubi), ELEVENLABS_VOICE_LEA hat Vorrang
         if env[r]:
             cfg["voices"][r] = {"voice_id": env[r], "name": "aus ELEVENLABS_VOICE_" + r.upper(), "source": "env"}
     if model:
@@ -434,9 +435,10 @@ def audio_duration(wav: Path) -> float:
 BASE_SETTINGS = {
     "kalle": {"stability": 0.40, "similarity_boost": 0.75, "style": 0.35, "use_speaker_boost": True, "speed": 0.9},
     "byte": {"stability": 0.50, "similarity_boost": 0.75, "style": 0.25, "use_speaker_boost": True, "speed": 0.9},
+    "lea": {"stability": 0.50, "similarity_boost": 0.75, "style": 0.30, "use_speaker_boost": True, "speed": 0.9},
 }
 # Ziel-Tempo (Woerter/s). eleven_v3 ignoriert 'speed' -> Korrektur per Rubberband-Stretch.
-TEMPO = {"kalle": (2.1, 2.7), "byte": (2.2, 2.75)}
+TEMPO = {"kalle": (2.1, 2.7), "byte": (2.2, 2.75), "lea": (2.2, 2.75)}
 STRETCH_LIMIT = (0.88, 1.15)   # Natuerlichkeit schuetzen: hoechstens 12 % langsamer / 15 % schneller
 
 def line_settings(role: str, attempt: int, cfg: dict, model: str):

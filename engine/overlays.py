@@ -493,6 +493,39 @@ def draw_big_overlay(img, tl, f):
         text_center(img, ((X0 + X1) / 2, 392), txt, 180, col, a, stroke=10, stroke_fill=NAVY, scale=sc)
 
 
+_AR_CACHE = {}
+
+
+def draw_ar(img, tl, f):
+    """2.4: Ebene [AR] (durch Leas Brille): ganz dezente Scanlines und ein leichter tuerkiser Randschimmer, kein
+    Flackern. Nur in Szenen, deren 'visual' [AR] … [/AR] enthaelt; Ein- und Ausblenden ueber 6 Frames."""
+    s = next((x for x in tl["scenes"] if x["f0"] <= f < x["f1"]), None)
+    if s is None or "[AR]" not in s.get("visual", ""):
+        return
+    a = min(1.0, (f - s["f0"] + 1) / 6, (s["f1"] - f) / 6)
+    if a <= 0:
+        return
+    if "lay" not in _AR_CACHE:
+        lay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        d = ImageDraw.Draw(lay)
+        for y in range(0, img.size[1], 6):
+            d.line([(0, y), (img.size[0], y)], fill=(46, 230, 214, 14), width=1)
+        import numpy as np
+        h, w = img.size[1], img.size[0]
+        yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+        r = np.maximum(np.abs(xx - w / 2) / (w / 2), np.abs(yy - h / 2) / (h / 2))
+        glow = (np.clip((r - 0.78) / 0.22, 0, 1) ** 2 * 70).astype(np.uint8)
+        g = np.zeros((h, w, 4), np.uint8)
+        g[..., 0], g[..., 1], g[..., 2], g[..., 3] = 46, 230, 214, glow
+        lay = Image.alpha_composite(lay, Image.fromarray(g, "RGBA"))
+        _AR_CACHE["lay"] = lay
+    lay = _AR_CACHE["lay"]
+    if a < 1:
+        lay = lay.copy()
+        lay.putalpha(lay.getchannel("A").point(lambda v: int(v * a)))
+    img.alpha_composite(lay)
+
+
 def overlay_frame(tl, f, anchors):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw_big_overlay(img, tl, f)
@@ -502,6 +535,7 @@ def overlay_frame(tl, f, anchors):
     draw_chapter_bar(img, tl, f)
     draw_term(img, tl, f, anchors)
     draw_labels(img, f, anchors)
+    draw_ar(img, tl, f)
     draw_subtitles(img, tl, f)
     return img
 

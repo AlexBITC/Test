@@ -37,6 +37,12 @@ RECIPES = {
             ":s=48000:d=3.0", "lowpass=f=1400,highpass=f=40,afade=t=in:d=0.8,afade=t=out:st=2.2:d=0.8"),
     "grillen": ("aevalsrc=exprs='0.5*sin(2*PI*4300*t)*gt(sin(2*PI*28*t)\\,0)*lt(mod(t\\,0.55)\\,0.16)'"
                 ":s=48000:d=1.5", "highpass=f=2500,afade=t=in:d=0.05,afade=t=out:st=1.35:d=0.15"),
+    # 2.4: Tuergloeckchen (zwei helle Glocken, leicht versetzt) und Papiertueten-Rascheln (gefiltertes Knistern)
+    "tuerglocke": ("aevalsrc=exprs='0.5*exp(-t*5)*(sin(2*PI*2093*t)+0.5*sin(2*PI*4186*t+0.3)+0.25*sin(2*PI*6280*t))"
+                   "+0.4*gt(t\\,0.11)*exp(-(t-0.11)*5)*(sin(2*PI*2637*t)+0.45*sin(2*PI*5274*t))':s=48000:d=1.4",
+                   "afade=t=in:d=0.003,afade=t=out:st=1.1:d=0.3"),
+    "rascheln": ("aevalsrc=exprs='(random(0)-0.5)*(0.3+0.7*gt(random(1)\\,0.93))*(0.55+0.45*sin(2*PI*5*t))':s=48000:d=0.9",
+                 "highpass=f=1500,lowpass=f=9000,afade=t=in:d=0.05,afade=t=out:st=0.65:d=0.25"),
     "buzz": ("aevalsrc=exprs='0.32*(sgn(sin(2*PI*110*t))+0.6*sgn(sin(2*PI*165*t)))*(0.6+0.4*sin(2*PI*22*t))'"
              ":s=48000:d=0.38", "lowpass=f=2200,afade=t=in:d=0.01,afade=t=out:st=0.28:d=0.1"),
 }
@@ -62,7 +68,7 @@ def _load(p):
 
 
 SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22, "knistern": 0.18, "ticken": 0.12,
-            "stadtrauschen": 0.15, "zug": 0.25, "grillen": 0.10}
+            "stadtrauschen": 0.15, "zug": 0.25, "grillen": 0.10, "tuerglocke": 0.18, "rascheln": 0.12}
 
 
 def build_mix(tl: dict, work: Path) -> Path:
@@ -79,6 +85,14 @@ def build_mix(tl: dict, work: Path) -> Path:
         mix[a:a + len(y)] += y[: max(0, n - a)]
     new_fmt = any(s.get("beat_list") for s in tl["scenes"])
     speech_peak = float(np.max(np.abs(mix))) if len(mix) else 1.0
+    if any(s.get("musik") for s in tl["scenes"]):           # 2.4: Musikbett (nur wenn eine Szene 'musik' hat)
+        from . import musik
+        hop = int(0.01 * SR)
+        r = np.sqrt(np.convolve(mix ** 2, np.ones(hop) / hop, mode="same")[::hop]) + 1e-9
+        act = r[r > r.max() * 10 ** (-40 / 20)]
+        bett = musik.bett(tl, n, float(np.sqrt(np.mean(act ** 2))))
+        if bett is not None:
+            mix += bett
     if speech_peak < 1e-3:                 # ohne Stimme: Effekte auf festen Pegel
         speech_peak = 0.9
     for f, kind, gain in cues:

@@ -19,7 +19,7 @@ _UTMOS_ERR = None
 NAMES = "Kalle, Byte."
 # Schwaebische Woerter duerfen abweichen (zaehlen nicht als Wortfehler)
 DIALECT = {"net", "nicht", "i", "ich", "des", "das", "verschlamp", "verschlampe"}
-DIALECT_REF = {"net", "i", "des", "verschlamp", "kaufet", "koiner"}
+DIALECT_REF = {"net", "i", "des", "verschlamp", "kaufet", "koiner", "mei", "erschte", "gmeint", "glei", "mi"}
 # Zahlwoerter und Pflichtbegriffe: muessen exakt erkannt werden
 NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun",
                 "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
@@ -32,7 +32,9 @@ EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schr
          # schwaebische Formen (Folge viral)
          "koi": "kein", "hätt": "hätte", "au": "auch", "no": "noch", "a": "eine",
          # schwaebische Formen (ab 2.3)
-         "kaufet": "kaufen", "koiner": "keiner",}
+         "kaufet": "kaufen", "koiner": "keiner",
+         # 2.4: Kalle (Brezel-Geheimnis) und Umgangssprache
+         "gmeint": "gemeint", "erschte": "erste", "glei": "gleich", "grad": "gerade",}
 
 
 ORDINAL = {1: "erste", 2: "zweite", 3: "dritte", 4: "vierte", 5: "fünfte", 6: "sechste", 7: "siebte", 8: "achte",
@@ -175,7 +177,10 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
         elif w in MUST and begriff and w != begriff.lower():
             exact.append((w, w in hyp_n))
     if begriff and begriff.lower() in text.lower():
-        exact.append((begriff, begriff.lower() in hyp_n))
+        if " " in begriff.strip():                 # 2.4: Begriff aus mehreren Woertern als Wortfolge pruefen
+            exact.append((begriff, _contains(hyp_n, normalize(begriff))))
+        else:
+            exact.append((begriff, begriff.lower() in hyp_n))
 
     # Tempo: Woerter pro Sekunde ueber die gesprochene Spanne
     spoken = [w for w in words if re.search(r"\w", w["w"]) and w["end"] > w["start"]]

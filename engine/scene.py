@@ -126,6 +126,8 @@ def export_anchors(W, out_path):
     names = list(W.anchors.keys())
     res = {"frames": W.n, "anchors": {k: [] for k in names}, "cues": W.cues, "labels": W.labels,
            "whips": W.cam.whips}
+    if getattr(W.cam, "blenden", None):          # 2.4: weiche Ueberblendungen (nur wenn die Regie sie anfordert)
+        res["blenden"] = W.cam.blenden
     rx, ry = 1080, 1920
     for f in range(W.n):
         sc.frame_set(f)

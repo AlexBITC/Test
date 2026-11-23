@@ -459,7 +459,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
                        "ausdruck_byte": sz.get("ausdruck_byte"), "screen": sz.get("screen"),
                        "overlay": sz.get("overlay"), "kamera": sz.get("kamera"), "stimmung": sz.get("stimmung"),
                        "reaktion": sz.get("reaktion", sz.get("reaktion_kalle", "neutral")), "set": sz["set"], "kapitel": sz.get("kapitel"),
-                       "licht": sz.get("licht"),
+                       "licht": sz.get("licht"), **({"musik": sz["musik"]} if sz.get("musik") else {}),
                        "visual": sz.get("visual", ""), "f0": f, "f1": f + n, "n": n,
                        "audio_f": f + int(round(ld * FPS)), "audio_start": f / FPS + ld,
                        "wav": l["meta"]["wav"], "dur": dur, "hold": hold, "words": words, "beats": beats, "amp": amp, "eq": eq})
@@ -692,8 +692,10 @@ def main():
         lines, model, cfg = voices_stage(ep, work)
         for k, v in regie.get("pause_vor_szene", {}).items():   # Pause vor Pointen auch mit Stimme
             lines[int(k) - 1]["lead"] = float(v)
+        for k, v in regie.get("pegel_db", {}).items():         # 2.4: Zeile leiser/lauter abmischen (Regie)
+            stimme.pegel_anwenden(lines[int(k) - 1], float(v))
         if any(stimme.hat_felder(sz) for sz in ep["szenen"]):
-            stimme.bericht(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md", log)
+            stimme.bericht(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md", log, regie)
         else:
             voice_report(ep, lines, model, cfg, ROOT / "out" / f"{slug}_stimmen-check.md")
     if os.environ.get("REUSE_TIMELINE") != "1" or args.stage != "style":

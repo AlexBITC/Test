@@ -519,7 +519,7 @@ def build_backstube(coll):
 # ------------------------------------------------------------------ Lichtstimmungen (2.2)
 LICHT = {"nacht": (0.055, 0.065, 0.15), "frueh": (0.9, 0.95, 1.05), "morgen": (1.06, 0.98, 0.86)}
 LICHT_STANDARD = {"backstube": "frueh"}           # theke: ohne Feld 'licht' wie bisher (keine Toenung)
-LICHT_AUSNAHMEN = ("byte", "antenna", "codeseg", "screen_display", "trail", "bs_glut", "bs_window", "bs_neon",
+LICHT_AUSNAHMEN = ("ar_", "lea_brillen", "byte", "antenna", "codeseg", "screen_display", "trail", "bs_glut", "bs_window", "bs_neon",
                    "bs_moon", "bs_sun", "bs_glow", "helper", "spark", "sparkt", "bang", "pix", "badge", "digit")
 
 
@@ -794,6 +794,10 @@ def build(tl, screen_dir):
     W.byte = C.Byte(coll, light_energy=26.0)
     if extras:
         W.byte.add_ear_rings()
+    W.lea = None
+    if any(s["sprecher"] == "lea" for s in tl["scenes"]):       # 2.4: Lea nur bauen, wenn die Folge sie nutzt
+        import lea as LE
+        W.lea = LE.Lea(coll)
     W.helpers = [C.Helper(coll, 1, "scan"), C.Helper(coll, 2, "digits"), C.Helper(coll, 3, "feather")] \
         if tl["slug"] == "drei-helfer" else []
     W.cam = CamRig(sc, W.n)

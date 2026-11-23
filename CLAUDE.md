@@ -25,13 +25,42 @@ Bisher verwendete Umgebung für Final-Renders: `RENDER_ENGINE=workbench MB_SUBFR
 Die aktuelle Version steht in `engine/VERSION`.
 
 ### Erlaubte Werte im Episoden-JSON
-- `reaktion`: `neutral`, `zweifel`, `staunen`, `schock`, `jubel`, `traurig` (ab 2.2), siehe `characters.REAKTIONEN`
+- `reaktion`: `neutral`, `zweifel`, `staunen`, `schock`, `jubel`, `traurig` (ab 2.2), `geruehrt` (ab 2.4), siehe
+  `characters.REAKTIONEN`
+- `sprecher`: `kalle`, `byte`, `lea` (ab 2.4)
 - `set`: `theke`, `buero`, `studio`, `backstube` (ab 2.2), `stadtkarte` (ab 2.3)
 - `licht` (optional, ab 2.2): `nacht`, `frueh`, `morgen` für `backstube` und `theke`. Ohne Feld: Theke wie bisher,
   Backstube `frueh`.
 - Stimme (optional, ab 2.3): `ton` (`begeistert`, `ruhig`, `nachdenklich`, `neugierig`, `verschmitzt`, `ueberzeugt`,
-  `fragend`), `betonung` (ein Wort aus dem Text), `tempo` (`langsam`, `normal`, `schnell`), `sprechtext` (nur für die
+  `fragend`; ab 2.4 auch `genervt`, `enttaeuscht`, `geruehrt`, `stolz`), `betonung` (ein Wort aus dem Text), `tempo` (`langsam`, `normal`, `schnell`), `sprechtext` (nur für die
   Sprachausgabe, Untertitel bleiben `text`). Ohne diese Felder klingt eine Zeile wie bisher.
+- `musik` (optional, ab 2.4): `hektisch`, `stille`, `neugierig`, `aufsteigend`, `warm`. Ohne Feld in allen Szenen: keine Musik.
+- `visual` (ab 2.4): Abschnitt `[AR] … [/AR]` = Einblendungen durch Leas Brille (Scanlines/Randschimmer automatisch,
+  3D-Elemente über `engine/ar.py` in der Regie).
+- Regie-Datei (ab 2.4): `pegel_db` (`{"2": -4}` = Zeile 2 um 4 dB leiser abmischen), `zuruecknahme`
+  (`{"zeilen": [2, 3], "db": -3, "wps_max": 2.2}` = Zusatz-Check im Stimmen-Bericht).
+
+### 2.4 – Lea (Azubi), feinere Gefühle, [AR], neue Kameras, Musikbett
+| Bereich | Umsetzung |
+|---|---|
+| Figur Lea (`engine/lea.py`, Klasse `Lea`) | Gleiche Gelenk-Logik und Attributnamen wie Kalle (`root`, `body`, `hips`, `torso`, `sh`/`el`/`hand`/`finger`, `neck`, `head`, `eye`/`pupil`/`lid`, `brow`, `mouth`, `frown`, `hat` = Käppi), daher funktionieren `kalle_lipsync`, `kalle_look`, `pose`, `kalle_haende`, `kalle_react` auch für Lea. Schlanker und jünger, dunkelbrauner Zopf (`zopf_root`, Kette `zopf`, schwingt nach), Strähnen und Pony, weißes Bäckerkäppi, weiße Schürze ohne Mehlfleck (`apron_anchor` für den ersten Fleck), Ärmel hochgekrempelt, große Augen mit Iris, Wimpern, Lidern und Brauen. Mehl an den Fingern (`lea_mehl(T, l, fn)`), AR-Brille (`lea_brille(T, l, [(f, 'ab'|'auf'|'stirn')], aufleuchten=(f,))`). Wird nur gebaut, wenn eine Szene `sprecher: lea` hat (`W.lea`) |
+| Lea Animation | `lea_idle` (Atmen, Gewicht, Zopf, Schürzenbänder, unregelmäßiges Blinzeln `lea_blinks`: 1,5–5 s, manchmal doppelt), `lea_lipsync` (Mund nach Lautstärke, Nicken bei betonten Wörtern), `lea_react` (alle Reaktionen; `traurig`: Kopf gesenkt, Zopf fällt nach vorn, Schultern ziehen hoch, Blick weicht aus, `weg` = Richtung) |
+| Hände (Kalle und Lea) | `haende_rollen` (Strang rollen), `haende_schlingen` (heben, kreuzen, Schwung aus dem Handgelenk, andrücken; `schwung=False` = flach; `zeit=fn` für Zeitlupe), dazu wie bisher `kalle_haende(..., "kneten")` |
+| Reaktion `geruehrt` (`characters.kalle_geruehrt`, `byte_geruehrt`) | Kalle und Lea: weiches Lächeln mit geschlossenem Mund (`k.smile`), glänzende Augen (feiner Lichtreflex `k.wet`), Brauen hoch und innen angehoben, Kopf leicht geneigt, Lider etwas gesenkt. Byte: Display-Augen als weiche, nach oben gebogene Bögen mit Glanzpunkt (`BYTE_EYES`), Brust-LED pulsiert langsam (0,3 Hz) und warm, Antenne neigt sich. `byte_face` mit Ausdruck `geruehrt` schaltet das automatisch |
+| Stimme Lea (`engine/voices.json`, `engine/tts.py`) | ElevenLabs `Sarah` (`EXAVITQu4vr4xnSDxMaL`), `ELEVENLABS_VOICE_LEA` hat Vorrang. Casting gegen Jessica und Matilda: größter Klangfarben-Abstand zu Byte, 12 Halbtöne über Kalle. `BASE_SETTINGS`/`TEMPO` kennen `lea` |
+| Neue Töne (`stimme.TON`) | genervt 0,35/0,45, enttaeuscht 0,60/0,20, geruehrt 0,65/0,20, stolz 0,45/0,35 (stability/style), eleven_v3-Tags dazu |
+| Atmer (`stimme._atmer`, `_atmer_daempfen`) | In Folgen mit 2.4-Merkmalen (Lea, `musik`, neue Töne, `geruehrt`) bleibt ein Atmer vor dem ersten Wort erhalten (0,12–0,9 s, über −50 dB); laute Atmer (> −14 dB unter der Sprache) werden auf die Grenze gedämpft. Ältere Folgen klingen unverändert |
+| Stimmen-Bericht | Lea gegen Kalle (Tonhöhe, Ziel ≥ 4 Halbtöne höher) und Lea gegen Byte (Klangfarbe: Abstand der mittleren MFCC 2–20, Ziel ≥ 25; dazu Tonhöhe). Regie `zuruecknahme`: Pegel der gesprochenen Abschnitte gegen den Folgen-Durchschnitt und Tempo; Regie `pegel_db` mischt Zeilen leiser ab (`stimme.pegel_anwenden`) |
+| Ebene [AR] (`engine/ar.py`, `overlays.draw_ar`) | `holo_haende` + `holo_bewegen` (türkise, halbtransparente Hände mit Glüh-Hülle), `pfeil`, `schritt_kreis` (Nummer im Kreis), `bahn` + `bahn_zeichnen` (dünne Bewegungsbahn, auch grau), `bogen_punkte`, `einblenden`; 2D: ganz dezente Scanlines und türkiser Randschimmer in Szenen mit `[AR]`, ohne Flackern |
+| Kameras (`engine/kameras.py`) | `pov(T, figur, f0, ziel_fn)` (Augenhöhe, Blick auf Hände und Tisch, Hände unten im Bild, leichte Kopfbewegung; `pov_kopf_ausblenden`), `zeitlupe_haende(ziel_fn, f0, f1)` mit `zeitlupe(f0, 0.25)` für die Animation und `mehlstaub_schwebend`, `durchs_fenster(sf, f0, f1)` mit `schaufenster(coll, S)` + `schaufenster_zeigen` (Ladenfront mit Glas, Spiegelstreifen, Markise, Schriftzug; nur bei Aufruf gebaut). Schnee am Rand nur mit Set `marktplatz`, das es nicht gibt |
+| Überblendung (`engine/composite.py`, `scene.export_anchors`) | `W.cam.blenden = [(f_grenze, frames)]`: weiche Überblendung zwischen zwei Einstellungen (Rand-Frames beider Seiten gehalten); ohne Eintrag unverändert |
+| Musikbett (`engine/musik.py`, `sfx.build_mix`) | Selbst erzeugt (Karplus-Strong-Pizzicato, additives Klavier, Pad), keine Dateien, keine Downloads. Pro Stimmung eine durchgehende Spur, pro Szene mit 0,5-s-Rampen ein- und ausgeblendet, 20 dB unter dem Sprachpegel. `stille` = keine Musik |
+| Sound (`engine/sfx.py`) | `tuerglocke`, `rascheln` |
+| Timeline | Feld `musik` wird durchgereicht (nur wenn gesetzt) |
+| Licht | `apply_licht` lässt AR-Elemente und Leas Brillenglas ungetönt |
+
+Bisherige Folgen sind unverändert: Lea, Schaufenster und Musik entstehen nur, wenn eine Folge sie nutzt; neue Bauteile an
+Kalle und Byte (Lächeln, Augenglanz, Display-Augen `geruehrt`) sind standardmäßig unsichtbar.
 
 ### 2.3 – Set „stadtkarte“, natürlichere Stimme
 | Bereich | Umsetzung |
