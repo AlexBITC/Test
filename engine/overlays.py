@@ -235,7 +235,7 @@ def draw_hook_card(img, tl, f):
     y0, y1 = 230, 520
     card(img, (X0, y0 + dy, X1, y1 + dy), a)
     txt = hk["text_oben"]
-    parts = [p.strip() + ("." if not p.strip().endswith(".") else "") for p in txt.split(". ") if p.strip()]
+    parts = [p.strip() + ("." if not p.strip().endswith((".", "?", "!")) else "") for p in txt.split(". ") if p.strip()]
     gelb = hk.get("gelb", "")
     size = 104
     if len(parts) == 1 and font(size).getlength(parts[0]) > X1 - X0 - 60:      # hoechstens zweizeilig umbrechen
@@ -243,6 +243,8 @@ def draw_hook_card(img, tl, f):
         k_ = min(range(1, len(ws)), key=lambda k: abs(font(size).getlength(" ".join(ws[:k])) -
                                                        font(size).getlength(" ".join(ws[k:]))))
         parts = [" ".join(ws[:k_]), " ".join(ws[k_:])]
+    while size > 60 and max(font(size).getlength(p_) for p_ in parts) > X1 - X0 - 20:   # 2.3: nur wenn eine Zeile nicht passt
+        size -= 4
     fnt = font(int(size * sc))
     for i, ln in enumerate(parts):
         cy = y0 + (y1 - y0) * (i + 1) / (len(parts) + 1) + dy
