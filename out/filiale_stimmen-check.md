@@ -4,7 +4,7 @@ Erweiterter Check (Engine 2.3) für Zeilen mit `ton`/`betonung`/`tempo`/`sprecht
 
 | # | Sprecher | ton / tempo | Modell | Versuche | WER | W/s (Ziel), Tempo-Korrektur | F0 | Spannweite | Ende | Betonung | Peak | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | kalle | begeistert / normal | eleven_multilingual_v2 | 3 | 0% | 2,26 (2,3–2,6), x1,15 | 104 Hz | 12,7 Halbtöne | -5,1 Halbtöne (Aussage) | „zweite“ +2,4 dB / +3,8 Halbtöne | 0,68 | OK |
+| 1 | kalle | begeistert / normal | eleven_v3 | 3 | 0% | 2,34 (2,3–2,6), x1,02 | 147 Hz | 13,9 Halbtöne | +0,7 Halbtöne (Aussage) | „zweite“ -0,4 dB / +2,8 Halbtöne | 0,94 | OK |
 | 2 | byte | verschmitzt / normal | eleven_multilingual_v2 | 3 | 0% | 2,33 (2,3–2,6), x1,00 | 178 Hz | 10,6 Halbtöne | -2,8 Halbtöne (Aussage) | „oben“ +0,1 dB / -3,5 Halbtöne | 0,65 | FAIL: Betonung 'oben,' schwach (+0,1 dB, -3,5 Halbtoene) |
 | 3 | byte | ueberzeugt / normal | eleven_multilingual_v2 | 2 | 0% | 2,37 (2,3–2,6), x1,00 | 264 Hz | 7,9 Halbtöne | -4,4 Halbtöne (Aussage) | „Drei“ +2,8 dB / -1,1 Halbtöne | 0,80 | OK |
 | 4 | kalle | begeistert / schnell | eleven_multilingual_v2 | 3 | 0% | 2,64 (2,6–2,9), x1,14 | 170 Hz | 19,2 Halbtöne | -16,6 Halbtöne (Aussage) | „schönsten“ -0,3 dB / -0,7 Halbtöne | 0,52 | FAIL: Betonung 'schönsten,' schwach (-0,3 dB, -0,7 Halbtoene) |
@@ -18,15 +18,15 @@ Erweiterter Check (Engine 2.3) für Zeilen mit `ton`/`betonung`/`tempo`/`sprecht
 | 12 | byte | verschmitzt / normal | eleven_multilingual_v2 | 2 | 0% | 2,39 (2,3–2,6), x1,00 | 171 Hz | 11,7 Halbtöne | -0,5 Halbtöne (Aussage) | „aufgebackenen“ +2,7 dB / -6,5 Halbtöne | 0,64 | OK |
 | 13 | kalle | begeistert / schnell | eleven_v3 | 3 | 10% | 2,95 (2,6–2,9), x0,88 | 111 Hz | 18,1 Halbtöne | -11,4 Halbtöne (Aussage) | „echte“ +6,0 dB / +2,8 Halbtöne | 0,93 | OK |
 
-Kalle und Byte: mittlere Tonhöhe 111 Hz gegen 211 Hz, Abstand 11.2 Halbtöne → ✓ klar unterscheidbar (Ziel ≥ 4).
+Kalle und Byte: mittlere Tonhöhe 115 Hz gegen 211 Hz, Abstand 10.6 Halbtöne → ✓ klar unterscheidbar (Ziel ≥ 4).
 
 ## Sprechtext und Versuche
 
-**1. kalle:** „Byte, i will a zweite Filiale!“  
-- eleven_multilingual_v2 Versuch 1: „Byte, i will a zweite Filiale!“, stability 0.3, style 0.5, speed 0.92, Tempo-Korrektur x0.88 → Tempo 2,75 W/s ausserhalb 2,3–2,6; Aussage faellt nicht (+7,2 Halbtoene am Ende); Whisper: „Byte. Ihr Will. A zweite Filiale.“
-- eleven_multilingual_v2 Versuch 2: „Byte, i will a zweite Filiale!“, stability 0.3, style 0.5, speed 0.72, Tempo-Korrektur x1.15 → WER 17% > 10 %; Betonung 'zweite' schwach (-1,3 dB, +0,4 Halbtoene); Whisper: „Byte, I will et zweite Filiale.“
-- eleven_multilingual_v2 Versuch 3: „Byte, i will a, zweite Filiale!“, stability 0.3, style 0.5, speed 0.72, Tempo-Korrektur x1.15 → OK; Whisper: „Byte, I will A. Zweite Filiale.“ ← gewählt
-- eleven_v3 Versuch v3: „Byte, i will a, zweite Filiale!“, stability 0.5, style 0.5, speed –, Tempo-Korrektur x1.02 → WER 33% > 10 %; Whisper: „Byte eWill.A, zweite Filiale.“
+**1. kalle:** „Byte, ich will eine zweite Filiale!“  
+- eleven_multilingual_v2 Versuch 1: „Byte, ich will eine zweite Filiale!“, stability 0.3, style 0.5, speed 0.92, Tempo-Korrektur x0.88 → Tempo 2,71 W/s ausserhalb 2,3–2,6; Betonung 'zweite' schwach (-1,0 dB, -1,5 Halbtoene); Whisper: „Byte, ich will eine zweite Filiale.“
+- eleven_multilingual_v2 Versuch 2: „Byte, ich will eine, zweite Filiale!“, stability 0.3, style 0.5, speed 0.73, Tempo-Korrektur x1.15 → Tempo 2,19 W/s ausserhalb 2,3–2,6; Whisper: „Byte, ich will eine zweite Filiale.“
+- eleven_multilingual_v2 Versuch 3: „Byte, ich will eine, zweite Filiale!“, stability 0.3, style 0.5, speed 0.94, Tempo-Korrektur x1.00 → WER 17% > 10 %; Betonung 'zweite' schwach (-1,3 dB, -0,2 Halbtoene); Whisper: „Byker, ich will eine zweite Filiale.“
+- eleven_v3 Versuch v3: „Byte, ich will eine, zweite Filiale!“, stability 0.5, style 0.5, speed –, Tempo-Korrektur x1.02 → OK; Whisper: „Byte, ich will eine, zweite Filiale.“ ← gewählt
 
 **2. byte:** „Gute Idee. Ich zeig dir die Stadt. Von oben.“  
 - eleven_multilingual_v2 Versuch 1: „Gute Idee. Ich zeig dir die Stadt … von oben.“, stability 0.35, style 0.45, speed 0.92, Tempo-Korrektur x0.88 → WER 11% > 10 %; Tempo 2,94 W/s ausserhalb 2,3–2,6; Betonung 'oben,' schwach (+1,1 dB, -4,9 Halbtoene); Whisper: „Gute Idee, ich zeig dir die Stadt von ober.“
@@ -95,5 +95,5 @@ Kalle und Byte: mittlere Tonhöhe 111 Hz gegen 211 Hz, Abstand 11.2 Halbtöne �
 
 ## eleven_v3
 
-Für 13 Zeilen mit `ton` wurde zusätzlich eine eleven_v3-Variante (mit Stimmungs-Tag) erzeugt und mit demselben Check bewertet. Übernommen, weil besser als eleven_multilingual_v2: 3 Zeilen.
+Für 13 Zeilen mit `ton` wurde zusätzlich eine eleven_v3-Variante (mit Stimmungs-Tag) erzeugt und mit demselben Check bewertet. Übernommen, weil besser als eleven_multilingual_v2: 4 Zeilen.
 
