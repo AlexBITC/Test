@@ -121,3 +121,88 @@ def durchs_fenster(sf, f0, f1, ziel=None, abstand=2.4, hoehe=1.55, lens=30.0, sc
 def pov_kopf_ausblenden(T, figur, f0, f1):
     """Waehrend einer POV-Einstellung den eigenen Kopf mit Hals (mit Kaeppi, Zopf, Brille) ausblenden."""
     T.mul(figur.neck, "scale", lambda f: (0.0, 0.0, 0.0) if f0 <= f < f1 else (1.0, 1.0, 1.0), max(0, f0 - 1), f1 + 1)
+
+
+# ------------------------------------------------------------------ 2.5: Uebergaenge echte Welt <-> Spielwelt
+def _get(X, f):
+    return X(f) if callable(X) else X
+
+
+def ins_spiel(W, vorher, bildschirm, normale, fb, nachher, anflug=24, einzoom=1.8):
+    """Kamera fliegt aus der echten Welt in einen Bildschirm (Mitte bildschirm, Blickrichtung -normale) und kommt im
+    Spiel heraus. Vor fb: von vorher(f) auf den Bildschirm zu (letzte anflug Frames); ab fb: nachher(f), zu Beginn
+    eingezoomt (Brennweite * einzoom), weich zurueck. Traegt den Pixel-/Scanline-Blitz (0,6 s) fuer composite ein."""
+    bs, n = Vector(bildschirm), Vector(normale).normalized()
+    nah = (bs + n * 0.22, bs, 30.0)
+    _uebergang(W, fb, "ins")
+
+    def fn(f):
+        if f < fb:
+            a = _get(vorher, f)
+            t = ease_in_out(max(0.0, min(1.0, (f - (fb - anflug)) / anflug)))
+            if t <= 0:
+                return a
+            t = t * t
+            return (Vector(a[0]).lerp(Vector(nah[0]), t), Vector(a[1]).lerp(Vector(nah[1]), t), a[2] + (nah[2] - a[2]) * t)
+        b = _get(nachher, f)
+        k = ease_in_out(max(0.0, min(1.0, (f - fb) / 14)))
+        return (b[0], b[1], b[2] * (einzoom + (1 - einzoom) * k))
+    return fn
+
+
+def aus_spiel(W, vorher, bildschirm, normale, fb, nachher, abflug=22, einzoom=1.8):
+    """Gegenstueck zu ins_spiel: das Spielbild zoomt vor fb ein, ab fb faehrt die Kamera aus dem Bildschirm zurueck in
+    die echte Welt (nachher(f))."""
+    bs, n = Vector(bildschirm), Vector(normale).normalized()
+    nah = (bs + n * 0.22, bs, 30.0)
+    _uebergang(W, fb, "aus")
+
+    def fn(f):
+        if f < fb:
+            a = _get(vorher, f)
+            k = ease_in_out(max(0.0, min(1.0, (f - (fb - 12)) / 12)))
+            return (a[0], a[1], a[2] * (1 + (einzoom - 1) * k))
+        b = _get(nachher, f)
+        t = ease_in_out(max(0.0, min(1.0, (f - fb) / abflug)))
+        t = 1 - (1 - t) * (1 - t)
+        return (Vector(nah[0]).lerp(Vector(b[0]), t), Vector(nah[1]).lerp(Vector(b[1]), t), nah[2] + (b[2] - nah[2]) * t)
+    return fn
+
+
+def _uebergang(W, fb, art):
+    if not hasattr(W, "uebergaenge") or W.uebergaenge is None:
+        W.uebergaenge = []
+    W.uebergaenge.append([int(fb), art])
+
+
+def welt_zu_spiel(W, start, f_auf, f_morph, spiel_fn, dauer=30, hoehe=14.0):
+    """Ende einer Folge: die Kamera steigt aus der echten Welt senkrecht auf (ab f_auf, Blick kippt nach unten), ab
+    f_morph verwandelt sich das Bild ueber dauer Frames (1,0 s) in die isometrische Spielstadt: Kacheln klappen um
+    (composite.py), danach steht das Bild exakt wie spiel_fn (z. B. die Einstellung aus Szene 1). Das Spielbild kommt
+    aus dem Zweitbild-Durchgang (W.zweitbild_fn), eingetragen in W.morph."""
+    if not hasattr(W, "morph") or W.morph is None:
+        W.morph = []
+    W.morph.append({"f0": int(f_morph), "dauer": int(dauer)})
+
+    def fn(f):
+        a = _get(start, f)
+        if f < f_auf:
+            return a
+        t = ease_in_out(max(0.0, min(1.0, (f - f_auf) / max(1, f_morph + dauer - f_auf))))
+        p, z = Vector(a[0]), Vector(a[1])
+        p2 = p + Vector((0, 0, hoehe * t))
+        z2 = z.lerp(Vector((p.x, p.y + 0.5, z.z - 2.0)), t * 0.85)
+        return (p2, z2, a[2])
+    return fn
+
+
+def zweitbild(W, f0, f1, set_name, shot_fn, art, groesse=None):
+    """Zweiter Render-Durchgang je Frame (scene.render_frames): 'facecam' (kleines Fenster mit der echten Figur,
+    groesse in Pixeln, Set set_name) oder 'morph' (volles Bild, z. B. die Spielwelt). Datei <f>_fc.png / <f>_zw.png."""
+    if not hasattr(W, "zweit") or W.zweit is None:
+        W.zweit = []
+    W.zweit.append({"f0": int(f0), "f1": int(f1), "set": set_name, "fn": shot_fn, "art": art, "groesse": groesse})
+    if art == "facecam":
+        if not hasattr(W, "facecam") or W.facecam is None:
+            W.facecam = []
+        W.facecam.append([int(f0), int(f1)])

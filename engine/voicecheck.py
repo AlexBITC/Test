@@ -19,7 +19,9 @@ _UTMOS_ERR = None
 NAMES = "Kalle, Byte."
 # Schwaebische Woerter duerfen abweichen (zaehlen nicht als Wortfehler)
 DIALECT = {"net", "nicht", "i", "ich", "des", "das", "verschlamp", "verschlampe"}
-DIALECT_REF = {"net", "i", "des", "verschlamp", "kaufet", "koiner", "mei", "erschte", "gmeint", "glei", "mi"}
+DIALECT_REF = {"net", "i", "des", "verschlamp", "kaufet", "koiner", "mei", "erschte", "gmeint", "glei", "mi",
+               "gspielt", "kommet"}
+DIALECT_REF_25 = {"a", "no"}       # 2.5: nur fuer Folgen mit 2.5-Merkmalen (stimme.v25), aeltere Berichte bleiben gleich
 # Zahlwoerter und Pflichtbegriffe: muessen exakt erkannt werden
 NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun",
                 "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
@@ -34,7 +36,9 @@ EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schr
          # schwaebische Formen (ab 2.3)
          "kaufet": "kaufen", "koiner": "keiner",
          # 2.4: Kalle (Brezel-Geheimnis) und Umgangssprache
-         "gmeint": "gemeint", "erschte": "erste", "glei": "gleich", "grad": "gerade",}
+         "gmeint": "gemeint", "erschte": "erste", "glei": "gleich", "grad": "gerade",
+         # 2.5: Kalle (Baeckerei-Spiel)
+         "gspielt": "gespielt", "kommet": "kommen",}
 
 
 ORDINAL = {1: "erste", 2: "zweite", 3: "dritte", 4: "vierte", 5: "fünfte", 6: "sechste", 7: "siebte", 8: "achte",
@@ -150,7 +154,7 @@ def utmos(y16):
 
 
 def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: str, n_words: int | None = None,
-               tempo=(2.0, 2.8), pause_limit: float = 0.7) -> dict:
+               tempo=(2.0, 2.8), pause_limit: float = 0.7, dialekt_extra=()) -> dict:
     """words: [{'w','start','end'}] aus den API-Zeitstempeln."""
     y16 = load16k(wav_path)
     raw, sr = sf.read(str(wav_path), dtype="float32")
@@ -161,7 +165,7 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     ref_n = normalize(text)
     hyp_n = split_compounds(ref_n, normalize(hyp_text))
     raw_ref = [re.sub(r"^[^\w]+|[^\w']+$", "", w).lower() for w in split_words(text)]
-    free = frozenset(EQUIV.get(w, w) for w in raw_ref if w in DIALECT_REF)
+    free = frozenset(EQUIV.get(w, w) for w in raw_ref if w in DIALECT_REF or w in dialekt_extra)
     w_err = wer(ref_n, hyp_n, free)
 
     # Zahlen und Fachbegriff exakt

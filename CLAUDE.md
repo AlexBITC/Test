@@ -27,18 +27,77 @@ Die aktuelle Version steht in `engine/VERSION`.
 ### Erlaubte Werte im Episoden-JSON
 - `reaktion`: `neutral`, `zweifel`, `staunen`, `schock`, `jubel`, `traurig` (ab 2.2), `geruehrt` (ab 2.4), siehe
   `characters.REAKTIONEN`
-- `sprecher`: `kalle`, `byte`, `lea` (ab 2.4)
-- `set`: `theke`, `buero`, `studio`, `backstube` (ab 2.2), `stadtkarte` (ab 2.3)
+- `sprecher`: `kalle`, `byte`, `lea` (ab 2.4), `erzaehler` (ab 2.5, ohne sichtbare Figur)
+- `set`: `theke`, `buero`, `studio`, `backstube` (ab 2.2), `stadtkarte` (ab 2.3), `spielwelt` (ab 2.5)
 - `licht` (optional, ab 2.2): `nacht`, `frueh`, `morgen` für `backstube` und `theke`. Ohne Feld: Theke wie bisher,
   Backstube `frueh`.
 - Stimme (optional, ab 2.3): `ton` (`begeistert`, `ruhig`, `nachdenklich`, `neugierig`, `verschmitzt`, `ueberzeugt`,
-  `fragend`; ab 2.4 auch `genervt`, `enttaeuscht`, `geruehrt`, `stolz`), `betonung` (ein Wort aus dem Text), `tempo` (`langsam`, `normal`, `schnell`), `sprechtext` (nur für die
+  `fragend`; ab 2.4 auch `genervt`, `enttaeuscht`, `geruehrt`, `stolz`; ab 2.5 `erzaehlend`), `betonung` (ein Wort aus dem Text), `tempo` (`langsam`, `normal`, `schnell`), `sprechtext` (nur für die
   Sprachausgabe, Untertitel bleiben `text`). Ohne diese Felder klingt eine Zeile wie bisher.
-- `musik` (optional, ab 2.4): `hektisch`, `stille`, `neugierig`, `aufsteigend`, `warm`. Ohne Feld in allen Szenen: keine Musik.
+- `musik` (optional, ab 2.4): `hektisch`, `stille`, `neugierig`, `aufsteigend`, `warm`; ab 2.5 `trailer`, `spielerisch`. Ohne Feld in
+  allen Szenen: keine Musik.
 - `visual` (ab 2.4): Abschnitt `[AR] … [/AR]` = Einblendungen durch Leas Brille (Scanlines/Randschimmer automatisch,
-  3D-Elemente über `engine/ar.py` in der Regie).
+  3D-Elemente über `engine/ar.py` in der Regie). Ab 2.5: `[GAME] … [/GAME]` = Spielwelt mit Spielanzeige (Zustand aus
+  `W.hud_fn` der Regie), `[FACECAM:<figur>:<reaktion>]` = Facecam-Fenster mit der echten Figur (`kameras.zweitbild`).
 - Regie-Datei (ab 2.4): `pegel_db` (`{"2": -4}` = Zeile 2 um 4 dB leiser abmischen), `zuruecknahme`
   (`{"zeilen": [2, 3], "db": -3, "wps_max": 2.2}` = Zusatz-Check im Stimmen-Bericht).
+
+### 2.5 – Erzähler, Set „spielwelt“ (Aufbauspiel), Spielanzeige [GAME], Facecam, Übergänge Welt ↔ Spiel
+| Bereich | Umsetzung |
+|---|---|
+| Erzähler (`sprecher: erzaehler`) | Keine sichtbare Figur, kein Mund. Stimme ElevenLabs `Daniel` (`onwK4e9ZLuTAKqWW03F9`, ruhig, tief, warm, klares Hochdeutsch), `ELEVENLABS_VOICE_ERZAEHLER` hat Vorrang; ID in `engine/voices.json`. `BASE_SETTINGS`/`TEMPO` kennen `erzaehler` (1,9–2,3 Wörter/s). Ton `erzaehlend` 0,55/0,30 (eleven_v3-Tag `[calm]`). Gleicher erweiterter Stimmen-Check; der Bericht vergleicht Erzähler und Kalle (Klangfarbe MFCC ≥ 25, langsamer, ruhigere Satzmelodie). In 2.5-Folgen sind `a` und `no` als schwäbische Wörter frei (`voicecheck.DIALECT_REF_25`, nur dort). Untertitel kursiv, weiß, feine goldene Kontur, ohne Sprecherfarbe, gleiche Position und Größe (`overlays.text_kursiv`) |
+| Set `spielwelt` (`engine/spielwelt.py`) | Ursprung (200, 0, 0), nur gebaut, wenn eine Szene das Set nutzt. Die Stadt als Aufbauspiel nach dem Plan der `stadtkarte` (gleiche Viertel, Fluss, Brücke, Lage von Kalles Laden; Umrechnung x · 3, y · 7). Raster 1 Kachel = 1 m. Ebenen: `spiel_stadt` (Stadt bei `S.p(0, 0, 0)`), `spiel_laden` (Kalles Laden als Puppenhaus bei `S.laden_o` = `S.p(0, 70, 0)`), `filiale` (kleinere Variante bei `S.p(0, 90, 0)`). Aufbau aus dem Katalog `assets/spielwelt/` (je Objekt eine Datei mit `INFO`, `bauen()` und benannten Zuständen) nach `assets/spielwelt/manifest.json` (Größe, Anker, Rasterposition, Zustände; neu erzeugen mit `python3 assets/spielwelt/_manifest.py`). Instanzen: `S.inst[id]` |
+| Stil | Isometrisch 35° von oben (Azimut 14°, lange Brennweite), Low-Poly mit runden Kanten (`SW.rbox`), warme satte Farben (Holz- und Teigtöne, Kalles Rot als Akzent, Bytes Türkis nur für Spiel-Oberfläche und Hilfe), feine dunkle Outlines (`outlines_fuer`: nach außen versetzte Hülle, Glas ausgenommen), weiche Schatten nach unten rechts. `render_stil(sc, an, f)` schaltet Rückseiten-Ausblendung, Schatten (je Wetter) und Kavität nur für Spielwelt-Frames um (`scene.render_frames`) |
+| Wetter und Tageszeit | `wetter(T, S, [(frame, 'sonne'/'regen'/'abend'/'nacht')])`: tönt alle `sw_*`-Materialien, Himmel, Schatten (abends lang); Hooks der Objekte (Pfützen mit Ringen, Laternen an, Fenster leuchten, Schirme). `regen(...)` Tropfen; `S.wetter_an(name, f)` |
+| Bewegung | `wegpunkte_fn` + `laufen` (Figuren und Fahrzeuge auf Wegpunkten, Beine schwingen), Zustandsfunktionen der Katalog-Objekte (Ofen, Theke, Kasse, Tonne, Filiale, Zug, Marker, Waren, Gedankenblasen) |
+| Kameras | `spielwelt.spiel_stadt` (isometrische Totale, langsame Drift), `spiel_laden` (Puppenhaus-Ansicht, gleicher Winkel), `spiel_flug` (weicher Flug zwischen zwei Einstellungen). `kameras.ins_spiel` / `aus_spiel` (Flug in einen Bildschirm bzw. heraus, Pixel- und Scanline-Blitz 0,6 s in `composite.py`), `kameras.welt_zu_spiel` (Kamera steigt senkrecht auf, Morph der echten Welt in die Spielstadt über Kacheln, die umklappen; Ende exakt wie die Spielwelt-Einstellung), `kameras.zweitbild` |
+| Zweitbild (`scene._zweitbilder`) | Zweiter Render-Durchgang nur in Frames mit Eintrag in `W.zweit`: Facecam (`<f>_fc.png`, 324×400, eigenes Set) und Morph-Ziel (`<f>_zw.png`). `composite.py` setzt die Facecam oben links unter der Spielanzeige ein (`FACECAM` = 60–384 × 716–1116, abgerundet) und morpht (`W.morph`); dazu `W.uebergaenge` (Pixel-Blitz) und `W.wackeln` (kleiner Screen-Shake). Ohne Einträge unverändert |
+| Spielanzeige [GAME] (`engine/spielanzeige.py`) | Mit Pillow, Zustand pro Frame aus `W.hud_fn(f)` (in `anchors.json` als `hud`). Obere Leiste y 532–700 (unter der Hook-Zone): `TAG x` (64 px), Uhr mit Sonne/Mond (Uhrzeit optional, 60 px), Geldleiste (grün/rot, pulsiert in Gefahr), 5 Herzen, Mehlsack mit Füllstand. Aktionsleiste über den unteren 420 px: `BACKEN`, `PREIS`, `EINKAUF`, `BAUEN` (gedrückter Knopf leuchtet). Preisregler mit Brezel und Preis (64 px), Mengenregler mit Plus/Minus (Zahl oder Brezel-Stufen), Banner fällt von oben ein (≥ 80 px, Symbol, Wackeln), `PLEITE` (abgedunkelte Welt mit Lichtkegel, roter Schriftzug, Knopf `NOCHMAL`), Level-up (goldener Strahlenkranz, Konfetti), Erfolg mit Pokal, Mini-Byte-Tipp (türkise Sprechblase mit Pfeil), Missions-Schriftrolle mit Kästchen, Facecam-Rahmen (türkis, roter `LIVE`-Punkt). Rechts bleiben 160 px frei |
+| Musik (`engine/musik.py`) | `trailer` (weite, ruhige Flächen über tiefem Grundton D, für den Erzähler) und `spielerisch` (Chiptune: Rechteck 25 %, Dreieck-Bass, Rausch-Hihat, 132 BPM), selbst erzeugt |
+| Sound (`engine/sfx.py`) | `pop8`, `ding8` (8-Bit, nur in der Spielwelt), `schluessel` |
+| Effekte im Katalog | `muenz_pop` (über der Kasse), `duftlinien`, `rauchwolke` (verbrannt), `sternchen` (Level-up), Regen und Pfützenringe, Screen-Shake (`W.wackeln`) |
+
+Bisherige Folgen sind unverändert: Spielwelt, Zweitbild, Spielanzeige und die neuen Effekte entstehen nur, wenn eine Folge sie
+nutzt (Regressionstest mit `folge-10-brezel-geheimnis` auf gleicher Timeline: 3D-Bilder bis auf Render-Rauschen gleich, 2D-Ebene
+und Tonmischung bytegleich).
+
+#### Objekt-Katalog `assets/spielwelt/` (Rasterposition in Metern relativ zur Ebene, Details in `manifest.json`)
+| Objekt | Datei | Zustände | Rasterposition |
+|---|---|---|---|
+| baeckerei_klein | `assets/spielwelt/baeckerei_klein.py` | tag | Stadt (-6.4, -0.2), Stadt (-3.6, -0.2) |
+| bahnhof | `assets/spielwelt/bahnhof.py` | tag, abend | Stadt (4.7, -9.6) |
+| baum | `assets/spielwelt/baum.py` | ruhig, wiegen | 27× (Stadt, siehe Manifest) |
+| blechwagen | `assets/spielwelt/blechwagen.py` | tag | Laden (0.88, 2.8), Filiale (0.66, 2) |
+| bushaltestelle | `assets/spielwelt/bushaltestelle.py` | tag | Stadt (8.2, -3) |
+| duftlinien | `assets/spielwelt/duftlinien.py` | aus, an | Laden (-0.6, -0.84), Laden (0.88, 2.8) |
+| fachwerkhaus | `assets/spielwelt/fachwerkhaus.py` | tag, abend | 11× (Stadt, siehe Manifest) |
+| fahrzeug | `assets/spielwelt/fahrzeug.py` | faehrt | Stadt (-8, -1.4), Stadt (6, -2.1), Stadt (9.5, -2.1) |
+| filiale | `assets/spielwelt/filiale.py` | bauplatz, baustelle, eroeffnet | Stadt (4.4, -4) |
+| gedankenblase | `assets/spielwelt/gedankenblase.py` | – | dynamisch (Regie) |
+| kalles_laden | `assets/spielwelt/kalles_laden.py` | tag, abend, geschlossen | Stadt (-4.65, -8.75) |
+| kasse | `assets/spielwelt/kasse.py` | zu, auf | Laden (2, -0.84), Filiale (1.5, -0.6) |
+| kirche | `assets/spielwelt/kirche.py` | tag | Stadt (-6.1, 10) |
+| knettisch | `assets/spielwelt/knettisch.py` | tag | Laden (-0.6, 1.61) |
+| kunde | `assets/spielwelt/kunde.py` | laufen, warten, schirm | dynamisch (Regie) |
+| laden_puppenhaus | `assets/spielwelt/laden_puppenhaus.py` | tag, abend, tuer_auf | Laden (0, 0), Filiale (0, 0) |
+| lagerregal | `assets/spielwelt/lagerregal.py` | anzahl(0-6) | Laden (2.64, 2.8) |
+| laptop_mini | `assets/spielwelt/laptop_mini.py` | an | Laden (3.1, -2.7) |
+| laterne | `assets/spielwelt/laterne.py` | aus, an | 10× (Stadt, siehe Manifest) |
+| marktplatz | `assets/spielwelt/marktplatz.py` | tag, abend | Stadt (-5, 3) |
+| mini_byte | `assets/spielwelt/mini_byte.py` | schweben, zeigen | dynamisch (Regie) |
+| mini_kalle | `assets/spielwelt/mini_kalle.py` | stehen, laufen, backen, kassieren, verzweifelt | dynamisch (Regie) |
+| mini_lea | `assets/spielwelt/mini_lea.py` | stehen, laufen, backen, kassieren, daumen_hoch | dynamisch (Regie) |
+| muenz_pop | `assets/spielwelt/muenz_pop.py` | pop | Laden (2, -0.84) |
+| ofen | `assets/spielwelt/ofen.py` | aus, backt, fertig, verbrannt | Laden (-2.48, 2.38), Filiale (-1.86, 1.7) |
+| rauchwolke | `assets/spielwelt/rauchwolke.py` | aus, an | Laden (-2.48, 2.2) |
+| spielbrett | `assets/spielwelt/spielbrett.py` | trocken, nass | Stadt (0, 0) |
+| spieler_marker | `assets/spielwelt/spieler_marker.py` | aus, schwebt, senkt | Stadt (-4.65, -8.75) |
+| sternchen | `assets/spielwelt/sternchen.py` | aus, an | Stadt (4.4, -4), Laden (0, 0) |
+| theke_auslage | `assets/spielwelt/theke_auslage.py` | menge(0-12 je Fach), halbpreis | Laden (-0.6, -0.84), Filiale (-0.45, -0.6) |
+| tonne_reste | `assets/spielwelt/tonne_reste.py` | leer, fuellstand, voll | Laden (3.4, -0.2) |
+| ware | `assets/spielwelt/ware.py` | – | dynamisch (Regie) |
+| wuerfelhaus | `assets/spielwelt/wuerfelhaus.py` | tag, abend | 8× (Stadt, siehe Manifest) |
+| zug | `assets/spielwelt/zug.py` | weg, einfahren, steht, ausfahren | Stadt (12, -12.2) |
 
 ### 2.4 – Lea (Azubi), feinere Gefühle, [AR], neue Kameras, Musikbett
 | Bereich | Umsetzung |

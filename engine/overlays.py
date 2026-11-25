@@ -126,6 +126,26 @@ def text_center(img, xy, s, size, fill, alpha=1.0, stroke=0, stroke_fill=(0, 0, 
     img.alpha_composite(layer)
 
 
+GOLD_KONTUR = (242, 180, 90)
+
+
+def text_kursiv(img, xy, s, size, fill, alpha=1.0, scale=1.0, schraeg=0.2):
+    """2.5: kursiver Text (Scherung) mit feiner goldener Kontur und dunklem Schatten fuer Lesbarkeit."""
+    if alpha <= 0.01:
+        return
+    sz = max(4, int(round(size * scale)))
+    fnt = font(sz)
+    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    x, y = xy
+    d.text((x + 3, y + 4), s, font=fnt, fill=(10, 8, 24, int(150 * alpha)), anchor="mm",
+           stroke_width=int(6 * scale), stroke_fill=(10, 8, 24, int(150 * alpha)))
+    d.text(xy, s, font=fnt, fill=(*fill, int(255 * alpha)), anchor="mm", stroke_width=max(1, int(3 * scale)),
+           stroke_fill=(*GOLD_KONTUR, int(255 * alpha)))
+    layer = layer.transform(layer.size, Image.AFFINE, (1, schraeg, -schraeg * y, 0, 1, 0), resample=Image.BICUBIC)
+    img.alpha_composite(layer)
+
+
 def check_icon(d, cx, cy, s, color, width=6):
     d.line([(cx - s * 0.45, cy), (cx - s * 0.12, cy + s * 0.35), (cx + s * 0.5, cy - s * 0.4)], fill=color, width=width,
            joint="curve")
@@ -183,8 +203,11 @@ def draw_subtitles(img, tl, f):
                     t = (f - (w["f0"] - 2)) / 6
                     sc = 0.6 + 0.4 * ease_out_back(t, 3.0)
                     a = clamp01((f - (w["f0"] - 2) + 1) / 2) * out
-                    col = YELLOW if w["hl"] else (255, 255, 255)
-                    text_center(img, (x + ww / 2, SUB_Y), w["w"], BIG, col, a, stroke=7, scale=sc)
+                    if s.get("sprecher") == "erzaehler":       # 2.5: Erzaehler kursiv, weiss, feine goldene Kontur
+                        text_kursiv(img, (x + ww / 2, SUB_Y), w["w"], BIG, (255, 255, 255), a, scale=sc)
+                    else:
+                        col = YELLOW if w["hl"] else (255, 255, 255)
+                        text_center(img, (x + ww / 2, SUB_Y), w["w"], BIG, col, a, stroke=7, scale=sc)
                 x += ww + space
 
 
@@ -536,6 +559,13 @@ def overlay_frame(tl, f, anchors):
     draw_term(img, tl, f, anchors)
     draw_labels(img, f, anchors)
     draw_ar(img, tl, f)
+    if anchors and anchors.get("hud"):                # 2.5: Spielanzeige [GAME] (nur wenn die Regie sie liefert)
+        try:
+            from . import spielanzeige as SA
+        except ImportError:
+            import spielanzeige as SA
+        hud = anchors["hud"][f] if f < len(anchors["hud"]) else None
+        SA.draw_game(img, hud, f, anchors)
     draw_subtitles(img, tl, f)
     return img
 

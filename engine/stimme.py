@@ -23,21 +23,31 @@ from . import tts, voicecheck
 TON = {"begeistert": (0.30, 0.50), "ruhig": (0.60, 0.15), "nachdenklich": (0.55, 0.25), "neugierig": (0.40, 0.35),
        "verschmitzt": (0.35, 0.45), "ueberzeugt": (0.45, 0.35), "fragend": (0.40, 0.30),
        # 2.4: feinere Gefuehle
-       "genervt": (0.35, 0.45), "enttaeuscht": (0.60, 0.20), "geruehrt": (0.65, 0.20), "stolz": (0.45, 0.35)}
+       "genervt": (0.35, 0.45), "enttaeuscht": (0.60, 0.20), "geruehrt": (0.65, 0.20), "stolz": (0.45, 0.35),
+       # 2.5: Erzaehler
+       "erzaehlend": (0.55, 0.30)}
 TEMPO = {"langsam": (2.0, 2.2), "normal": (2.3, 2.6), "schnell": (2.6, 2.9)}
 SPEED0 = {"langsam": 0.84, "normal": 0.92, "schnell": 1.0}
+TON_25 = ("erzaehlend",)
 V3_TAG = {"begeistert": "[excited]", "ruhig": "[calm]", "nachdenklich": "[thoughtful]", "neugierig": "[curious]",
           "verschmitzt": "[playful]", "ueberzeugt": "[confident]", "fragend": "[curious]",
-          "genervt": "[annoyed]", "enttaeuscht": "[sad]", "geruehrt": "[softly]", "stolz": "[proud]"}
+          "genervt": "[annoyed]", "enttaeuscht": "[sad]", "geruehrt": "[softly]", "stolz": "[proud]",
+          "erzaehlend": "[calm]"}
 FELDER = ("ton", "betonung", "tempo", "sprechtext")
 TON_24 = ("genervt", "enttaeuscht", "geruehrt", "stolz")
+
+
+def v25(ep: dict) -> bool:
+    """Folge nutzt Merkmale ab Engine 2.5 (Erzaehler, Set 'spielwelt')."""
+    return any(sz.get("sprecher") == "erzaehler" or sz.get("set") == "spielwelt" or sz.get("ton") in TON_25
+               for sz in ep.get("szenen", []))
 
 
 def v24(ep: dict) -> bool:
     """Folge nutzt Merkmale ab Engine 2.4 (Lea, Musikbett, neue Toene oder 'geruehrt'): dann bleiben Atmer erhalten.
     Folgen bis 2.3 klingen dadurch unveraendert."""
-    return any(sz.get("sprecher") == "lea" or sz.get("musik") or sz.get("ton") in TON_24 or sz.get("reaktion") == "geruehrt"
-               for sz in ep.get("szenen", []))
+    return any(sz.get("sprecher") in ("lea", "erzaehler") or sz.get("musik") or sz.get("ton") in TON_24 + TON_25
+               or sz.get("reaktion") == "geruehrt" for sz in ep.get("szenen", []))
 
 
 def hat_felder(sz: dict) -> bool:
@@ -295,7 +305,8 @@ def _erzeuge(sz, ep, role, vid, model, settings, tag, seed, sp_text, spans, pitc
         factor = min(tts.STRETCH_LIMIT[1], (lo + 0.04) / wps0)
     meta = tts.stretch(meta, round(factor, 3), pitch)
     words = tts.word_times(meta, spans)
-    chk = voicecheck.check_line(tts.ROOT / meta["wav"], sz["text"], words, ep.get("begriff"), role)
+    chk = voicecheck.check_line(tts.ROOT / meta["wav"], sz["text"], words, ep.get("begriff"), role,
+                                dialekt_extra=voicecheck.DIALECT_REF_25 if v25(ep) else ())
     chk["stretch"] = factor
     chk["wps_raw"] = wps0
     mm = messen(tts.ROOT / meta["wav"], words, sz, sp_text, spans)
@@ -435,7 +446,7 @@ def bericht(ep: dict, lines: list, path, log=print, regie=None):
     n_v3_test = sum(1 for l in lines if l.get("v3"))
     r = [f"# Stimmen-Check: {ep['titel']}", "",
          "Erweiterter Check (Engine 2.3) für Zeilen mit `ton`/`betonung`/`tempo`/`sprechtext`. Stimmen: ElevenLabs, "
-         "Kalle = Brian, Byte = Laura, Lea = Sarah (ab 2.4). Atmer am Satzanfang bleiben erhalten (laute werden gedämpft). Kriterien: Wortfehler ≤ 10 % (schwäbische Wörter frei), Zahlen und Begriff exakt, "
+         "Kalle = Brian, Byte = Laura, Lea = Sarah (ab 2.4)" + (", Erzähler = Daniel (ab 2.5)" if v25(ep) else "") + ". Atmer am Satzanfang bleiben erhalten (laute werden gedämpft). Kriterien: Wortfehler ≤ 10 % (schwäbische Wörter frei), Zahlen und Begriff exakt, "
          "Spannweite der Satzmelodie ≥ 4 Halbtöne (5.–95. Perzentil), Frage steigt / Aussage fällt (letztes Wort gegen "
          "den Rest der Zeile), Betonungswort ≥ +2 dB oder ≥ +1,5 Halbtöne gegenüber dem Durchschnitt aller Wörter der "
          "Zeile (je Wort Spitzenpegel = 95. Perzentil, Tonhöhe = 90. Perzentil), Tempo im "
@@ -483,6 +494,19 @@ def bericht(ep: dict, lines: list, path, log=print, regie=None):
                      f"({a_b:+.1f} Halbtöne); Klangfarbe (Abstand der mittleren MFCC 2–20): {d_lb:.1f}"
                      + (f", zum Vergleich Kalle–Byte {d_kb:.1f}" if d_kb else "")
                      + f" → {'✓ klar unterscheidbar (Klangfarbe)' if d_lb >= 25 else '✗ Klangfarbe zu ähnlich'} (Ziel ≥ 25).")
+    if "erzaehler" in f0 and "kalle" in f0:                # 2.5: Erzaehler gegen Kalle (Klangfarbe, Tempo, Ruhe)
+        we = [l["meta"]["wav"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "erzaehler"]
+        wk = [l["meta"]["wav"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "kalle"]
+        d_ek = float(np.linalg.norm(_klangfarbe(we) - _klangfarbe(wk)))
+        te = np.mean([l["check"]["wps"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "erzaehler"])
+        tk = np.mean([l["check"]["wps"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "kalle"])
+        se = np.mean([l["mess"]["spannweite"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "erzaehler"])
+        sk = np.mean([l["mess"]["spannweite"] for sz, l in zip(ep["szenen"], lines) if sz["sprecher"] == "kalle"])
+        r.append("")
+        r.append(f"Erzähler und Kalle: Klangfarbe (MFCC 2–20) {d_ek:.1f} → {'✓ klar verschieden' if d_ek >= 25 else '✗ zu ähnlich'} "
+                 f"(Ziel ≥ 25); Tempo {te:.2f} gegen {tk:.2f} Wörter/s ({'✓ langsamer' if te < tk else '✗ nicht langsamer'}); "
+                 f"Spannweite der Satzmelodie im Mittel {se:.1f} gegen {sk:.1f} Halbtöne "
+                 f"({'✓ gleichmäßiger' if se < sk else '✗ nicht gleichmäßiger'}).".replace(".", ",").replace(",)", ".)"))
     zr = zuruecknahme(ep, lines, regie or {})
     if zr:
         r += ["", "## Zurücknahme (Zusatz-Check dieser Folge)", "",

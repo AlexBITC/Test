@@ -23,7 +23,7 @@ from anim import ease_in, ease_out, window, Noise
 FPS = 30
 
 ORIGIN = {"theke": Vector((0, 0, 0)), "buero": Vector((40, 0, 0)), "studio": Vector((80, 0, 0)),
-          "backstube": Vector((120, 0, 0)), "stadtkarte": Vector((160, 0, 0))}
+          "backstube": Vector((120, 0, 0)), "stadtkarte": Vector((160, 0, 0)), "spielwelt": Vector((200, 0, 0))}
 
 
 def tile_mat(name, c1, c2, mortar, scale=6.0, mortar_size=0.02, rough=0.6, brick_w=0.5, row_h=0.25, offset=0.5,
@@ -789,6 +789,9 @@ def build(tl, screen_dir):
     if any(s["set"] == "stadtkarte" for s in tl["scenes"]):      # 2.3: nur bauen, wenn die Folge es nutzt
         import stadtkarte as SK
         W.sets["stadtkarte"] = SK.build_stadtkarte(coll, ORIGIN["stadtkarte"])
+    if any(s["set"] == "spielwelt" for s in tl["scenes"]):       # 2.5: nur bauen, wenn die Folge es nutzt
+        import spielwelt as SPW
+        W.sets["spielwelt"] = SPW.build_spielwelt(coll, ORIGIN["spielwelt"])
     extras = tl["slug"] not in ("drei-helfer", "website")     # neue Merkmale ab dieser Folge
     W.kalle = C.Kalle(coll, extras=extras)
     W.byte = C.Byte(coll, light_energy=26.0)
@@ -801,6 +804,8 @@ def build(tl, screen_dir):
     W.helpers = [C.Helper(coll, 1, "scan"), C.Helper(coll, 2, "digits"), C.Helper(coll, 3, "feather")] \
         if tl["slug"] == "drei-helfer" else []
     W.cam = CamRig(sc, W.n)
+    if "spielwelt" in W.sets:                       # 2.5: Spielstadt aus 60-90 m Abstand
+        W.cam.cam.data.clip_end = 260
     W.cues = []        # Soundeffekte: (frame, art)
     W.anchors = {}     # Name -> Objekt (fuer Overlay-Projektion)
     W.labels = []      # 3D-verankerte Overlay-Zahlen

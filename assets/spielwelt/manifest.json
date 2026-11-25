@@ -1,0 +1,1518 @@
+{
+ "version": "2.5",
+ "raster_m": 1.0,
+ "ebenen": {
+  "spiel_stadt": [
+   0,
+   0,
+   0
+  ],
+  "spiel_laden": [
+   0,
+   70,
+   0
+  ],
+  "filiale": [
+   0,
+   90,
+   0
+  ]
+ },
+ "umrechnung_stadtkarte": {
+  "x": 3.0,
+  "y": 7.0
+ },
+ "hinweis": "raster = Kachel-Position (x, y) in Metern relativ zur Ebene; z = Hoehe; drehung in Grad um Z",
+ "objekte": {
+  "baeckerei_klein": {
+   "datei": "assets/spielwelt/baeckerei_klein.py",
+   "groesse_m": [
+    1.8,
+    1.6,
+    2.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag"
+   ],
+   "beschreibung": "Konkurrenz (zwei Stueck, wie in der Stadtkarte)"
+  },
+  "bahnhof": {
+   "datei": "assets/spielwelt/bahnhof.py",
+   "groesse_m": [
+    7.0,
+    4.0,
+    4.0
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag",
+    "abend"
+   ],
+   "beschreibung": "Bahnhof mit Uhr, Bahnsteig und Gleisen (Gleise reichen bis zum Brettrand)"
+  },
+  "baum": {
+   "datei": "assets/spielwelt/baum.py",
+   "groesse_m": [
+    1.2,
+    1.2,
+    2.2
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "ruhig",
+    "wiegen"
+   ],
+   "beschreibung": "Baum, Krone wiegt sich"
+  },
+  "blechwagen": {
+   "datei": "assets/spielwelt/blechwagen.py",
+   "groesse_m": [
+    0.9,
+    0.7,
+    1.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag"
+   ],
+   "beschreibung": "Rollwagen"
+  },
+  "bushaltestelle": {
+   "datei": "assets/spielwelt/bushaltestelle.py",
+   "groesse_m": [
+    1.6,
+    0.8,
+    1.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag"
+   ],
+   "beschreibung": "Haltestelle am Bahnhof"
+  },
+  "duftlinien": {
+   "datei": "assets/spielwelt/duftlinien.py",
+   "groesse_m": [
+    0.4,
+    0.1,
+    0.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "aus",
+    "an"
+   ],
+   "beschreibung": "ueber fertiger Ware"
+  },
+  "fachwerkhaus": {
+   "datei": "assets/spielwelt/fachwerkhaus.py",
+   "groesse_m": [
+    1.8,
+    1.6,
+    2.4
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag",
+    "abend"
+   ],
+   "beschreibung": "Fachwerkhaus, Farbe und Hoehe als Parameter"
+  },
+  "fahrzeug": {
+   "datei": "assets/spielwelt/fahrzeug.py",
+   "groesse_m": [
+    1.2,
+    0.6,
+    0.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "faehrt"
+   ],
+   "beschreibung": "Auto oder Bus, faehrt mit spielwelt.laufen auf Wegpunkten"
+  },
+  "filiale": {
+   "datei": "assets/spielwelt/filiale.py",
+   "groesse_m": [
+    2.4,
+    2.0,
+    3.0
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "bauplatz",
+    "baustelle",
+    "eroeffnet"
+   ],
+   "beschreibung": "Bahnhofs-Laden, entsteht im Spiel"
+  },
+  "gedankenblase": {
+   "datei": "assets/spielwelt/gedankenblase.py",
+   "groesse_m": [
+    0.6,
+    0.1,
+    0.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "brezel",
+    "herz",
+    "wolke",
+    "schirm"
+   ],
+   "beschreibung": "Blase mit Symbol, symbol als Parameter"
+  },
+  "kalles_laden": {
+   "datei": "assets/spielwelt/kalles_laden.py",
+   "groesse_m": [
+    2.6,
+    2.2,
+    3.4
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag",
+    "abend",
+    "geschlossen"
+   ],
+   "beschreibung": "Kalles Baeckerei, Ladenschild = Brezel, rote Markise"
+  },
+  "kasse": {
+   "datei": "assets/spielwelt/kasse.py",
+   "groesse_m": [
+    0.7,
+    0.6,
+    0.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "zu",
+    "auf"
+   ],
+   "beschreibung": "Ladenkasse auf der Theke"
+  },
+  "kirche": {
+   "datei": "assets/spielwelt/kirche.py",
+   "groesse_m": [
+    2.4,
+    3.6,
+    6.2
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag"
+   ],
+   "beschreibung": "Kirche der Altstadt mit Turmuhr"
+  },
+  "knettisch": {
+   "datei": "assets/spielwelt/knettisch.py",
+   "groesse_m": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag"
+   ],
+   "beschreibung": "Arbeitstisch"
+  },
+  "kunde": {
+   "datei": "assets/spielwelt/kunde.py",
+   "groesse_m": [
+    0.7,
+    0.5,
+    1.0
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "laufen",
+    "warten",
+    "schirm"
+   ],
+   "beschreibung": "Kunde (typ als Parameter)"
+  },
+  "laden_puppenhaus": {
+   "datei": "assets/spielwelt/laden_puppenhaus.py",
+   "groesse_m": [
+    8.0,
+    7.0,
+    3.2
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag",
+    "abend",
+    "tuer_auf"
+   ],
+   "beschreibung": "Puppenhaus-Ansicht: Verkaufsraum vorn, Backstube hinten, Buero-Eck"
+  },
+  "lagerregal": {
+   "datei": "assets/spielwelt/lagerregal.py",
+   "groesse_m": [
+    1.2,
+    0.7,
+    1.8
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "anzahl(0-6)"
+   ],
+   "beschreibung": "Mehlsaecke wie in der echten Backstube"
+  },
+  "laptop_mini": {
+   "datei": "assets/spielwelt/laptop_mini.py",
+   "groesse_m": [
+    0.6,
+    0.45,
+    0.45
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "an"
+   ],
+   "beschreibung": "Buero-Eck mit Mini-Byte"
+  },
+  "laterne": {
+   "datei": "assets/spielwelt/laterne.py",
+   "groesse_m": [
+    0.4,
+    0.4,
+    2.2
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "aus",
+    "an"
+   ],
+   "beschreibung": "Laterne, schaltet sich abends an"
+  },
+  "marktplatz": {
+   "datei": "assets/spielwelt/marktplatz.py",
+   "groesse_m": [
+    4.6,
+    4.6,
+    3.0
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag",
+    "abend"
+   ],
+   "beschreibung": "Marktplatz mit Weihnachtsbaum (wie in der Stadtkarte)"
+  },
+  "mini_byte": {
+   "datei": "assets/spielwelt/mini_byte.py",
+   "groesse_m": [
+    0.6,
+    0.6,
+    0.6
+   ],
+   "anker": "mitte",
+   "zustaende": [
+    "schweben",
+    "zeigen"
+   ],
+   "beschreibung": "Helfer ueber der Szene, zeigt mit Pfeil auf Wichtiges"
+  },
+  "mini_kalle": {
+   "datei": "assets/spielwelt/mini_kalle.py",
+   "groesse_m": [
+    0.6,
+    0.5,
+    1.4
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "stehen",
+    "laufen",
+    "backen",
+    "kassieren",
+    "verzweifelt"
+   ],
+   "beschreibung": "Chibi-Kalle (Spielfigur)"
+  },
+  "mini_lea": {
+   "datei": "assets/spielwelt/mini_lea.py",
+   "groesse_m": [
+    0.6,
+    0.5,
+    1.2
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "stehen",
+    "laufen",
+    "backen",
+    "kassieren",
+    "daumen_hoch"
+   ],
+   "beschreibung": "Chibi-Lea (Spielfigur)"
+  },
+  "muenz_pop": {
+   "datei": "assets/spielwelt/muenz_pop.py",
+   "groesse_m": [
+    0.3,
+    0.05,
+    0.3
+   ],
+   "anker": "mitte",
+   "zustaende": [
+    "pop"
+   ],
+   "beschreibung": "Effekt ueber der Kasse"
+  },
+  "ofen": {
+   "datei": "assets/spielwelt/ofen.py",
+   "groesse_m": [
+    2.0,
+    1.4,
+    2.4
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "aus",
+    "backt",
+    "fertig",
+    "verbrannt"
+   ],
+   "beschreibung": "Backofen der Backstube"
+  },
+  "rauchwolke": {
+   "datei": "assets/spielwelt/rauchwolke.py",
+   "groesse_m": [
+    1.0,
+    1.0,
+    2.0
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "aus",
+    "an"
+   ],
+   "beschreibung": "Rauch ueber dem Ofen"
+  },
+  "spielbrett": {
+   "datei": "assets/spielwelt/spielbrett.py",
+   "groesse_m": [
+    24,
+    48,
+    0.6
+   ],
+   "anker": "mitte_oben",
+   "zustaende": [
+    "trocken",
+    "nass"
+   ],
+   "beschreibung": "Gelaende mit Raster (1 Kachel = 1 m), Strassen, Fluss, Bruecke, Marktpflaster, Pfuetzen"
+  },
+  "spieler_marker": {
+   "datei": "assets/spielwelt/spieler_marker.py",
+   "groesse_m": [
+    1.0,
+    1.0,
+    1.6
+   ],
+   "anker": "spitze_unten",
+   "zustaende": [
+    "aus",
+    "schwebt",
+    "senkt"
+   ],
+   "beschreibung": "zeigt auf Kalles Laden (Spiel-Oberflaeche, Tuerkis)"
+  },
+  "sternchen": {
+   "datei": "assets/spielwelt/sternchen.py",
+   "groesse_m": [
+    3.0,
+    3.0,
+    3.0
+   ],
+   "anker": "mitte",
+   "zustaende": [
+    "aus",
+    "an"
+   ],
+   "beschreibung": "Level-Up"
+  },
+  "theke_auslage": {
+   "datei": "assets/spielwelt/theke_auslage.py",
+   "groesse_m": [
+    3.6,
+    1.0,
+    1.3
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "menge(0-12 je Fach)",
+    "halbpreis"
+   ],
+   "beschreibung": "gleiche Theke wie in der echten Welt (Holz, Glas), 3 Faecher"
+  },
+  "tonne_reste": {
+   "datei": "assets/spielwelt/tonne_reste.py",
+   "groesse_m": [
+    0.9,
+    0.9,
+    1.3
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "leer",
+    "fuellstand",
+    "voll"
+   ],
+   "beschreibung": "Running Gag der Folge (voll / leer / zurueckgesetzt)"
+  },
+  "ware": {
+   "datei": "assets/spielwelt/ware.py",
+   "groesse_m": [
+    0.3,
+    0.3,
+    0.12
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "teig",
+    "im_ofen",
+    "fertig",
+    "in_auslage",
+    "verkauft",
+    "rest",
+    "muell"
+   ],
+   "beschreibung": "Backware, art als Parameter"
+  },
+  "wuerfelhaus": {
+   "datei": "assets/spielwelt/wuerfelhaus.py",
+   "groesse_m": [
+    2.2,
+    2.2,
+    1.6
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "tag",
+    "abend"
+   ],
+   "beschreibung": "gleichfoermiges Neubau-Haus mit Garten"
+  },
+  "zug": {
+   "datei": "assets/spielwelt/zug.py",
+   "groesse_m": [
+    7.5,
+    1.0,
+    1.1
+   ],
+   "anker": "mitte_unten",
+   "zustaende": [
+    "weg",
+    "einfahren",
+    "steht",
+    "ausfahren"
+   ],
+   "beschreibung": "Regionalzug auf den Bahnhofsgleisen"
+  }
+ },
+ "platzierungen": [
+  {
+   "objekt": "spielbrett",
+   "id": "sw_brett",
+   "raster": [
+    0,
+    0
+   ],
+   "ebene": "spiel_stadt",
+   "outline": false
+  },
+  {
+   "objekt": "marktplatz",
+   "id": "sw_markt",
+   "raster": [
+    -5.0,
+    3.0
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw0",
+   "raster": [
+    -8.6,
+    6.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 0,
+    "hoehe": 1.5
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw1",
+   "raster": [
+    -6.8,
+    6.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 1,
+    "hoehe": 1.75
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw2",
+   "raster": [
+    -5.0,
+    6.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 2,
+    "hoehe": 2.0
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw3",
+   "raster": [
+    -3.7,
+    7.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 3,
+    "hoehe": 1.5
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw4",
+   "raster": [
+    -8.8,
+    3.0
+   ],
+   "ebene": "spiel_stadt",
+   "drehung": -90,
+   "parameter": {
+    "farbe": 4,
+    "hoehe": 1.75
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw5",
+   "raster": [
+    -8.8,
+    0.6
+   ],
+   "ebene": "spiel_stadt",
+   "drehung": -90,
+   "parameter": {
+    "farbe": 5,
+    "hoehe": 2.0
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw6",
+   "raster": [
+    -8.6,
+    9.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 6,
+    "hoehe": 1.5
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw7",
+   "raster": [
+    -3.9,
+    10.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 7,
+    "hoehe": 1.75
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw8",
+   "raster": [
+    -8.4,
+    12.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 8,
+    "hoehe": 2.0
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw9",
+   "raster": [
+    -6.4,
+    13.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 9,
+    "hoehe": 1.5
+   }
+  },
+  {
+   "objekt": "fachwerkhaus",
+   "id": "sw_fw10",
+   "raster": [
+    -4.3,
+    13.8
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": 10,
+    "hoehe": 1.75
+   }
+  },
+  {
+   "objekt": "kirche",
+   "id": "sw_kirche",
+   "raster": [
+    -6.1,
+    10.0
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "baeckerei_klein",
+   "id": "sw_bk_rot",
+   "raster": [
+    -6.4,
+    -0.2
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": "#D8473F"
+   }
+  },
+  {
+   "objekt": "baeckerei_klein",
+   "id": "sw_bk_blau",
+   "raster": [
+    -3.6,
+    -0.2
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "farbe": "#3D7BD9"
+   }
+  },
+  {
+   "objekt": "kalles_laden",
+   "id": "sw_kalle",
+   "raster": [
+    -4.65,
+    -8.75
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "spieler_marker",
+   "id": "sw_marker",
+   "raster": [
+    -4.65,
+    -8.75
+   ],
+   "ebene": "spiel_stadt",
+   "z": 2.6,
+   "outline": false
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh0",
+   "raster": [
+    3.4,
+    8.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh1",
+   "raster": [
+    6.2,
+    8.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh2",
+   "raster": [
+    9.0,
+    8.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh3",
+   "raster": [
+    3.4,
+    14.5
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh4",
+   "raster": [
+    6.2,
+    14.5
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh5",
+   "raster": [
+    9.0,
+    14.5
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh6",
+   "raster": [
+    3.4,
+    19.2
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "wuerfelhaus",
+   "id": "sw_wh7",
+   "raster": [
+    7.0,
+    19.2
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "bahnhof",
+   "id": "sw_bahnhof",
+   "raster": [
+    4.7,
+    -9.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "gleis_y": -2.6
+   }
+  },
+  {
+   "objekt": "zug",
+   "id": "sw_zug",
+   "raster": [
+    12.0,
+    -12.2
+   ],
+   "ebene": "spiel_stadt",
+   "z": 0.15
+  },
+  {
+   "objekt": "bushaltestelle",
+   "id": "sw_bus_halt",
+   "raster": [
+    8.2,
+    -3.0
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "filiale",
+   "id": "sw_filiale",
+   "raster": [
+    4.4,
+    -4.0
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum0",
+   "raster": [
+    4.8,
+    9.8
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum1",
+   "raster": [
+    7.6,
+    9.8
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum2",
+   "raster": [
+    4.8,
+    15.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.1
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum3",
+   "raster": [
+    7.6,
+    15.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum4",
+   "raster": [
+    10.3,
+    17.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum5",
+   "raster": [
+    2.4,
+    17.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum6",
+   "raster": [
+    5.2,
+    17.3
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum7",
+   "raster": [
+    8.7,
+    17.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.8
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum8",
+   "raster": [
+    10.2,
+    21.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.1
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum9",
+   "raster": [
+    5.2,
+    21.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum10",
+   "raster": [
+    2.5,
+    21.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum11",
+   "raster": [
+    10.2,
+    11.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.8
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum12",
+   "raster": [
+    2.6,
+    11.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum13",
+   "raster": [
+    -9.6,
+    -4.5
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum14",
+   "raster": [
+    -9.6,
+    -8.2
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.1
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum15",
+   "raster": [
+    -7.8,
+    -12.2
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum16",
+   "raster": [
+    -3.3,
+    -14.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum17",
+   "raster": [
+    -9.8,
+    15.4
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum18",
+   "raster": [
+    -7.2,
+    16.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.1
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum19",
+   "raster": [
+    -4.8,
+    17.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum20",
+   "raster": [
+    -9.6,
+    19.8
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum21",
+   "raster": [
+    -6.0,
+    20.6
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum22",
+   "raster": [
+    9.9,
+    -7.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum23",
+   "raster": [
+    -9.5,
+    -15.5
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum24",
+   "raster": [
+    -6.0,
+    -16.5
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum25",
+   "raster": [
+    2.5,
+    -16.0
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 1.0
+   }
+  },
+  {
+   "objekt": "baum",
+   "id": "sw_baum26",
+   "raster": [
+    7.5,
+    -16.5
+   ],
+   "ebene": "spiel_stadt",
+   "parameter": {
+    "s": 0.9
+   }
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat0",
+   "raster": [
+    -7.8,
+    -2.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat1",
+   "raster": [
+    -3.4,
+    -2.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat2",
+   "raster": [
+    2.4,
+    -2.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat3",
+   "raster": [
+    7.0,
+    -0.8
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat4",
+   "raster": [
+    -7.4,
+    1.2
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat5",
+   "raster": [
+    -3.2,
+    1.0
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat6",
+   "raster": [
+    2.4,
+    5.2
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat7",
+   "raster": [
+    0.2,
+    10.0
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat8",
+   "raster": [
+    -5.8,
+    -10.9
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "laterne",
+   "id": "sw_lat9",
+   "raster": [
+    0.6,
+    -7.2
+   ],
+   "ebene": "spiel_stadt"
+  },
+  {
+   "objekt": "fahrzeug",
+   "id": "sw_auto_rot",
+   "raster": [
+    -8.0,
+    -1.4
+   ],
+   "ebene": "spiel_stadt",
+   "drehung": 90,
+   "parameter": {
+    "typ": "auto",
+    "farbe": "#E2483F"
+   }
+  },
+  {
+   "objekt": "fahrzeug",
+   "id": "sw_auto_blau",
+   "raster": [
+    6.0,
+    -2.1
+   ],
+   "ebene": "spiel_stadt",
+   "drehung": -90,
+   "parameter": {
+    "typ": "auto",
+    "farbe": "#3D7BD9"
+   }
+  },
+  {
+   "objekt": "fahrzeug",
+   "id": "sw_bus",
+   "raster": [
+    9.5,
+    -2.1
+   ],
+   "ebene": "spiel_stadt",
+   "drehung": -90,
+   "parameter": {
+    "typ": "bus"
+   }
+  },
+  {
+   "objekt": "sternchen",
+   "id": "sw_sterne_filiale",
+   "raster": [
+    4.4,
+    -4.0
+   ],
+   "ebene": "spiel_stadt",
+   "z": 0.8,
+   "outline": false
+  },
+  {
+   "objekt": "laden_puppenhaus",
+   "id": "sw_ph",
+   "raster": [
+    0,
+    0
+   ],
+   "ebene": "spiel_laden"
+  },
+  {
+   "objekt": "theke_auslage",
+   "id": "sw_theke",
+   "raster": [
+    -0.6,
+    -0.84
+   ],
+   "ebene": "spiel_laden",
+   "parameter": {
+    "preise": [
+     "1,20 €",
+     "0,40 €",
+     "2,50 €"
+    ]
+   }
+  },
+  {
+   "objekt": "kasse",
+   "id": "sw_kasse",
+   "raster": [
+    2.0,
+    -0.84
+   ],
+   "ebene": "spiel_laden",
+   "z": 1.0
+  },
+  {
+   "objekt": "ofen",
+   "id": "sw_ofen",
+   "raster": [
+    -2.48,
+    2.38
+   ],
+   "ebene": "spiel_laden"
+  },
+  {
+   "objekt": "knettisch",
+   "id": "sw_knettisch",
+   "raster": [
+    -0.6,
+    1.61
+   ],
+   "ebene": "spiel_laden"
+  },
+  {
+   "objekt": "blechwagen",
+   "id": "sw_blechwagen",
+   "raster": [
+    0.88,
+    2.8
+   ],
+   "ebene": "spiel_laden"
+  },
+  {
+   "objekt": "lagerregal",
+   "id": "sw_lager",
+   "raster": [
+    2.64,
+    2.8
+   ],
+   "ebene": "spiel_laden"
+  },
+  {
+   "objekt": "tonne_reste",
+   "id": "sw_tonne",
+   "raster": [
+    3.4,
+    -0.2
+   ],
+   "ebene": "spiel_laden"
+  },
+  {
+   "objekt": "laptop_mini",
+   "id": "sw_laptop",
+   "raster": [
+    3.1,
+    -2.7
+   ],
+   "ebene": "spiel_laden",
+   "z": 0.79
+  },
+  {
+   "objekt": "muenz_pop",
+   "id": "sw_muenzen",
+   "raster": [
+    2.0,
+    -0.84
+   ],
+   "ebene": "spiel_laden",
+   "z": 1.7,
+   "outline": false
+  },
+  {
+   "objekt": "duftlinien",
+   "id": "sw_duft_theke",
+   "raster": [
+    -0.6,
+    -0.84
+   ],
+   "ebene": "spiel_laden",
+   "z": 1.5,
+   "outline": false
+  },
+  {
+   "objekt": "duftlinien",
+   "id": "sw_duft_wagen",
+   "raster": [
+    0.88,
+    2.8
+   ],
+   "ebene": "spiel_laden",
+   "z": 1.7,
+   "outline": false
+  },
+  {
+   "objekt": "rauchwolke",
+   "id": "sw_rauch",
+   "raster": [
+    -2.48,
+    2.2
+   ],
+   "ebene": "spiel_laden",
+   "z": 2.4,
+   "outline": false
+  },
+  {
+   "objekt": "sternchen",
+   "id": "sw_sterne_laden",
+   "raster": [
+    0.0,
+    0.0
+   ],
+   "ebene": "spiel_laden",
+   "z": 1.0,
+   "outline": false
+  },
+  {
+   "objekt": "laden_puppenhaus",
+   "id": "sw_fph",
+   "raster": [
+    0,
+    0
+   ],
+   "ebene": "filiale",
+   "parameter": {
+    "breite": 6.0,
+    "tiefe": 5.0,
+    "filiale": true
+   }
+  },
+  {
+   "objekt": "theke_auslage",
+   "id": "sw_ftheke",
+   "raster": [
+    -0.45,
+    -0.6
+   ],
+   "ebene": "filiale",
+   "parameter": {
+    "preise": [
+     "1,20 €",
+     "0,40 €",
+     "2,50 €"
+    ]
+   }
+  },
+  {
+   "objekt": "kasse",
+   "id": "sw_fkasse",
+   "raster": [
+    1.5,
+    -0.6
+   ],
+   "ebene": "filiale",
+   "z": 1.0
+  },
+  {
+   "objekt": "ofen",
+   "id": "sw_fofen",
+   "raster": [
+    -1.86,
+    1.7
+   ],
+   "ebene": "filiale"
+  },
+  {
+   "objekt": "blechwagen",
+   "id": "sw_fwagen",
+   "raster": [
+    0.66,
+    2.0
+   ],
+   "ebene": "filiale"
+  }
+ ]
+}

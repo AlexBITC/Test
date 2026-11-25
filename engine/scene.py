@@ -128,6 +128,11 @@ def export_anchors(W, out_path):
            "whips": W.cam.whips}
     if getattr(W.cam, "blenden", None):          # 2.4: weiche Ueberblendungen (nur wenn die Regie sie anfordert)
         res["blenden"] = W.cam.blenden
+    if getattr(W, "hud_fn", None) is not None:   # 2.5: Spielanzeige [GAME] pro Frame
+        res["hud"] = [W.hud_fn(f) for f in range(W.n)]
+    for key in ("uebergaenge", "facecam", "morph", "wackeln"):   # 2.5: Effekte fuer composite.py
+        if getattr(W, key, None):
+            res[key] = getattr(W, key)
     rx, ry = 1080, 1920
     for f in range(W.n):
         sc.frame_set(f)
@@ -140,7 +145,12 @@ def export_anchors(W, out_path):
         json.dump(res, fh)
 
 
-SET_X = {"theke": 0.0, "buero": 40.0, "studio": 80.0, "backstube": 120.0, "stadtkarte": 160.0}
+SET_X = {"theke": 0.0, "buero": 40.0, "studio": 80.0, "backstube": 120.0, "stadtkarte": 160.0, "spielwelt": 200.0}
+
+
+def set_bei(W, f):
+    s = [x for x in W.tl["scenes"] if x["f0"] <= f < x["f1"]] or [W.tl["scenes"][-1]]
+    return s[0]["set"]
 
 
 def cull(W, f):
@@ -164,6 +174,64 @@ def cull(W, f):
 MB_SUB = int(os.environ.get("MB_SUBFRAMES", "0"))
 
 
+def _zweit_cam(W):
+    if getattr(W, "_cam2", None) is None:
+        cd = bpy.data.cameras.new("cam2")
+        cd.sensor_fit = "VERTICAL"
+        cd.sensor_height = 36
+        cd.clip_start = 0.05
+        cd.clip_end = 260
+        W._cam2 = bpy.data.objects.new("cam2", cd)
+        W.sc.collection.objects.link(W._cam2)
+    return W._cam2
+
+
+def _zweitbilder(W, f, outdir):
+    """2.5: zweiter Render-Durchgang (Facecam-Fenster, Spielbild fuer den Morph), nur in Frames mit Eintrag in W.zweit.
+    Laeuft vor dem Hauptbild, damit ein abgebrochener Lauf keine Luecken hinterlaesst."""
+    for z in getattr(W, "zweit", None) or []:
+        if not (z["f0"] <= f < z["f1"]):
+            continue
+        out = os.path.join(outdir, f"{f:05d}_{'fc' if z['art'] == 'facecam' else 'zw'}.png")
+        if os.path.exists(out):
+            continue
+        sc = W.sc
+        cam = _zweit_cam(W)
+        sc.frame_set(f, subframe=0.25 if MB_SUB >= 2 else 0.0)
+        pos, ziel, lens = z["fn"](f)[:3]
+        cam.location = pos
+        cam.rotation_euler = (Vector(ziel) - Vector(pos)).to_track_quat("-Z", "Y").to_euler()
+        cam.data.lens = lens
+        alt = (sc.camera, sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage,
+               sc.display.shading.use_dof)
+        sc.camera = cam
+        sc.display.shading.use_dof = False
+        if z.get("groesse"):
+            sc.render.resolution_x, sc.render.resolution_y = z["groesse"]
+            sc.render.resolution_percentage = 100
+        cull_set(W, z["set"])
+        if "spielwelt" in W.sets:
+            import spielwelt as SPW
+            SPW.render_stil(sc, z["set"] == "spielwelt", f)
+        sc.render.filepath = out + ".tmp.png"
+        bpy.ops.render.render(write_still=True)
+        os.replace(out + ".tmp.png", out)
+        sc.camera, sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage, \
+            sc.display.shading.use_dof = alt
+
+
+def cull_set(W, set_name):
+    ax = SET_X[set_name]
+    for o in bpy.data.objects:
+        if o.type not in ("MESH", "CURVE", "FONT", "LIGHT"):
+            continue
+        m = o.matrix_world
+        hide = abs(m.translation.x - ax) > 20 or abs(m.determinant()) < 1e-12 or \
+            (o.type == "LIGHT" and o.data.energy <= 0.01)
+        if o.hide_render != hide:
+            o.hide_render = hide
+
+
 def render_frames(W, frames, outdir):
     """Rendert Frames. Mit MB_SUBFRAMES=2 (Motion Blur, 180-Grad-Verschluss): zwei Unterbilder bei -1/4 und +1/4
     Frame -> <f>.png und <f>_b.png; das Compositing mittelt sie (Workbench hat kein eigenes Motion Blur)."""
@@ -174,10 +242,14 @@ def render_frames(W, frames, outdir):
         if os.path.exists(p):
             continue
         t = time.time()
+        _zweitbilder(W, f, outdir)
         subs = [(f, 0.0, p)] if MB_SUB < 2 else [(f - 1, 0.75, p.replace(".png", "_b.png")), (f, 0.25, p)]
         for fr, sub, out in subs:
             sc.frame_set(max(0, fr) if fr >= 0 else 0, subframe=sub if fr >= 0 else 0.0)
             cull(W, f)
+            if "spielwelt" in W.sets:                    # 2.5: Spiel-Stil (Outlines, Schatten) nur in der Spielwelt
+                import spielwelt as SPW
+                SPW.render_stil(sc, set_bei(W, f) == "spielwelt", f)
             sc.render.filepath = out + ".tmp.png"
             bpy.ops.render.render(write_still=True)
             os.replace(out + ".tmp.png", out)

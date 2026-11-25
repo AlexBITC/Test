@@ -15,6 +15,11 @@
    "voice_id": "EXAVITQu4vr4xnSDxMaL",
    "name": "Sarah - Mature, Reassuring, Confident",
    "source": "Casting 2.4 aus GET /v1/voices (Jessica, Sarah, Matilda): jung, warm, natürlich; größter Klangfarben-Abstand zu Byte (MFCC-Distanz 43 gegen 32/37), 12 Halbtöne über Kalle, beide Testsätze von Whisper fehlerfrei erkannt"
+  },
+  "erzaehler": {
+   "voice_id": "onwK4e9ZLuTAKqWW03F9",
+   "name": "Daniel - Steady Broadcaster",
+   "source": "Casting 2.5 aus GET /v1/voices (George, Daniel, Bill): ruhig, gleichmäßig, klares Hochdeutsch; größter Klangfarben-Abstand zu Kalle (MFCC-Distanz 38,5 gegen 23,0/35,9), Testsätze von Whisper fehlerfrei erkannt"
   }
  },
  "settings": {
@@ -32,6 +37,12 @@
   },
   "lea": {
    "stability": 0.5,
+   "similarity_boost": 0.75,
+   "style": 0.3,
+   "use_speaker_boost": true
+  },
+  "erzaehler": {
+   "stability": 0.55,
    "similarity_boost": 0.75,
    "style": 0.3,
    "use_speaker_boost": true

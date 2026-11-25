@@ -43,6 +43,12 @@ RECIPES = {
                    "afade=t=in:d=0.003,afade=t=out:st=1.1:d=0.3"),
     "rascheln": ("aevalsrc=exprs='(random(0)-0.5)*(0.3+0.7*gt(random(1)\\,0.93))*(0.55+0.45*sin(2*PI*5*t))':s=48000:d=0.9",
                  "highpass=f=1500,lowpass=f=9000,afade=t=in:d=0.05,afade=t=out:st=0.65:d=0.25"),
+    # 2.5: 8-Bit-Varianten (nur Spielwelt) und Schluessel (leises Klimpern)
+    "pop8": ("aevalsrc=exprs='0.6*sgn(sin(2*PI*(660+1800*t)*t))*exp(-t*22)':s=48000:d=0.14", "afade=t=out:st=0.1:d=0.04"),
+    "ding8": ("aevalsrc=exprs='0.45*sgn(sin(2*PI*1046*t))*lt(t\\,0.09)+0.45*sgn(sin(2*PI*1568*t))*gt(t\\,0.09)*exp(-(t-0.09)*5)'"
+              ":s=48000:d=0.7", "lowpass=f=6000,afade=t=out:st=0.55:d=0.15"),
+    "schluessel": ("aevalsrc=exprs='0.4*exp(-mod(t\\,0.13)*45)*(sin(2*PI*3500*t)+0.6*sin(2*PI*5200*t+1)+0.4*sin(2*PI*7100*t))*lt(t\\,0.7)'"
+                   ":s=48000:d=0.8", "highpass=f=1800,afade=t=out:st=0.6:d=0.2"),
     "buzz": ("aevalsrc=exprs='0.32*(sgn(sin(2*PI*110*t))+0.6*sgn(sin(2*PI*165*t)))*(0.6+0.4*sin(2*PI*22*t))'"
              ":s=48000:d=0.38", "lowpass=f=2200,afade=t=in:d=0.01,afade=t=out:st=0.28:d=0.1"),
 }
@@ -68,7 +74,8 @@ def _load(p):
 
 
 SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22, "knistern": 0.18, "ticken": 0.12,
-            "stadtrauschen": 0.15, "zug": 0.25, "grillen": 0.10, "tuerglocke": 0.18, "rascheln": 0.12}
+            "stadtrauschen": 0.15, "zug": 0.25, "grillen": 0.10, "tuerglocke": 0.18, "rascheln": 0.12,
+            "pop8": 0.22, "ding8": 0.25, "schluessel": 0.12}
 
 
 def build_mix(tl: dict, work: Path) -> Path:

@@ -11,6 +11,8 @@ Klang: Pizzicato per Karplus-Strong (gezupfte Saite), Klavier per additiver Synt
   neugierig   - tupfendes Pizzicato auf Zehenspitzen (100 BPM), grosse Sexten, Pausen
   aufsteigend - Klavier-Arpeggio, steigt Takt fuer Takt (108 BPM), dichter werdend
   warm        - ruhige Klavierakkorde (66 BPM) mit leisem Pad, I-vi-IV-V
+  trailer     - (2.5) weite, ruhige Klangflaechen ueber tiefem Grundton (D), langsam atmend, fuer den Erzaehler
+  spielerisch - (2.5) froehliche Chiptune-Melodie im 8-Bit-Stil (Rechteck-Welle 25 %, Dreieck-Bass, Rausch-Hihat), 132 BPM
 """
 from __future__ import annotations
 
@@ -18,7 +20,7 @@ import numpy as np
 
 SR = 48000
 FPS = 30
-STIMMUNGEN = ("hektisch", "stille", "neugierig", "aufsteigend", "warm")
+STIMMUNGEN = ("hektisch", "stille", "neugierig", "aufsteigend", "warm", "trailer", "spielerisch")
 UNTER_SPRACHE_DB = 20.0
 
 
@@ -116,7 +118,52 @@ def _spur(stimmung, dauer):
             _add(y, _pad([_hz(m) for m in akk[1:]], 4 * beat), t)
             k += 1
             t += 4 * beat * 0.5
+    elif stimmung == "trailer":
+        t = np.arange(len(y)) / SR
+        grund = 0.5 * np.sin(2 * np.pi * _hz(38) * t) + 0.25 * np.sin(2 * np.pi * _hz(50) * t)
+        atem = 0.6 + 0.4 * np.sin(2 * np.pi * t / 7.0)
+        y += (grund * atem).astype(np.float32)
+        akk = [(50, 57, 62, 65), (46, 53, 58, 62), (48, 55, 60, 64), (45, 52, 57, 61)]
+        k, tt = 0, 0.0
+        while tt < dauer:
+            _add(y, _pad([_hz(m) for m in akk[k % len(akk)]], 7.0) * 0.8, tt)
+            k += 1
+            tt += 6.0
+    elif stimmung == "spielerisch":
+        beat = 60 / 132 / 2
+        mel = [72, 76, 79, 76, 77, 74, 72, None, 71, 74, 77, 74, 76, 72, 67, None]
+        bass = [48, 48, 55, 55, 53, 53, 55, 55]
+        k, tt = 0, 0.0
+        while tt < dauer:
+            m = mel[k % len(mel)]
+            if m:
+                _add(y, _rechteck(_hz(m), beat * 0.9) * 0.55, tt)
+            if k % 2 == 0:
+                _add(y, _dreieck(_hz(bass[(k // 2) % len(bass)]), beat * 1.8) * 0.7, tt)
+            _add(y, _rauschen(0.03, k) * (0.25 if k % 2 else 0.12), tt)
+            k += 1
+            tt += beat
     return y
+
+
+def _rechteck(freq, dur, duty=0.25):
+    t = np.arange(int(dur * SR)) / SR
+    s = np.where((t * freq) % 1.0 < duty, 1.0, -1.0)
+    env = np.minimum(1.0, t / 0.004) * np.exp(-t * 3.0)
+    return (0.5 * s * env).astype(np.float32)
+
+
+def _dreieck(freq, dur):
+    t = np.arange(int(dur * SR)) / SR
+    s = 2 * np.abs(2 * ((t * freq) % 1.0) - 1) - 1
+    env = np.minimum(1.0, t / 0.004) * np.exp(-t * 2.0)
+    return (0.6 * s * env).astype(np.float32)
+
+
+def _rauschen(dur, seed):
+    rng = np.random.default_rng(seed)
+    n = int(dur * SR)
+    return (rng.uniform(-1, 1, n) * np.exp(-np.arange(n) / SR * 120)).astype(np.float32)
 
 
 def bett(tl, n, sprach_rms):
