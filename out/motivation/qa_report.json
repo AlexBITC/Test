@@ -1,0 +1,14 @@
+{
+ "video": "h264 High 1080x1920 30/1 fps yuv420p, 1059 Frames",
+ "audio": "aac 48000 Hz 2 ch 196 kbit/s",
+ "dauer_s": 35.3,
+ "groesse_mb": 40.76,
+ "lufs_integriert": -14.1,
+ "true_peak_dbtp": -2.5,
+ "min_helligkeit": 36.81,
+ "leere_frames": [],
+ "loop_diff_letzter_zu_erstem": 2.95,
+ "vergleich_vorletzter_zu_letztem": 3.37,
+ "whisper_endmix": "You said you'd start tomorrow. That was a year ago. Tomorrow is the most dangerous word you know. Every day you wait, the mountain gets taller. But the first step? It's never as hard as you think. Five minutes. That's all it takes to begin. Do it badly. Do it scared. Just do it today. Because one day, you won't have a tomorrow left. So stop waiting. Start now.",
+ "whisper_wortfehler": 0
+}

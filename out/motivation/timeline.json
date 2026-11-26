@@ -1,0 +1,542 @@
+{
+ "fps": 30,
+ "n_frames": 1059,
+ "duration": 35.3,
+ "lead": 0.25,
+ "outro": 5.0,
+ "voice": {
+  "name": "Fernanda - Calm Storytelling",
+  "voice_id": "hnFidmF05jrIKH0LAjEc",
+  "source": "ElevenLabs Voice Library (GET /v1/shared-voices), vom Nutzer gewaehlt nach 4 Proberunden",
+  "model": "eleven_multilingual_v2",
+  "settings": {
+   "stability": 0.4,
+   "similarity_boost": 0.8,
+   "style": 0.3,
+   "use_speaker_boost": true
+  }
+ },
+ "mood_gain_db": {
+  "calm": 0.0,
+  "rising": 1.0,
+  "quiet": -3.0,
+  "strong": 2.0
+ },
+ "sentences": [
+  {
+   "id": 1,
+   "text": "You said you'd start tomorrow.",
+   "mood": "calm",
+   "start": 0.22,
+   "end": 2.323,
+   "wav": "out/motivation/voice/final_s01.wav",
+   "seed": 1110,
+   "pause_before": 0.0,
+   "lufs": -24.32,
+   "words": [
+    {
+     "w": "You",
+     "start": 0.165,
+     "end": 0.386
+    },
+    {
+     "w": "said",
+     "start": 0.478,
+     "end": 0.687
+    },
+    {
+     "w": "you'd",
+     "start": 0.734,
+     "end": 0.978
+    },
+    {
+     "w": "start",
+     "start": 1.024,
+     "end": 1.384
+    },
+    {
+     "w": "tomorrow.",
+     "start": 1.442,
+     "end": 2.023
+    }
+   ],
+   "audible": [
+    0.25,
+    2.14
+   ]
+  },
+  {
+   "id": 2,
+   "text": "That was a year ago.",
+   "mood": "calm",
+   "start": 2.61,
+   "end": 4.144,
+   "wav": "out/motivation/voice/final_s02.wav",
+   "seed": 1207,
+   "pause_before": 0.5,
+   "lufs": -25.96,
+   "words": [
+    {
+     "w": "That",
+     "start": 2.59,
+     "end": 2.834
+    },
+    {
+     "w": "was",
+     "start": 2.88,
+     "end": 3.008
+    },
+    {
+     "w": "a",
+     "start": 3.066,
+     "end": 3.112
+    },
+    {
+     "w": "year",
+     "start": 3.194,
+     "end": 3.414
+    },
+    {
+     "w": "ago.",
+     "start": 3.496,
+     "end": 3.844
+    }
+   ],
+   "audible": [
+    2.64,
+    3.89
+   ]
+  },
+  {
+   "id": 3,
+   "text": "Tomorrow is the most dangerous word you know.",
+   "mood": "calm",
+   "start": 4.355,
+   "end": 7.262,
+   "wav": "out/motivation/voice/final_s03.wav",
+   "seed": 1291,
+   "pause_before": 0.5,
+   "lufs": -27.07,
+   "words": [
+    {
+     "w": "Tomorrow",
+     "start": 4.315,
+     "end": 4.849
+    },
+    {
+     "w": "is",
+     "start": 4.907,
+     "end": 5.0
+    },
+    {
+     "w": "the",
+     "start": 5.046,
+     "end": 5.151
+    },
+    {
+     "w": "most",
+     "start": 5.209,
+     "end": 5.43
+    },
+    {
+     "w": "dangerous",
+     "start": 5.511,
+     "end": 6.115
+    },
+    {
+     "w": "word",
+     "start": 6.173,
+     "end": 6.416
+    },
+    {
+     "w": "you",
+     "start": 6.498,
+     "end": 6.602
+    },
+    {
+     "w": "know.",
+     "start": 6.66,
+     "end": 6.962
+    }
+   ],
+   "audible": [
+    4.39,
+    7.09
+   ]
+  },
+  {
+   "id": 4,
+   "text": "Every day you wait, the mountain gets taller.",
+   "mood": "rising",
+   "start": 7.56,
+   "end": 10.779,
+   "wav": "out/motivation/voice/final_s04.wav",
+   "seed": 1401,
+   "pause_before": 0.5,
+   "lufs": -27.97,
+   "words": [
+    {
+     "w": "Every",
+     "start": 7.53,
+     "end": 7.902
+    },
+    {
+     "w": "day",
+     "start": 7.96,
+     "end": 8.134
+    },
+    {
+     "w": "you",
+     "start": 8.192,
+     "end": 8.319
+    },
+    {
+     "w": "wait,",
+     "start": 8.389,
+     "end": 8.761
+    },
+    {
+     "w": "the",
+     "start": 9.063,
+     "end": 9.202
+    },
+    {
+     "w": "mountain",
+     "start": 9.26,
+     "end": 9.631
+    },
+    {
+     "w": "gets",
+     "start": 9.689,
+     "end": 9.922
+    },
+    {
+     "w": "taller.",
+     "start": 9.98,
+     "end": 10.479
+    }
+   ],
+   "audible": [
+    7.59,
+    10.57
+   ]
+  },
+  {
+   "id": 5,
+   "text": "But the first step? It's never as hard as you think.",
+   "mood": "rising",
+   "start": 11.04,
+   "end": 15.004,
+   "wav": "out/motivation/voice/final_s05.wav",
+   "seed": 1485,
+   "pause_before": 0.5,
+   "lufs": -24.51,
+   "words": [
+    {
+     "w": "But",
+     "start": 11.035,
+     "end": 11.279
+    },
+    {
+     "w": "the",
+     "start": 11.314,
+     "end": 11.418
+    },
+    {
+     "w": "first",
+     "start": 11.511,
+     "end": 11.824
+    },
+    {
+     "w": "step?",
+     "start": 11.871,
+     "end": 12.277
+    },
+    {
+     "w": "It's",
+     "start": 12.916,
+     "end": 13.183
+    },
+    {
+     "w": "never",
+     "start": 13.253,
+     "end": 13.52
+    },
+    {
+     "w": "as",
+     "start": 13.589,
+     "end": 13.682
+    },
+    {
+     "w": "hard",
+     "start": 13.752,
+     "end": 13.972
+    },
+    {
+     "w": "as",
+     "start": 14.019,
+     "end": 14.1
+    },
+    {
+     "w": "you",
+     "start": 14.158,
+     "end": 14.274
+    },
+    {
+     "w": "think.",
+     "start": 14.367,
+     "end": 14.704
+    }
+   ],
+   "audible": [
+    11.07,
+    14.885
+   ]
+  },
+  {
+   "id": 6,
+   "text": "Five minutes. That's all it takes to begin.",
+   "mood": "rising",
+   "start": 15.38,
+   "end": 18.606,
+   "wav": "out/motivation/voice/final_s06.wav",
+   "seed": 1660,
+   "pause_before": 0.5,
+   "lufs": -25.09,
+   "words": [
+    {
+     "w": "Five",
+     "start": 15.38,
+     "end": 15.775
+    },
+    {
+     "w": "minutes.",
+     "start": 15.821,
+     "end": 16.286
+    },
+    {
+     "w": "That's",
+     "start": 16.727,
+     "end": 17.052
+    },
+    {
+     "w": "all",
+     "start": 17.087,
+     "end": 17.226
+    },
+    {
+     "w": "it",
+     "start": 17.284,
+     "end": 17.377
+    },
+    {
+     "w": "takes",
+     "start": 17.412,
+     "end": 17.667
+    },
+    {
+     "w": "to",
+     "start": 17.714,
+     "end": 17.795
+    },
+    {
+     "w": "begin.",
+     "start": 17.865,
+     "end": 18.306
+    }
+   ],
+   "audible": [
+    15.385,
+    18.44
+   ]
+  },
+  {
+   "id": 7,
+   "text": "Do it badly. Do it scared. Just do it today.",
+   "mood": "rising",
+   "start": 18.91,
+   "end": 22.885,
+   "wav": "out/motivation/voice/final_s07.wav",
+   "seed": 1692,
+   "pause_before": 0.5,
+   "lufs": -25.36,
+   "words": [
+    {
+     "w": "Do",
+     "start": 18.87,
+     "end": 19.044
+    },
+    {
+     "w": "it",
+     "start": 19.137,
+     "end": 19.23
+    },
+    {
+     "w": "badly.",
+     "start": 19.3,
+     "end": 19.892
+    },
+    {
+     "w": "Do",
+     "start": 20.112,
+     "end": 20.252
+    },
+    {
+     "w": "it",
+     "start": 20.321,
+     "end": 20.414
+    },
+    {
+     "w": "scared.",
+     "start": 20.484,
+     "end": 21.111
+    },
+    {
+     "w": "Just",
+     "start": 21.459,
+     "end": 21.703
+    },
+    {
+     "w": "do",
+     "start": 21.749,
+     "end": 21.854
+    },
+    {
+     "w": "it",
+     "start": 21.947,
+     "end": 22.04
+    },
+    {
+     "w": "today.",
+     "start": 22.086,
+     "end": 22.585
+    }
+   ],
+   "audible": [
+    18.94,
+    22.675
+   ]
+  },
+  {
+   "id": 8,
+   "text": "Because one day, you won't have a tomorrow left.",
+   "mood": "quiet",
+   "start": 23.475,
+   "end": 27.397,
+   "wav": "out/motivation/voice/final_s08.wav",
+   "seed": 1802,
+   "pause_before": 0.8,
+   "lufs": -26.37,
+   "words": [
+    {
+     "w": "Because",
+     "start": 23.475,
+     "end": 23.997
+    },
+    {
+     "w": "one",
+     "start": 24.067,
+     "end": 24.427
+    },
+    {
+     "w": "day,",
+     "start": 24.497,
+     "end": 24.903
+    },
+    {
+     "w": "you",
+     "start": 25.228,
+     "end": 25.356
+    },
+    {
+     "w": "won't",
+     "start": 25.425,
+     "end": 25.669
+    },
+    {
+     "w": "have",
+     "start": 25.716,
+     "end": 25.878
+    },
+    {
+     "w": "a",
+     "start": 25.913,
+     "end": 25.96
+    },
+    {
+     "w": "tomorrow",
+     "start": 26.029,
+     "end": 26.552
+    },
+    {
+     "w": "left.",
+     "start": 26.645,
+     "end": 27.097
+    }
+   ],
+   "audible": [
+    23.475,
+    27.095
+   ]
+  },
+  {
+   "id": 9,
+   "text": "So stop waiting.",
+   "mood": "strong",
+   "start": 27.59,
+   "end": 29.028,
+   "wav": "out/motivation/voice/final_s09.wav",
+   "seed": 1899,
+   "pause_before": 0.5,
+   "lufs": -25.33,
+   "words": [
+    {
+     "w": "So",
+     "start": 27.59,
+     "end": 27.811
+    },
+    {
+     "w": "stop",
+     "start": 27.88,
+     "end": 28.17
+    },
+    {
+     "w": "waiting.",
+     "start": 28.263,
+     "end": 28.728
+    }
+   ],
+   "audible": [
+    27.595,
+    28.855
+   ]
+  },
+  {
+   "id": 10,
+   "text": "Start now.",
+   "mood": "strong",
+   "start": 29.355,
+   "end": 30.433,
+   "wav": "out/motivation/voice/final_s10.wav",
+   "seed": 1983,
+   "pause_before": 0.5,
+   "lufs": -28.08,
+   "words": [
+    {
+     "w": "Start",
+     "start": 29.355,
+     "end": 29.75
+    },
+    {
+     "w": "now.",
+     "start": 29.819,
+     "end": 30.133
+    }
+   ],
+   "audible": [
+    29.355,
+    30.275
+   ]
+  }
+ ]
+}

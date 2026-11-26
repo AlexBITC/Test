@@ -1,0 +1,27 @@
+{
+ "whisper": "You said you'd start tomorrow. That was a year ago. Tomorrow is the most dangerous word you know. Every day you wait, the mountain gets taller. But the first step? It's never as hard as you think. Five minutes. That's all it takes to begin. Do it badly. Do it scared. Just do it today. Because one day, you won't have a tomorrow left. So stop waiting. Start now.",
+ "words_ref": 69,
+ "words_whisper": 69,
+ "missing": [],
+ "median_s": 0.06,
+ "p90_s": 0.13100000000000003,
+ "max_s": 0.715,
+ "worst": [
+  [
+   "Start",
+   -0.715
+  ],
+  [
+   "word",
+   -0.173
+  ],
+  [
+   "You",
+   -0.165
+  ],
+  [
+   "left.",
+   -0.165
+  ]
+ ]
+}
