@@ -26,7 +26,7 @@ def koerper(coll, name, hemd, hose="#3B4A6E", haut="#F0BE96", h=1.0, kopf=0.33, 
         L.sphere(f"{name}_hand{sx}", 0.05 * s, 8, 5, (1, 1, 1), SW.m(f"haut{haut}", haut, 0.6), a, (0, 0, -0.24 * s), coll)
         arme.append(a)
     kopf_p = L.empty(f"{name}_kopfp", body, (0, 0, 0.62 * s), coll)
-    L.sphere(f"{name}_kopf", kopf * s, 14, 10, (1, 0.95, 1), SW.m(f"haut{haut}", haut, 0.6), kopf_p, (0, 0, kopf * s), coll)
+    L.sphere(f"{name}_kopf", kopf * s, 12, 8, (1, 0.95, 1), SW.m(f"haut{haut}", haut, 0.6), kopf_p, (0, 0, kopf * s), coll)
     for sx in (-1, 1):
         L.sphere(f"{name}_auge{sx}", 0.045 * s, 8, 6, (0.9, 0.5, 1.2), SW.m("auge", "#1E1A2A", 0.4), kopf_p,
                  (sx * 0.11 * s, -kopf * s * 0.9, kopf * s * 1.05), coll)
@@ -42,8 +42,8 @@ def haar(coll, name, d, farbe, stil="kurz"):
     """Frisur auf dem Chibi-Kopf: kurz (Kappe bis zum Hinterkopf), lang (dazu Haare bis zur Schulter), dutt, zoepfe."""
     k, s, kr = d["kopf"], d["s"], d["kr"]
     m = SW.m(f"haar{farbe}", farbe, 0.6)
-    L.sphere(f"{name}_haar", kr * 1.06, 14, 8, (1.0, 1.0, 0.72), m, k, (0, 0.035 * s, kr * 1.3), coll)
-    L.sphere(f"{name}_hinterkopf", kr * 1.04, 12, 8, (1.0, 0.75, 0.95), m, k, (0, 0.09 * s, kr * 1.05), coll)
+    L.sphere(f"{name}_haar", kr * 1.06, 10, 6, (1.0, 1.0, 0.72), m, k, (0, 0.035 * s, kr * 1.3), coll)
+    L.sphere(f"{name}_hinterkopf", kr * 1.04, 10, 6, (1.0, 0.75, 0.95), m, k, (0, 0.09 * s, kr * 1.05), coll)
     if stil == "lang":
         SW.rbox(f"{name}_lang", (kr * 1.9, 0.12 * s, kr * 1.3), m, k, (0, kr * 0.55, kr * 0.55), coll, r=0.05 * s)
     elif stil == "dutt":

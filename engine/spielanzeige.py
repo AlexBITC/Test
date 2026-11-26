@@ -8,7 +8,7 @@ Layout (1080 x 1920, Safe Zones: oben Hook-Zone bis 520, rechts 160 px frei, unt
   Obere Leiste      y 532-700   TAG x (64 px), Uhr mit Sonne/Mond (60 px), Geldleiste (gruen/rot, pulsiert in Gefahr),
                                 5 Herzen, Mehlsack mit Fuellstand
   Facecam           x 60-384, y 716-1116 (Rahmen und LIVE-Punkt hier, das Bild setzt composite.py ein)
-  Regler/Menge      x 404-920, y 990-1100 (Preis mit Brezel-Symbol, Plus/Minus)
+  Regler/Menge      x 404-920, y 724-834 rechts neben der Facecam (Preis mit Brezel-Symbol, Plus/Minus), 2. Reihe 846
   Aktionsleiste     y 1112-1240, 4 runde Knoepfe BACKEN, PREIS, EINKAUF, BAUEN (gedrueckter leuchtet kurz)
   Banner            faellt von oben auf y 340-500 (Text >= 80 px, Symbol, kurzes Wackeln)
   Erfolg            unten links ueber der Aktionsleiste (bei Facecam rechts daneben), mit Pokal
@@ -33,7 +33,7 @@ X0, X1 = 60, 920
 TOP_Y0, TOP_Y1 = 532, 700
 FACECAM = (60, 716, 384, 1116)
 AKTION_Y = 1162
-REGLER_Y0, REGLER_Y1 = 990, 1100
+REGLER_Y0, REGLER_Y1 = 724, 834
 KNOEPFE = ["BACKEN", "PREIS", "EINKAUF", "BAUEN"]
 TURQ, NAVY, GOLD, RED, GREEN, YELLOW, WHITE = O.TURQ, O.NAVY, O.GOLD, O.RED, O.GREEN, O.YELLOW, (255, 255, 255)
 ROLLE = (246, 230, 196)
@@ -203,7 +203,7 @@ def obere_leiste(img, f, t, a):
 def aktionsleiste(img, f, akt, a):
     lay = _lay(img)
     d = ImageDraw.Draw(lay)
-    d.rounded_rectangle((X0, AKTION_Y - 58, X1, AKTION_Y + 76), 34, fill=_rgba(NAVY, 0.62 * a))
+    d.rounded_rectangle((X0, AKTION_Y - 58, X1, AKTION_Y + 76), 34, fill=_rgba(NAVY, 0.3 * a))
     img.alpha_composite(lay)
     ged = akt.get("gedrueckt")
     seit = f - akt.get("f_druck", -999)
@@ -304,7 +304,7 @@ def erfolg(img, f, e, a_hud, facecam):
     a = a_hud * min(O.clamp01(t / 6), O.clamp01((dur + 8 - t) / 8))
     dx = -420 * (1 - O.ease_out_back(O.clamp01(t / 9), 1.6))
     x0 = (404 if facecam else X0) + dx
-    y0 = REGLER_Y0 - 130 if e.get("hoch") else REGLER_Y0
+    y0 = 846 if e.get("hoch") else 990
     O.card(img, (x0, y0, x0 + 500, y0 + 110), a, border=GOLD, radius=30)
     lay = _lay(img)
     pokal(ImageDraw.Draw(lay), x0 + 58, y0 + 60, 70, a)
@@ -427,11 +427,12 @@ def pleite(img, f, p, a_hud, anchors):
     img.alpha_composite(Image.fromarray(lay, "RGBA"))
     sc = 0.5 + 0.5 * O.ease_out_back(O.clamp01((t - 2) / 9), 3.0)
     ruck = (math.sin(t * 2.3) * 10 * math.exp(-t / 6)) if t < 18 else 0.0
-    O.text_center(img, ((X0 + X1) / 2 + ruck, 790), "PLEITE", 190, RED, a * O.clamp01((t - 2) / 4), stroke=12, stroke_fill=(40, 8, 12),
+    px, py = p.get("x", (X0 + X1) / 2), p.get("y", 790)
+    O.text_center(img, (px + ruck, py), "PLEITE", 150 if p.get("x") else 190, RED, a * O.clamp01((t - 2) / 4), stroke=12, stroke_fill=(40, 8, 12),
                   scale=sc)
     if t >= p.get("knopf_nach", 20):
         k = O.ease_out_back(O.clamp01((t - p.get("knopf_nach", 20)) / 8), 2.0)
-        bx0, bx1, by0, by1 = 290, 690, 1010, 1110
+        bx0, bx1, by0, by1 = px - 200, px + 200, py + 110, py + 200
         lay = _lay(img)
         d = ImageDraw.Draw(lay)
         cx, cy = (bx0 + bx1) / 2, (by0 + by1) / 2

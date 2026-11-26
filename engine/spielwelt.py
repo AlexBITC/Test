@@ -96,6 +96,124 @@ def outlines_fuer(root, breite=0.03, min_groesse=0.05):
             outline(o, breite)
 
 
+def _griffe(x, out, tiefe=0):
+    """Alle Objekte, die ein Katalog-Ergebnis (P) als Griffe fuer Animationen herausgibt."""
+    if tiefe > 5 or x is None:
+        return
+    if isinstance(x, bpy.types.Object):
+        out.add(x)
+    elif isinstance(x, P):
+        for v in x.__dict__.values():
+            _griffe(v, out, tiefe + 1)
+    elif isinstance(x, dict):
+        for v in x.values():
+            _griffe(v, out, tiefe + 1)
+    elif isinstance(x, (list, tuple)):
+        for v in x:
+            _griffe(v, out, tiefe + 1)
+
+
+def _rel(o, ziel):
+    """Transformation von o relativ zu ziel aus den lokalen Matrizen (funktioniert auch bei Scale 0 weiter oben)."""
+    from mathutils import Matrix
+    m = Matrix.Identity(4)
+    x = o
+    while x is not None and x is not ziel:
+        m = x.matrix_parent_inverse @ x.matrix_basis @ m
+        x = x.parent
+    return m
+
+
+def zusammenfassen(p, root=None):
+    """Statische Teile eines Katalog-Objekts zu je einem Mesh pro Griff zusammenfassen (Workbench rendert viele
+    kleine Objekte langsam). Griffe = alle Objekte, die bauen() in P herausgibt (die Regie animiert nur diese);
+    jedes andere Mesh wird in den naechsten Griff darueber eingebacken (Materialien bleiben). Schriften bleiben
+    eigene Objekte. Vor outlines_fuer aufrufen."""
+    root = root or p.root
+    griffe = set()
+    _griffe(p, griffe)
+    griffe.add(root)
+    bpy.context.view_layer.update()
+    gruppen = {}
+    for o in [root] + list(root.children_recursive):
+        if o in griffe or o.type != "MESH" or o.modifiers:
+            continue
+        z = o.parent
+        while z is not None and z not in griffe:
+            z = z.parent
+        if z is None:
+            continue
+        gruppen.setdefault(z, []).append(o)
+    for ziel, objs in gruppen.items():
+        if len(objs) < 2 and ziel.type == "MESH":
+            continue
+        bm = bmesh.new()
+        mats, slot = [], {}
+        for o in objs:
+            me = o.data
+            remap = []
+            for m in me.materials:
+                if m is None:
+                    remap.append(0)
+                    continue
+                if m.name not in slot:
+                    slot[m.name] = len(mats)
+                    mats.append(m)
+                remap.append(slot[m.name])
+            tmp = bmesh.new()
+            tmp.from_mesh(me)
+            tmp.transform(_rel(o, ziel))
+            for f in tmp.faces:
+                f.material_index = remap[f.material_index] if remap else 0
+            neu = bpy.data.meshes.new("tmp_m")
+            tmp.to_mesh(neu)
+            tmp.free()
+            bm.from_mesh(neu)
+            bpy.data.meshes.remove(neu)
+        me = bpy.data.meshes.new(f"{ziel.name}_m")
+        bm.to_mesh(me)
+        bm.free()
+        for m in mats:
+            me.materials.append(m)
+        ob = bpy.data.objects.new(f"{ziel.name}_m", me)
+        for c in (ziel.users_collection or objs[0].users_collection):
+            c.objects.link(ob)
+        ob.parent = ziel
+        ob.matrix_parent_inverse.identity()
+        weg = set(objs)
+        for o in objs:                                 # Kinder, die bleiben (Griffe, Schriften), an den Griff haengen
+            for ch in list(o.children):
+                if ch not in weg:
+                    rel = _rel(ch, ziel)
+                    ch.parent = ziel
+                    ch.matrix_parent_inverse.identity()
+                    ch.matrix_basis = rel
+        for o in objs:
+            bpy.data.objects.remove(o)
+    return p
+
+
+# ------------------------------------------------------------------ Weiche Schatten (aufgemalt, nach unten rechts)
+SCHATTEN_VERSATZ = Vector((0.24, -0.24, 0.0))      # je Meter Objekthoehe: nach rechts unten im Bild
+_DECALS = []
+
+
+def schatten(name, coll, w, d, h, parent=None, loc=(0, 0, 0), rund=False):
+    """Weicher Schatten als drei uebereinanderliegende, halbtransparente Flaechen (Kern dunkler, Rand weich).
+    Workbench-Schatten waeren pro Bild etwa siebenmal teurer. Laenge und Staerke folgen dem Wetter (wetter())."""
+    o = L.empty(f"{name}_schatten", parent, loc, coll)
+    m = L.mat("sw_schatten", "#140C1C", 0.9, alpha=0.2)
+    off = SCHATTEN_VERSATZ * h * 0.5
+    for k, f in enumerate((1.0, 1.1, 1.22)):
+        sx, sy = (w * 1.02 + abs(off.x) * 2) * f, (d * 1.02 + abs(off.y) * 2) * f
+        if rund:
+            L.cyl(f"{name}_sch{k}", 0.5, 0.004, 16, m, o, (off.x, off.y, 0.012 + 0.001 * k), coll).scale = (sx, sy, 1)
+        else:
+            rbox(f"{name}_sch{k}", (sx, sy, 0.004), m, o, (off.x, off.y, 0.012 + 0.001 * k), coll, r=min(sx, sy) * 0.3, seg=2)
+    _DECALS.append((o, h))
+    return o
+
+
 # ------------------------------------------------------------------ Katalog
 _KAT = {}
 
@@ -113,6 +231,10 @@ def manifest():
 
 
 # ------------------------------------------------------------------ Set
+KEIN_SCHATTEN = ("spielbrett", "laden_puppenhaus", "spieler_marker", "sternchen", "muenz_pop", "duftlinien", "rauchwolke",
+                 "theke_auslage", "kasse", "laptop_mini", "marktplatz")
+
+
 def build_spielwelt(coll, origin):
     from build_world import SetData
     S = SetData("spielwelt", origin)
@@ -132,6 +254,15 @@ def build_spielwelt(coll, origin):
         o.root.rotation_euler = (0, 0, math.radians(pl.get("drehung", 0)))
         o.info = mod.INFO
         S.inst[pl["id"]] = o
+        zusammenfassen(o)
+        w_, d_, h_ = (mod.INFO.get("groesse") or [0, 0, 0])[:3]
+        if abs(pl.get("drehung", 0)) % 180 == 90:
+            w_, d_ = d_, w_
+        if pl.get("schatten", h_ >= 0.4 and pl.get("outline", True)) and pl["objekt"] not in KEIN_SCHATTEN:
+            if pl["objekt"] in ("zug", "fahrzeug"):
+                schatten(pl["id"], coll, w_, d_, h_, parent=o.root, rund=pl["objekt"] == "fahrzeug")
+            else:
+                schatten(pl["id"], coll, w_, d_, h_, loc=o.root.location, rund=pl["objekt"] in ("baum", "laterne", "tonne_reste"))
         if pl.get("outline", True):
             outlines_fuer(o.root, 0.035 if pl.get("ebene", "spiel_stadt") == "spiel_stadt" else 0.025)
     # Himmel-Kuppel (Farbe je Wetter) und Hintergrund-Ebene unter dem Spielbrett
@@ -216,6 +347,20 @@ def wetter(T, S, plan, f0, f1):
     T.set(S.m_himmel, "diffuse_color", himmel, f0, f1)
     S.wetter_an = lambda name, f: (lambda a, b, t: (t if b == name else 0.0) + ((1 - t) if a == name else 0.0))(*mix(f))
     _STIL["wetter"] = mix
+    laenge = {"sonne": 1.0, "regen": 0.55, "abend": 2.0, "nacht": 0.5}
+    staerke = {"sonne": 0.2, "regen": 0.06, "abend": 0.17, "nacht": 0.04}
+
+    def wert(tab, f):
+        a, b, t = mix(f)
+        return tab[a] + (tab[b] - tab[a]) * t
+    for o, h in _DECALS:
+        for ch in o.children:
+            x0, y0 = ch.location.x, ch.location.y
+            T.set(ch, "location", lambda f, x0=x0, y0=y0: (x0 * wert(laenge, f), y0 * wert(laenge, f), 0.012), f0, f1)
+        T.set(o, "scale", lambda f: (1 + 0.1 * (wert(laenge, f) - 1), 1 + 0.1 * (wert(laenge, f) - 1), 1), f0, f1)
+    m_s = bpy.data.materials.get("sw_schatten")
+    if m_s is not None:
+        T.set(m_s, "diffuse_color", lambda f: wert(staerke, f), f0, f1, index=3)
     for inst in S.inst.values():
         if hasattr(inst, "wetter"):
             inst.wetter(T, S, f0, f1)
@@ -287,7 +432,7 @@ def render_stil(sc, an, f=None):
     (je Wetter: abends lange Schatten, bei Regen fast keine)."""
     sh = sc.display.shading
     sh.show_backface_culling = an
-    sh.show_shadows = an
+    sh.show_shadows = False                          # weiche Schatten sind aufgemalt (schatten()), siebenmal schneller
     sh.cavity_type = "WORLD" if an else "BOTH"       # keine Kanten-Glanzlinien auf den Low-Poly-Rundungen
     if an:
         d, st = SCHATTEN["sonne"]
@@ -309,5 +454,5 @@ def ein_aus(T, obj, f_an, f_aus=None, s=1.0, dur=8):
 
 
 __all__ = ["build_spielwelt", "katalog", "manifest", "m", "rbox", "text", "outline", "outlines_fuer", "wegpunkte_fn",
-           "laufen", "wetter", "regen", "spiel_stadt", "spiel_laden", "spiel_flug", "render_stil", "ein_aus", "P", "PAL",
+           "laufen", "zusammenfassen", "schatten", "wetter", "regen", "spiel_stadt", "spiel_laden", "spiel_flug", "render_stil", "ein_aus", "P", "PAL",
            "bmesh"]

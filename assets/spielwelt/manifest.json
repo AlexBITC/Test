@@ -1386,8 +1386,8 @@
    "objekt": "tonne_reste",
    "id": "sw_tonne",
    "raster": [
-    3.4,
-    -0.2
+    2.75,
+    0.05
    ],
    "ebene": "spiel_laden"
   },

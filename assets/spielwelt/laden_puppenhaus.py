@@ -54,7 +54,7 @@ def bauen(coll, name, breite=8.0, tiefe=7.0, filiale=False, **kw):
     return SW.P(root=root, tuer=tuer, gloeckchen=gl, m_lampe=m_l, platz={
         "theke": (-B * 0.075, -D * 0.12), "kasse": (B * 0.25, -D * 0.12, 1.0), "ofen": (-B * 0.31, D * 0.34),
         "knettisch": (-B * 0.075, D * 0.23), "blechwagen": (B * 0.11, D * 0.4), "lager": (B * 0.33, D * 0.4),
-        "tonne": (B * 0.42, -D * 0.03), "buero": (bx, by, 0.79), "eingang": (-B / 2 + 0.5, -D * 0.25)})
+        "tonne": (B * 0.34, D * 0.01), "buero": (bx, by, 0.79), "eingang": (-B / 2 + 0.5, -D * 0.25)})
 
 
 def gloeckchen(T, p, f_auf_liste, f0, f1):

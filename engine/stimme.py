@@ -418,6 +418,64 @@ def pegel_anwenden(line, db):
     return line
 
 
+def pausen_anpassen(line, regel):
+    """2.5, Regie 'pausen': Pausen innerhalb einer Zeile anpassen, ohne Woerter anzutasten.
+    regel: {'min_vor': {'Deine': 0.6}, 'max': 0.25, 'ende_max': 0.12}. min_vor verlaengert die Pause vor dem Wort
+    (Stille in der Mitte der Luecke eingefuegt), max kuerzt alle laengeren Pausen zwischen Woertern (Mitte der Luecke
+    herausgeschnitten, 10-ms-Blenden), ende_max kuerzt die Stille nach dem letzten Wort. Neue Datei <wav>_p.wav,
+    Wort-Timing und Dauer werden mitgefuehrt."""
+    import re as _re
+    import soundfile as sf
+    src = tts.ROOT / line["meta"]["wav"]
+    y, sr = sf.read(str(src), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    words = line["words"]
+    real = [k for k, w in enumerate(words) if w["end"] > w["start"] and _re.search(r"\w", w["w"])]
+    min_vor = {_norm_tok(k): v for k, v in regel.get("min_vor", {}).items()}
+    edits = []                                       # (zeit, delta)
+    for a, b in zip(real, real[1:]):
+        g = words[b]["start"] - words[a]["end"]
+        ziel = g
+        if _norm_tok(words[b]["w"]) in min_vor:
+            ziel = max(g, min_vor[_norm_tok(words[b]["w"])])
+        elif regel.get("max") is not None and g > regel["max"]:
+            ziel = regel["max"]
+        if abs(ziel - g) > 0.005:
+            edits.append(((words[a]["end"] + words[b]["start"]) / 2, ziel - g))
+    dur = len(y) / sr
+    if regel.get("ende_max") is not None and real:
+        rest = dur - words[real[-1]]["end"]
+        if rest > regel["ende_max"]:
+            edits.append((words[real[-1]]["end"] + regel["ende_max"] + (rest - regel["ende_max"]) / 2, regel["ende_max"] - rest))
+    if not edits:
+        return line
+    fade = int(0.01 * sr)
+    for t, d in sorted(edits, reverse=True):
+        i = int(t * sr)
+        if d > 0:
+            y = np.concatenate([y[:i], np.zeros(int(d * sr), np.float32), y[i:]])
+        else:
+            n = int(-d * sr)
+            a0, a1 = max(0, i - n // 2), min(len(y), i - n // 2 + n)
+            kopf, schwanz = y[:a0].copy(), y[a1:].copy()
+            if len(kopf) > fade:
+                kopf[-fade:] *= np.linspace(1, 0, fade)
+            if len(schwanz) > fade:
+                schwanz[:fade] *= np.linspace(0, 1, fade)
+            y = np.concatenate([kopf, schwanz])
+    for w in words:
+        verschieb = sum(d for t, d in edits if t < w["start"] + 1e-6)
+        verschieb_e = sum(d for t, d in edits if t < w["end"] - 1e-6) if w["end"] > w["start"] else verschieb
+        w["start"], w["end"] = w["start"] + verschieb, w["end"] + verschieb_e
+    dst = src.with_name(f"{src.stem}_p.wav")
+    sf.write(str(dst), y, sr, subtype="PCM_16")
+    line["meta"] = dict(line["meta"], wav=str(dst.relative_to(tts.ROOT)))
+    line["check"] = dict(line["check"], dur=len(y) / sr)
+    line["pausen"] = [(round(t, 2), round(d, 2)) for t, d in edits]
+    return line
+
+
 def zuruecknahme(ep, lines, regie):
     """Zusatz-Check aus der Regie: {'zeilen': [..], 'db': -3, 'wps_max': 2.2} -> Liste (zeile, dB rel., W/s, ok)."""
     z = regie.get("zuruecknahme")

@@ -421,6 +421,7 @@ def build_timeline(ep: dict, lines: list) -> dict:
         dur = l["check"]["dur"]
         m = re.search(r"plus (\d+(?:,\d+)?) s Halt", sz.get("visual", ""))
         hold = float(m.group(1).replace(",", ".")) if m else 0.0
+        hold += l.get("halt", 0.0)                      # 2.5: Regie 'halt_nach_szene'
         ld = LEAD + l.get("lead", 0.0)                  # Pause vor der Zeile (Regie: pause_vor_szene)
         n = int(round((ld + dur + TAIL + hold) * FPS))
         words = []
@@ -694,6 +695,10 @@ def main():
             lines[int(k) - 1]["lead"] = float(v)
         for k, v in regie.get("pegel_db", {}).items():         # 2.4: Zeile leiser/lauter abmischen (Regie)
             stimme.pegel_anwenden(lines[int(k) - 1], float(v))
+        for k, v in regie.get("pausen", {}).items():           # 2.5: Pausen in der Zeile anpassen (Regie)
+            stimme.pausen_anpassen(lines[int(k) - 1], v)
+        for k, v in regie.get("halt_nach_szene", {}).items():  # 2.5: Halt nach der Zeile (Regie)
+            lines[int(k) - 1]["halt"] = float(v)
         if any(stimme.hat_felder(sz) for sz in ep["szenen"]):
             stimme.bericht(ep, lines, ROOT / "out" / f"{slug}_stimmen-check.md", log, regie)
         else:
