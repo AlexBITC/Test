@@ -1,0 +1,243 @@
+{
+  "folge": 11,
+  "slug": "baeckerei-spiel",
+  "titel": "Diese Stadt ist ein Spiel",
+  "hook": "Diese Stadt ist ein Spiel.",
+  "begriff": "Planspiel",
+  "kapitel": [
+    "TAG 1",
+    "TAG 2",
+    "LEA SPIELT"
+  ],
+  "szenen": [
+    {
+      "sprecher": "erzaehler",
+      "text": "Diese Stadt ist ein Spiel.",
+      "sprechtext": "Diese Stadt … ist ein Spiel.",
+      "ton": "erzaehlend",
+      "betonung": "Spiel",
+      "tempo": "langsam",
+      "musik": "trailer",
+      "highlight": [
+        "Spiel"
+      ],
+      "reaktion": "neutral",
+      "set": "spielwelt",
+      "kapitel": null,
+      "visual": "[GAME] Isometrische Totale über die ganze Spielstadt im Morgenlicht (sonne): Altstadt, Fluss, Neubaugebiet, Bahnhof mit einfahrendem Zug. Hunderte kleine Chibi-Figuren laufen auf ihren Wegen, Autos fahren, Bäume wiegen sich. Noch keine Spielanzeige, nur die Welt. [/GAME] [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: 'Diese Stadt ist ein Spiel.' Kamera: spiel_stadt, langsame Drift, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "erzaehler",
+      "text": "Deine Aufgabe: Mach deine Bäckerei zur besten der Stadt.",
+      "sprechtext": "Deine Aufgabe: … Mach deine Bäckerei zur besten der Stadt.",
+      "ton": "erzaehlend",
+      "betonung": "besten",
+      "tempo": "langsam",
+      "musik": "trailer",
+      "highlight": [
+        "besten"
+      ],
+      "reaktion": "neutral",
+      "set": "spielwelt",
+      "kapitel": null,
+      "visual": "[GAME] Die Kamera gleitet zur Altstadt, ein türkiser Spieler-Marker senkt sich auf Kalles Laden mit dem roten Brezel-Schild. Die Missions-Schriftrolle rollt sich auf: 'MISSION: Mach deine Bäckerei zur besten der Stadt.' Die Spielanzeige baut sich Stück für Stück auf, oben erscheint 'TAG 1'. [/GAME] Kamera: spiel_flug von der Stadt zum Laden."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Und? Gefällt's dir? Hab ich heute Nacht gebaut.",
+      "sprechtext": "Und? Gefällt's dir? … Hab ich heute Nacht gebaut.",
+      "ton": "verschmitzt",
+      "betonung": "Nacht",
+      "tempo": "normal",
+      "musik": "neugierig",
+      "highlight": [
+        "heute Nacht"
+      ],
+      "reaktion": "jubel",
+      "set": "buero",
+      "licht": "abend",
+      "kapitel": null,
+      "visual": "[3D] Kamera: aus_spiel. Überraschung: Wir sind im Büro nach Ladenschluss, das Spiel läuft auf dem Monitor. Byte sitzt stolz auf dem Monitor-Rand. Kalle sitzt davor und hält einen Controller verkehrt herum. Kamera: rueckfahrt, bis Monitor, Byte und Kalle im Bild sind."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "I hab no nie a Spiel gspielt.",
+      "sprechtext": "I hab no nie … a Spiel gspielt.",
+      "ton": "fragend",
+      "betonung": "nie",
+      "tempo": "normal",
+      "musik": "neugierig",
+      "highlight": [
+        "nie"
+      ],
+      "reaktion": "zweifel",
+      "set": "buero",
+      "licht": "abend",
+      "kapitel": null,
+      "visual": "[3D] Kalle dreht den Controller ratlos hin und her, drückt aus Versehen einen Knopf, der Controller vibriert, Kalle zuckt zusammen. Byte dreht ihm den Controller mit beiden Händen richtig herum. Kamera: zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Brezeln für fünfzig Cent! Da kommet alle!",
+      "sprechtext": "Brezeln für fünfzig Cent! Da kommet alle!",
+      "ton": "begeistert",
+      "betonung": "fünfzig",
+      "tempo": "schnell",
+      "musik": "spielerisch",
+      "highlight": [
+        "fünfzig Cent"
+      ],
+      "reaktion": "jubel",
+      "set": "spielwelt",
+      "kapitel": 0,
+      "visual": "[3D] Kamera: ins_spiel. [GAME] Laden-Ansicht. Der Preis-Regler erscheint, Mini-Kalle zieht ihn ganz nach links auf '0,50 €'. Sofort strömen alle 5 Kundentypen herbei, jeder mit Brezel-Gedankenblase, die Schlange reicht bis auf den Marktplatz. Die Kasse springt im Dauertakt auf, Münz-Pops. [/GAME] [FACECAM:kalle:jubel] Kalle drückt wild auf dem Controller herum. Kamera: spiel_laden, schwenk zur Schlange."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Kommen sie. Aber jede kostet dich neunzig.",
+      "sprechtext": "Kommen sie. Aber jede … kostet dich neunzig.",
+      "ton": "nachdenklich",
+      "betonung": "neunzig",
+      "tempo": "normal",
+      "musik": "spielerisch",
+      "highlight": [
+        "neunzig"
+      ],
+      "reaktion": "zweifel",
+      "set": "spielwelt",
+      "kapitel": 0,
+      "visual": "[GAME] Mini-Byte schwebt über die Kasse und zeigt mit dem Pfeil auf den Geld-Balken, der trotz der Schlange immer weiter ins Rote rutscht und pulsiert. Türkise Sprechblase: 'Kosten 0,90 € > Preis 0,50 €'. [/GAME] [FACECAM:kalle:zweifel] Kalles Grinsen friert ein. Kamera: spiel_laden, langsamer push_in auf den Balken."
+    },
+    {
+      "sprecher": "erzaehler",
+      "text": "Tag zwei. Regen. 500 Brezeln im Ofen.",
+      "sprechtext": "Tag zwei. … Regen. … Fünfhundert Brezeln im Ofen.",
+      "ton": "erzaehlend",
+      "betonung": "Fünfhundert",
+      "tempo": "langsam",
+      "musik": "trailer",
+      "highlight": [
+        "500 Brezeln"
+      ],
+      "reaktion": "neutral",
+      "set": "spielwelt",
+      "kapitel": 1,
+      "visual": "[GAME] Zeitraffer über die Stadt: Die Sonne geht unter und wieder auf, 'TAG 2'. Das Banner 'REGEN!' fällt herein und wackelt, die ganze Stadt wechselt in den Zustand regen: Pfützen, graue Wolken, die Straßen leeren sich, Figuren mit Schirm-Gedankenblasen bleiben zu Hause. Flug zurück in den Laden: Der Mengen-Regler zeigt '500', der Ofen glüht, die Auslage quillt über. [/GAME] Kamera: spiel_stadt, dann spiel_flug in den Laden."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Pleite?! Nach zwei Tag?!",
+      "sprechtext": "Pleite?! Nach zwei Tag?!",
+      "ton": "genervt",
+      "betonung": "zwei",
+      "tempo": "schnell",
+      "musik": "stille",
+      "highlight": [
+        "Pleite"
+      ],
+      "reaktion": "schock",
+      "set": "spielwelt",
+      "kapitel": 1,
+      "visual": "[GAME] Abends werden alle Brezeln grau und fliegen nacheinander in die Tonne 'RESTE', die überquillt, der Deckel springt auf. Der Bildschirm wackelt, die Welt dunkelt ab, groß 'PLEITE' in Rot, Mini-Kalle sitzt auf dem Mehlsack. Knopf 'NOCHMAL'. [/GAME] [FACECAM:kalle:schock] Kalle reißt die Hände hoch, der Controller fliegt ihm fast aus der Hand. Kamera: spiel_laden, harter Stopp."
+    },
+    {
+      "sprecher": "lea",
+      "text": "Lass mich mal.",
+      "sprechtext": "Lass mich mal.",
+      "ton": "verschmitzt",
+      "betonung": "mich",
+      "tempo": "normal",
+      "musik": "stille",
+      "highlight": [
+        "mich"
+      ],
+      "reaktion": "jubel",
+      "set": "buero",
+      "licht": "abend",
+      "kapitel": 2,
+      "visual": "[3D] Kamera: aus_spiel. Lea steht in der Tür, die Jacke schon an, und hat alles beobachtet. Sie nimmt Kalle grinsend den Controller aus der Hand und setzt sich auf die Schreibtischkante. Kalle rutscht ein Stück zur Seite und verschränkt die Arme. Kamera: rueckfahrt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Lea backt nach Wetter. Reste gibt's ab 17 Uhr billiger.",
+      "sprechtext": "Lea backt nach Wetter. Reste gibt's … ab siebzehn Uhr billiger.",
+      "ton": "ueberzeugt",
+      "betonung": "Wetter",
+      "tempo": "normal",
+      "musik": "aufsteigend",
+      "highlight": [
+        "nach Wetter"
+      ],
+      "reaktion": "staunen",
+      "set": "spielwelt",
+      "kapitel": 2,
+      "visual": "[3D] Kamera: ins_spiel. [GAME] Neues Spiel, 'TAG 1'. Mini-Lea setzt den Preis-Regler auf '1,20 €'. Beim Banner 'REGEN!' dreht sie den Mengen-Regler sofort herunter. Die Uhr springt auf '17:00', in der Auslage klappt ein Schild '½ PREIS' auf, die letzten Brezeln gehen weg, die Tonne 'RESTE' bleibt leer. Pop-up unten links: 'Null Reste!' mit Pokal. [/GAME] [FACECAM:lea:jubel] Lea ganz konzentriert, die Zungenspitze im Mundwinkel. Kamera: spiel_laden, schwenk von der Auslage zur leeren Tonne."
+    },
+    {
+      "sprecher": "erzaehler",
+      "text": "Tag 30. Und am Bahnhof … eröffnet Filiale zwei.",
+      "sprechtext": "Tag dreißig. … Und am Bahnhof … eröffnet Filiale zwei.",
+      "ton": "erzaehlend",
+      "betonung": "Bahnhof",
+      "tempo": "langsam",
+      "musik": "aufsteigend",
+      "highlight": [
+        "Filiale zwei"
+      ],
+      "reaktion": "neutral",
+      "set": "spielwelt",
+      "kapitel": 2,
+      "visual": "[GAME] Zeitraffer: Der Tag-Zähler rattert bis 'TAG 30', der Geld-Balken wächst grün bis zum Anschlag. Flug von der Altstadt über den Fluss zum Bahnhof: Ein Zug fährt ein, ein Strom von Pendlern flutet den Platz. Mini-Lea drückt 'BAUEN', auf dem Bauplatz steht kurz ein Kran in einer Staubwolke, dann poppt die Filiale mit Brezel-Schild und Bahnhofsuhr auf. Goldener Level-Up-Bildschirm: 'FILIALE 2 FREIGESCHALTET', Konfetti, die Pendler bilden sofort eine Schlange. [/GAME] [FACECAM:lea:jubel] Lea reißt beide Arme hoch. Kamera: spiel_flug zum Bahnhof, dann spiel_stadt."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Die Azubi isch besser als der Meister.",
+      "sprechtext": "Die Azubi isch … besser als der Meister.",
+      "ton": "geruehrt",
+      "betonung": "besser",
+      "tempo": "langsam",
+      "musik": "warm",
+      "highlight": [
+        "besser"
+      ],
+      "reaktion": "geruehrt",
+      "set": "buero",
+      "licht": "abend",
+      "kapitel": null,
+      "visual": "[3D] Kamera: aus_spiel. Kalle schaut von Lea zum Bildschirm und wieder zurück, die verschränkten Arme lösen sich. Er schmunzelt, halb geschlagen, halb stolz, und klopft ihr auf die Schulter. Lea grinst verlegen. Kamera: zoom_gesicht auf Kalle, langsam. Vor dieser Szene 0,4 s Stille."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ein Planspiel. Fehler kosten hier nichts.",
+      "sprechtext": "Ein Planspiel. … Fehler kosten hier nichts.",
+      "ton": "ueberzeugt",
+      "betonung": "nichts",
+      "tempo": "normal",
+      "musik": "warm",
+      "highlight": [
+        "Planspiel"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel. Im Studio schwebt die Spielstadt als kleines Modell mit dem roten 'PLEITE'-Schild und einem 'NOCHMAL'-Knopf. Byte drückt auf 'NOCHMAL', die ganze Modellstadt setzt sich mit einem Rückspul-Effekt zurück, die Tonne leert sich, die Münzen fliegen zurück in die Kasse. Kamera: kreisfahrt um das Modell."
+    },
+    {
+      "sprecher": "erzaehler",
+      "text": "Diese Stadt ist ein Spiel. Deine nicht.",
+      "sprechtext": "Diese Stadt ist ein Spiel. … Deine nicht.",
+      "ton": "erzaehlend",
+      "betonung": "Deine",
+      "tempo": "langsam",
+      "musik": "trailer",
+      "highlight": [
+        "Deine nicht"
+      ],
+      "reaktion": "neutral",
+      "set": "theke",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel in die echte Welt: früher Morgen vor der echten Bäckerei (Set theke, Kamera durchs_fenster; ein Set marktplatz gibt es nicht), Kalle schließt seine echte Bäckerei auf, das Glöckchen klingelt, er dreht das Schild auf 'OFFEN'. Es gibt keine Spielanzeige und keinen 'NOCHMAL'-Knopf. Dann steigt die Kamera senkrecht nach oben, die echte Stadt verwandelt sich Kachel für Kachel in die isometrische Spielstadt. Kamera: welt_zu_spiel, endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}

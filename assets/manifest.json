@@ -370,6 +370,26 @@
    "datei": "assets/props/brezel_geheimnis.py",
    "funktion": "auslage_theke",
    "beschreibung": "Auslage hinter dem Schaufenster mit Glasfront und Gebäck"
+  },
+  "controller": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "controller",
+   "beschreibung": "Gamepad mit Steuerkreuz, 4 Knöpfen und Sticks; vibrieren(), knopf_druck(), verkehrt herum haltbar (Drehung des Körpers um die Längsachse)"
+  },
+  "monitor_buero": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "monitor_buero",
+   "beschreibung": "Bildschirm auf Standfuß, zeigt das Spielbild über die Screen-Ebene (UV wie laptop_display); display_mitte() für ins_spiel/aus_spiel"
+  },
+  "schild_offen": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "schild_offen",
+   "beschreibung": "Hängeschild 'GESCHLOSSEN'/'OFFEN', drehen() wendet es mit Nachschwingen"
+  },
+  "spielstadt_modell": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "spielstadt_modell",
+   "beschreibung": "Studio-Fassung der Spielwelt (Katalog-Objekte im Maßstab) mit 'PLEITE'-Schild und Knopf 'NOCHMAL'; rueckspulen() setzt Tonne, Münzen und Schild zurück"
   }
  },
  "bildschirme": {
@@ -431,6 +451,21 @@
     "wissen"
    ],
    "beschreibung": "Studio-Screen: Zeitlupe 0,25x (Szene 5), Bahnen KALLE/LEA (Szene 6), Titel 'IMPLIZITES WISSEN' (Szene 8)"
+  },
+  "baeckerei-spiel": {
+   "datei": "assets/screens/baeckerei_spiel.py",
+   "inhalte": [
+    "spielbild_hochkant (Monitor im Büro)",
+    "laden_pleite",
+    "filiale (Level-up)",
+    "laden (Studio)"
+   ],
+   "standbilder": [
+    "assets/screens/baeckerei_spiel/kalle_nah_3d.png",
+    "assets/screens/baeckerei_spiel/laden_3d.png",
+    "assets/screens/baeckerei_spiel/filiale_3d.png"
+   ],
+   "quelle_standbilder": "Renders der Spielwelt (Engine 2.5) mit Spielanzeige aus engine/spielanzeige.py"
   }
  }
 }
