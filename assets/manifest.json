@@ -390,6 +390,91 @@
    "datei": "assets/props/baeckerei_spiel.py",
    "funktion": "spielstadt_modell",
    "beschreibung": "Studio-Fassung der Spielwelt (Katalog-Objekte im Maßstab) mit 'PLEITE'-Schild und Knopf 'NOCHMAL'; rueckspulen() setzt Tonne, Münzen und Schild zurück"
+  },
+  "stadtmodell_esslingen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "stadtmodell_esslingen",
+   "beschreibung": "Großes Low-Poly-Diorama: Neckar mit Wellen, Altstadt-Fachwerk mit roten Dächern, Burg auf dem Hügel, Weinberge in Reihen, Mehrfamilienhäuser, Brücke mit kleinen Autos, Laternen; Tag/Nacht (nacht()), baut sich blockweise mit Squash auf (aufbauen()), keine Logos, keine Schrift"
+  },
+  "preis_pin": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "preis_pin",
+   "beschreibung": "Pin (Kugel auf Nadel), poppt mit Überschwingen auf, erlischt grau (pin_an)"
+  },
+  "bank_gebaeude": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "bank_gebaeude",
+   "beschreibung": "Bank mit Säulen, Giebel und Treppe; roter Teppich rollt aus, Schilder klappen auf"
+  },
+  "waage_kippt": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "waage_kippt",
+   "beschreibung": "Balkenwaage, Schalen hängen senkrecht; kippen() und Gleichgewicht, scheibe() als beschriftetes Gewicht"
+  },
+  "sparbuch": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "sparbuch",
+   "beschreibung": "Sparbuch mit grünem Umschlag und Goldstreifen"
+  },
+  "portemonnaie_tropft": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "portemonnaie_tropft",
+   "beschreibung": "Portemonnaie, aus dem Münzen tropfen (Aufprall mit Squash, tropfen())"
+  },
+  "dampf_loop": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "dampf_loop",
+   "beschreibung": "Dampf, der in Schleife aufsteigt, Stärke als Funktion (kann verfliegen)"
+  },
+  "mehlstaub": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "mehlstaub",
+   "beschreibung": "Schwebender Mehlstaub im Licht und eine langsam sinkende Mehlwolke (mehlwolke_sinkt)"
+  },
+  "lichtring_welle": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "lichtring_welle",
+   "beschreibung": "Türkiser (oder grüner) Lichtring, breitet sich flach wie eine Welle aus"
+  },
+  "konfetti_gruen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "konfetti_gruen",
+   "beschreibung": "Grüne Konfetti-Funken"
+  },
+  "byte_lichtschein": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "byte_lichtschein",
+   "beschreibung": "Türkises Licht um Byte (weiche Hüllen) und Lichtfleck darunter, Stärke steuerbar (lichtschein_steuern)"
+  },
+  "landen_squash": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "landen",
+   "beschreibung": "Hilfsfunktion landen(): Squash & Stretch mit Nachwippen beim Aufprall; schild_klappen(): Schild klappt mit Überschwingen auf"
+  },
+  "besen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "besen",
+   "beschreibung": "Besen, an der Theke angelehnt"
+  },
+  "schild_text": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "schild_text",
+   "beschreibung": "Leuchtschild mit Text (z. B. 'Alles erledigt', Preis-/Mietschilder)"
+  },
+  "haken_gruen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "haken_gruen",
+   "beschreibung": "Grüner Haken im Ring"
+  },
+  "etikett_kette": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "etikett_kette",
+   "beschreibung": "Rotes Etikett an einer Kette, pendelt aus (schwingen())"
+  },
+  "muenzsaeule_gruen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "muenzsaeule_gruen",
+   "beschreibung": "Grüne Münzsäule (props.coin_column wiederverwendet, Material am Objekt)"
   }
  },
  "bildschirme": {
@@ -466,6 +551,16 @@
     "assets/screens/baeckerei_spiel/filiale_3d.png"
    ],
    "quelle_standbilder": "Renders der Spielwelt (Engine 2.5) mit Spielanzeige aus engine/spielanzeige.py"
+  },
+  "kalle-vermieter": {
+   "datei": "assets/screens/kalle_vermieter.py",
+   "inhalte": [
+    "countdown_ring_3_s",
+    "wohnung_60_qm_250000",
+    "rate_1000_im_monat",
+    "rechnung_1000_minus_750",
+    "nachtsuche_ladebalken"
+   ]
   }
  }
 }

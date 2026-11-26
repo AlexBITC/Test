@@ -1,0 +1,30 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Kalle = Brian, Byte = Laura. Szene 6 hörbar begeistert (ton), Szene 10 leise und langsam (ton enttaeuscht, tempo langsam, pegel_db -4, 0,5 s Pause davor), Szene 13 aufgerichtet und warm (ton stolz). halt_nach_szene: Platz für die beschriebenen Abläufe (Ziel 60–80 s).",
+ "pause_vor_szene": {
+  "7": 0.3,
+  "10": 0.5
+ },
+ "pegel_db": {
+  "10": -4
+ },
+ "hook_karte": {
+  "text_oben": "Meine KI macht jetzt meinen Job.",
+  "gelb": "Job"
+ },
+ "halt_nach_szene": {
+  "1": 1.0,
+  "2": 1.0,
+  "3": 1.4,
+  "4": 1.8,
+  "5": 1.4,
+  "6": 1.0,
+  "7": 1.4,
+  "8": 1.4,
+  "9": 1.4,
+  "10": 1.0,
+  "11": 1.6,
+  "12": 1.4,
+  "13": 1.8
+ }
+}
