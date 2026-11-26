@@ -31,3 +31,28 @@ Stufen: `--stage voices | style --frames 37,573 | contact | final` (Standard: al
 
 Beats: In `visual` steht `Beat bei 'Wort'`; die Aktion startet 3 Frames vor dem Wort-Zeitstempel.
 Schrift: Lilita One (SIL Open Font License, `engine/fonts/OFL.txt`).
+
+## Motivationsvideo „Don't put off until tomorrow“ (`motivation/`)
+
+Eigenständige Pipeline für ein englisches TikTok-Video (1080×1920, 30 fps, 35,3 s, nahtloser Loop):
+Neon-Linien auf Schwarz, Bloom, goldene Akzente (#F5C451), abstrakte Low-Poly-Figur ohne Gesicht.
+
+```bash
+python3 -m motivation.make                 # alles
+python3 -m motivation.make --from audio    # ab einer Stufe
+```
+
+| Datei | Aufgabe |
+|---|---|
+| `motivation/script.json` | Skript (10 Sätze, wörtlich), Stimmung pro Satz, Stimme + Einstellungen |
+| `motivation/voice.py` | ElevenLabs `eleven_multilingual_v2`, Satz für Satz, je 3 Takes; Whisper-Prüfung (Wörter + Satzmelodie), Auswahl |
+| `motivation/timeline.py` | saubere Schnitte, Pausen nach hörbaren Grenzen, Wortzeiten |
+| `motivation/scene.py` | Blender-Szene (Cycles CPU, headless): Kalender, TOMORROW zerbricht, Berg, Weg, Sanduhr, Lauf + Lichtexplosion |
+| `motivation/audio.py` | selbst synthetisierte Musik + Soundeffekte, Ducking, Stimme −16 LUFS, Endmix −14 LUFS, True Peak < −1 dBTP |
+| `motivation/post.py` | Staub, Bokeh, Schlagzeilen, wortgenaue Untertitel, Lichtblitz, H.264/AAC |
+| `motivation/cover.py`, `motivation/qa.py` | Cover-Bild; Prüfung (Format, Lautheit, leere Frames, Loop-Naht, Kontaktbögen, Whisper) |
+
+Stimme: „Fernanda – Calm Storytelling“ (Voice Library), Voice-ID `hnFidmF05jrIKH0LAjEc`,
+stability 0.40, similarity_boost 0.80, style 0.30, Speaker Boost an. Der API-Schlüssel wird nur aus
+`ELEVENLABS_API_KEY` gelesen (fehlt er, ersetzt ein authentifizierender Proxy den Platzhalter).
+Schriften: Anton (OFL, `motivation/fonts/OFL-Anton.txt`), Inter (OFL, `motivation/fonts/LICENSE-Inter.txt`).

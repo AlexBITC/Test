@@ -1,0 +1,95 @@
+{
+  "title": "Don't put off until tomorrow what you can do today.",
+  "voice": {
+    "name": "Fernanda - Calm Storytelling",
+    "voice_id": "hnFidmF05jrIKH0LAjEc",
+    "source": "ElevenLabs Voice Library (GET /v1/shared-voices), vom Nutzer gewaehlt nach 4 Proberunden",
+    "model": "eleven_multilingual_v2",
+    "settings": {
+      "stability": 0.4,
+      "similarity_boost": 0.8,
+      "style": 0.3,
+      "use_speaker_boost": true
+    }
+  },
+  "sentences": [
+    {
+      "id": 1,
+      "text": "You said you'd start tomorrow.",
+      "mood": "calm",
+      "pause_before": 0.0
+    },
+    {
+      "id": 2,
+      "text": "That was a year ago.",
+      "mood": "calm",
+      "pause_before": 0.4
+    },
+    {
+      "id": 3,
+      "text": "Tomorrow is the most dangerous word you know.",
+      "mood": "calm",
+      "pause_before": 0.5
+    },
+    {
+      "id": 4,
+      "text": "Every day you wait, the mountain gets taller.",
+      "mood": "rising",
+      "pause_before": 0.45
+    },
+    {
+      "id": 5,
+      "text": "But the first step? It's never as hard as you think.",
+      "mood": "rising",
+      "pause_before": 0.45
+    },
+    {
+      "id": 6,
+      "text": "Five minutes. That's all it takes to begin.",
+      "mood": "rising",
+      "pause_before": 0.4
+    },
+    {
+      "id": 7,
+      "text": "Do it badly. Do it scared. Just do it today.",
+      "mood": "rising",
+      "pause_before": 0.4
+    },
+    {
+      "id": 8,
+      "text": "Because one day, you won't have a tomorrow left.",
+      "mood": "quiet",
+      "pause_before": 0.8
+    },
+    {
+      "id": 9,
+      "text": "So stop waiting.",
+      "mood": "strong",
+      "pause_before": 0.5
+    },
+    {
+      "id": 10,
+      "text": "Start now.",
+      "mood": "strong",
+      "pause_before": 0.35
+    }
+  ],
+  "mood_gain_db": {
+    "calm": 0.0,
+    "rising": 1.0,
+    "quiet": -3.0,
+    "strong": 2.0
+  },
+  "mood_speed": {
+    "calm": 0.74,
+    "rising": 0.78,
+    "quiet": 0.71,
+    "strong": 0.78
+  },
+  "mood_cue": {
+    "calm": "she said calmly, warmly.",
+    "rising": "she said, her voice rising with energy and determination.",
+    "quiet": "she said quietly and seriously, almost a whisper.",
+    "strong": "she said with fierce, powerful conviction."
+  }
+}
