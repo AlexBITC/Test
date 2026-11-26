@@ -22,7 +22,7 @@ Erweiterter Check (Engine 2.3) für Zeilen mit `ton`/`betonung`/`tempo`/`sprecht
 ## Sprechtext und Versuche
 
 **6. kalle:** „750 Euro jeden Monat? Die Wohnung zahlt sich doch von allein ab!“  
-- eleven_multilingual_v2 Versuch 1: „siebenhundertfünfzig Euro jeden Monat? Die Wohnung zahlt sich doch von allein ab!“, stability 0.3, style 0.5, speed 0.92, Tempo-Korrektur x0.89 → OK; Whisper: „750 Euro jeden Monat. Die Wohnung zahlt sich doch von allein ab.“ ← gewählt
+- eleven_multilingual_v2 Versuch 1: „siebenhundertfünfzig Euro jeden Monat? Die Wohnung zahlt sich doch von allein ab!“, stability 0.3, style 0.5, speed 0.92, Tempo-Korrektur x0.89 → OK; Whisper: „750 Euro jeden Monat. Die Wohnung zahlt sich doch von allein ab.“
 - eleven_v3 Versuch v3: „siebenhundertfünfzig Euro jeden Monat? Die Wohnung zahlt sich doch von allein ab!“, stability 0.5, style 0.5, speed –, Tempo-Korrektur x1.00 → OK; Whisper: „750 Euro jeden Monat, die Wohnung zahlt sich doch von allein ab.“
 
 **10. kalle:** „Dann war die Idee wohl nix.“  
@@ -33,7 +33,7 @@ Erweiterter Check (Engine 2.3) für Zeilen mit `ton`/`betonung`/`tempo`/`sprecht
 
 **13. kalle:** „Du suchst, ich entscheide. Das ist jetzt mein Job.“  
 - eleven_multilingual_v2 Versuch 1: „Du suchst, ich entscheide. Das ist jetzt mein Job.“, stability 0.45, style 0.35, speed 0.92, Tempo-Korrektur x0.88 → Tempo 2,88 W/s ausserhalb 2,3–2,6; Whisper: „Du suchst, ich entscheide. Das ist jetzt mein Job.“
-- eleven_multilingual_v2 Versuch 2: „Du suchst, ich entscheide. Das ist jetzt mein Job.“, stability 0.45, style 0.35, speed 0.7, Tempo-Korrektur x1.04 → OK; Whisper: „Du suchst, ich entscheide. Das ist jetzt mein Job.“ ← gewählt
+- eleven_multilingual_v2 Versuch 2: „Du suchst, ich entscheide. Das ist jetzt mein Job.“, stability 0.45, style 0.35, speed 0.7, Tempo-Korrektur x1.04 → OK; Whisper: „Du suchst, ich entscheide. Das ist jetzt mein Job.“
 - eleven_v3 Versuch v3: „Du suchst, ich entscheide. Das ist jetzt mein Job.“, stability 0.5, style 0.35, speed –, Tempo-Korrektur x1.00 → OK; Whisper: „Du suchst. Ich entscheide. Das ist jetzt mein Job.“
 
 ## eleven_v3
