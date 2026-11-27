@@ -103,6 +103,7 @@ CHORDS = [  # (Startzeit, Akkord)
     (s(8) - 0.3, "Fmaj7"), (word_t(8, "tomorrow"), "Em"), (s(9) - 0.1, "F"), (word_t(9, "waiting"), "G"),
     (sec(EV["now"]), "C"), (sec(EV["loop0"]) - 0.4, "Am"),
 ]
+MELODIC = False   # False: keine Akkordflaechen, kein Bass/Arpeggio, keine Gloeckchen (nur Puls + Effekte)
 CEIL = -3.0   # dBTP vor AAC: der Encoder erzeugt bis ~1,5 dB Ueberschwinger
 TEMPO = 84
 BEAT = 60 / TEMPO
@@ -199,6 +200,10 @@ def music():
         u = (t - word_t(9, "stop")) / (sec(EV["now"]) - word_t(9, "stop"))
         add(kick, kick_sound(0.5 + 0.4 * u), t, 0.2 + 0.3 * u)
         t += BEAT / (2 if u < 0.55 else 4)
+    if not MELODIC:
+        pad[:] = 0
+        bass[:] = 0
+        arp[:] = 0
     mus = pad + np.stack([bass + kick, bass + kick], 1) + np.stack([arp * 0.8, arp * 1.2], 1)
     return circ_reverb(mus, rt=2.8, mix=0.32)
 
@@ -321,15 +326,20 @@ def riser(d):
     return ((y + nz * 1.2) * u ** 2.2).astype(np.float32)
 
 
+def add_tone(*a, **k):
+    if MELODIC:
+        add(*a, **k)
+
+
 def sfx():
     S = np.zeros(NS)
     # Loop-Schnitt: Rueckwaerts-Schwell zum Blitz, Aufschlag bei Frame 0 (+ Wrap)
     add(S, whoosh(sec(EV["flash_peak"] - EV["loop0"]) + 0.3, 300, 6000, rev=True), sec(EV["loop0"]) - 0.3, 0.35)
     add(S, boom(1.4, 70, 34), sec(EV["flash_peak"]), 0.55)
-    add(S, chime(84, 1.6, 0.6), sec(EV["flash_peak"]), 0.06)
+    add_tone(S, chime(84, 1.6, 0.6), sec(EV["flash_peak"]), 0.06)
     # Goldkreis um die 1
     add(S, whoosh(sec(EV["circle"][1] - EV["circle"][0]) + 0.2, 2000, 7000), sec(EV["circle"][0]), 0.12)
-    add(S, chime(81, 1.5), sec(EV["circle"][1]) - 0.05, 0.07)
+    add_tone(S, chime(81, 1.5), sec(EV["circle"][1]) - 0.05, 0.07)
     # Blaetter
     for i, f in enumerate(EV["flips"]):
         add(S, page_flip(), sec(f), 0.32 + 0.1 * (i % 2))
@@ -348,11 +358,11 @@ def sfx():
     for f in EV["walk_steps"]:
         add(S, step_snd(), sec(f), 0.10)
     for i, f in enumerate(EV["seg_hits"]):
-        add(S, chime(penta[min(i, len(penta) - 1)] if i < 10 else penta[(i % 5) + 4], 1.0, 0.7), sec(f), 0.045)
+        add_tone(S, chime(penta[min(i, len(penta) - 1)] if i < 10 else penta[(i % 5) + 4], 1.0, 0.7), sec(f), 0.045)
     add(S, whoosh(sec(EV["ring"][1] - EV["ring"][0]), 1200, 4000), sec(EV["ring"][0]), 0.06)
-    add(S, chime(88, 1.5), sec(EV["ring"][1]), 0.06)
+    add_tone(S, chime(88, 1.5), sec(EV["ring"][1]), 0.06)
     for m in (72, 76, 79, 84):
-        add(S, chime(m, 2.0), sec(EV["today"]), 0.05)
+        add_tone(S, chime(m, 2.0), sec(EV["today"]), 0.05)
     # Sanduhr: Ticken, Rieseln, letztes Korn
     t = sec(EV["sand"][0])
     while t < sec(EV["sand"][1]):
@@ -360,7 +370,7 @@ def sfx():
         t += 0.5
     sd = sec(EV["sand"][1] - EV["sand"][0])
     add(S, (bp(noise(sd), 3000, 9000) * env_adsr(int(sd * SR), 0.5, 0.4)).astype(np.float32), sec(EV["sand"][0]), 0.02)
-    add(S, chime(96, 1.8, 0.3), sec(EV["sand"][1]) + 0.35, 0.05)
+    add_tone(S, chime(96, 1.8, 0.3), sec(EV["sand"][1]) + 0.35, 0.05)
     # Finale
     add(S, whoosh(0.5, 300, 1500), sec(EV["ready"]), 0.12)
     for f in EV["run_steps"]:
@@ -370,7 +380,7 @@ def sfx():
     add(S, boom(2.4, 75, 28), sec(EV["now"]), 0.85)
     add(S, (hp(noise(2.5), 4000) * np.exp(-np.arange(int(2.5 * SR)) / SR / 0.6)).astype(np.float32), sec(EV["now"]), 0.12)
     for m in (72, 76, 79, 84, 88):
-        add(S, chime(m, 3.0, 0.8), sec(EV["now"]), 0.04)
+        add_tone(S, chime(m, 3.0, 0.8), sec(EV["now"]), 0.04)
     # Szenenwechsel
     for k in ("B", "C", "D", "E", "F"):
         add(S, whoosh(0.5), sec(EV["scenes"][k][0]) - 0.25, 0.08)
@@ -440,7 +450,7 @@ def main():
     duck = lp(duck, 4)
     meter = pyln.Meter(SR)
     Lm = meter.integrated_loudness(m)
-    m *= 10 ** ((-25.5 - Lm) / 20)
+    m *= 10 ** (((-25.5 if MELODIC else -31.0) - Lm) / 20)   # nur Puls: deutlich leiser
     m *= duck[:, None]
     Lf = meter.integrated_loudness(fx)
     fx *= 10 ** ((-26 - Lf) / 20)

@@ -22,7 +22,7 @@ def main():
     ev = json.loads((P.OUT / "events.json").read_text())
     f = int(ev["ring"][1]) - 2      # Figur im fertigen Goldring, Berg rechts
     img = P.BG + P.particles(f)
-    img = P.screen(np.clip(img, 0, 1), P.load_render(rdir, f))
+    img = P.screen(np.clip(img, 0, 1), P.darken(P.load_render(rdir, f)))
     txt = Image.new("RGBA", (P.W, P.H), (0, 0, 0, 0))
     glow = Image.new("RGBA", (P.W, P.H), (0, 0, 0, 0))
     lay = P.layout_head(["DON'T WAIT FOR", "*TOMORROW*"])
@@ -37,7 +37,7 @@ def main():
     sh = np.asarray(txt.getchannel("A").filter(ImageFilter.GaussianBlur(22)), np.float32)[..., None] / 255
     img *= 1 - np.clip(sh * 1.6, 0, 0.75)
     g = np.asarray(glow.filter(ImageFilter.GaussianBlur(18)), np.float32) / 255
-    img = P.screen(img, g[..., :3] * g[..., 3:4] * 0.9)
+    img = P.screen(img, g[..., :3] * g[..., 3:4] * 0.55)
     t = np.asarray(txt, np.float32) / 255
     img = img * (1 - t[..., 3:4]) + t[..., :3] * t[..., 3:4]
     out = OUT / "dont-wait-for-tomorrow_cover.jpg"

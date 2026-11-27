@@ -247,7 +247,7 @@ yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 r = np.sqrt(((xx - 540) / 1.0) ** 2 + ((yy - 900) / 1.15) ** 2)
 BG = np.zeros((H, W, 3), np.float32)
 base = np.array([4, 5, 8], np.float32) / 255
-center = np.array([14, 15, 22], np.float32) / 255
+center = np.array([8, 9, 13], np.float32) / 255
 k = np.clip(1 - r / 1250, 0, 1)[..., None] ** 1.6
 BG[:] = base + (center - base) * k
 
@@ -268,11 +268,11 @@ for i in range(24):
     col = GOLD if rng.random() < 0.45 else (210, 220, 255)
     BOKEH.append({"spr": disc_sprite(rad, col), "x": rng.uniform(-40, W + 40), "y": rng.uniform(120, H - 200),
                   "ax": rng.uniform(15, 60), "ay": rng.uniform(15, 50), "ph": rng.uniform(0, 6.28),
-                  "int": rng.uniform(0.05, 0.13), "tw": rng.uniform(0, 6.28)})
+                  "int": rng.uniform(0.03, 0.08), "tw": rng.uniform(0, 6.28)})
 DUST = []
 for i in range(170):
     DUST.append({"x": rng.uniform(0, W), "y": rng.uniform(0, H), "m": rng.choice([1, 1, 2]),
-                 "wob": rng.uniform(4, 22), "ph": rng.uniform(0, 6.28), "b": rng.uniform(0.15, 0.7),
+                 "wob": rng.uniform(4, 22), "ph": rng.uniform(0, 6.28), "b": rng.uniform(0.1, 0.45),
                  "sz": rng.choice([1, 1, 1, 2, 2, 3]), "gold": rng.random() < 0.3, "tw": rng.uniform(0, 6.28)})
 DOT = {s: np.exp(-((np.mgrid[-6:7, -6:7] ** 2).sum(0)) / (2 * (0.6 + 0.55 * s) ** 2)).astype(np.float32) for s in (1, 2, 3)}
 
@@ -311,10 +311,10 @@ FLASH_IMG = None
 def flash_amount(f):
     a = 0.0
     if f >= NOW - 3:
-        a = max(a, smooth(lin(f, NOW - 3, NOW)) * 0.75 * math.exp(-max(0.0, f - NOW) / 9.0))
+        a = max(a, smooth(lin(f, NOW - 3, NOW)) * 0.42 * math.exp(-max(0.0, f - NOW) / 9.0))
     # Loop-Blitz: Gipfel bei N-10, klingt ueber den Schnitt in Frame 0..5 aus
     g = lambda x: smooth(lin(x, FLASH_PEAK - 6, FLASH_PEAK)) * math.exp(-max(0.0, x - FLASH_PEAK) / 4.0)
-    a = max(a, 0.85 * g(f), 0.85 * g(f + N))
+    a = max(a, 0.6 * g(f), 0.6 * g(f + N))
     return a
 
 
@@ -326,6 +326,11 @@ def flash_layer():
 
 
 # ------------------------------------------------------------------ Compositing
+def darken(x):
+    """Gedaempfter Look: Kurve senkt Glow-Schleier staerker als die Linienkerne."""
+    return np.power(np.clip(x, 0, 1), 1.6) * 0.78
+
+
 def screen(a, b):
     return 1 - (1 - a) * (1 - b)
 
@@ -349,6 +354,7 @@ def compose(rdir, f):
         im = Image.fromarray((rend * 255).astype(np.uint8)).resize((int(W * z), int(H * z)), Image.BICUBIC)
         x0, y0 = (im.width - W) // 2, int((im.height - H) * 0.45)
         rend = np.asarray(im.crop((x0, y0, x0 + W, y0 + H)), np.float32) / 255
+    rend = darken(rend)
     img = screen(np.clip(img, 0, 1), rend)
     fa = flash_amount(f)
     if fa > 0.002:
@@ -367,7 +373,7 @@ def compose(rdir, f):
     img[:700] *= 1 - np.clip(sh * 1.6, 0, 0.75)
     g = np.asarray(glow.crop((0, 0, W, 700)).filter(ImageFilter.GaussianBlur(18)), np.float32) / 255
     gl = np.zeros((H, W, 3), np.float32)
-    gl[:700] = g[..., :3] * g[..., 3:4] * 0.9
+    gl[:700] = g[..., :3] * g[..., 3:4] * 0.55
     img = screen(img, gl)
     t = np.asarray(txt, np.float32) / 255
     img = img * (1 - t[..., 3:4]) + t[..., :3] * t[..., 3:4]

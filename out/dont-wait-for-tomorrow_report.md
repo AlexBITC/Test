@@ -7,12 +7,12 @@
 | Dauer | 35–45 s | 35,3 s (1059 Frames) |
 | Dateigröße | < 50 MB | ca. 41 MB |
 | Stimme | −16 LUFS | −16,0 LUFS (Stimm-Spur vor dem Mastering) |
-| Endmix | −14 LUFS, True Peak < −1 dB | −14,1 LUFS, −2,5 dBTP (gemessen in der fertigen MP4 nach AAC) |
+| Endmix | −14 LUFS, True Peak < −1 dB | −14,1 LUFS, −2,1 dBTP (gemessen in der fertigen MP4 nach AAC) |
 | Spracherkennung Endmix | wortgenau | Whisper medium.en: 0 Wortfehler |
 | Untertitel-Zeiten | echte Wortzeiten | ElevenLabs-Zeichenzeiten; gegen Whisper: Median 0,06 s, 90 % < 0,13 s |
-| Leere Frames | keine | keine (min. Helligkeit YAVG 37) |
+| Leere Frames | keine | keine (min. Helligkeit YAVG 27) |
 | Text am Rand abgeschnitten | nein | keine Treffer (automatische Prüfung aller Frames) |
-| Loop | nahtlos | Unterschied letzter→erster Frame 2,95 (normaler Frame-zu-Frame-Wert 3,37) |
+| Loop | nahtlos | Unterschied letzter→erster Frame 2,5 (normaler Frame-zu-Frame-Wert 2,9) |
 | Hook | in 1,5 s | Schlagzeile ab Frame 0, Stimme ab 0,25 s, Goldkreis um die „1“ ab 0,95 s |
 
 ## Stimme
@@ -24,7 +24,10 @@
 - Pausen (Stille zwischen den hörbaren Grenzen): 0,5 s; vor Satz 8 0,8 s.
 
 ## Ton
-Musik selbst synthetisiert (Pads Am–F–C–G, Bass, Pluck-Arpeggio ab Satz 5, Herzschlag-Kick, Riser, Impact). Soundeffekte ebenfalls synthetisch: Blätter, Neon-Brummen, Riss, Zerbrechen, Grollen, Schritte, Gold-Glöckchen, Ticken, Explosion. Musik wird unter der Stimme um bis zu 6 dB abgesenkt, die Effekte um bis zu 4,4 dB. Der Hall ist zirkulär gerechnet: die Hallfahnen laufen über den Loop-Punkt.
+Version 2 (auf Wunsch): keine Melodie. Akkordflächen, Bass, Arpeggio und Glöckchen sind entfernt (`MELODIC = False` in `motivation/audio.py`). Geblieben sind der dumpfe Herzschlag-Puls (ab Satz 6, im Finale dichter) und die synthetischen Effekte: Blätter, Neon-Brummen, Riss, Zerbrechen, Grollen, Schritte, Ticken, Riser, Explosion. Der Puls wird unter der Stimme um bis zu 6 dB abgesenkt, die Effekte um bis zu 4,4 dB.
+
+## Bild
+Version 2 (auf Wunsch): weniger hell. In der Nachbearbeitung senkt eine Tonkurve den Glow-Schleier stärker als die Linienkerne. Lichtblitze, Bokeh, Staub und das Leuchten der Schlagzeile sind schwächer, der Hintergrund ist dunkler. Die mittlere Bildhelligkeit sinkt um etwa 35–40 %. Der Hall ist zirkulär gerechnet: die Hallfahnen laufen über den Loop-Punkt.
 
 ## Gefundene und behobene Fehler
 1. Die Figur lief rückwärts („Moonwalk“): Das Knie beugte sich im falschen Gangabschnitt.
