@@ -14,3 +14,4 @@ out/bnpl/*/
 !out/bnpl/vorschau/
 out/bnpl/*.wav
 out/bnpl/*.log
+out/bnpl/*.png
