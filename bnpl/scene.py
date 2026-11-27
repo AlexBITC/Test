@@ -488,19 +488,21 @@ def anchor(name, loc, parent, label, alpha_fn):
 # ------------------------------------------------------------------ Szenenfenster
 END = N - 1
 LOOP_R = 0.12          # Zeichen-Fortschritt des Wagens in Frame 0 und im letzten Frame (Loop-Naht)
-A1 = S(3) - 4
-B0, B1 = S(3) - 6, S(4) - 4
-C0, C1 = S(4) - 6, S(6) - 5
-D0, D1 = S(6) - 6, S(8) - 6
-E0, E1 = S(8) - 8, S(10) - 4
-F0 = S(10) - 6
+A1 = S(3) - 4          # Uebergang A->B
+B0, B1 = A1, S(4) - 4
+C0, C1 = B1, S(6) - 4
+D0, D1 = C1, S(8) - 2
+E0, E1 = D1, S(10) - 4
+F0 = E1
+OUT_ = lambda f, t: 1 - smooth(lin(f, t - 12, t - 2))     # Ausblenden, fertig 2 Frames vor dem Wechsel
+IN_ = lambda f, t, d=12: smooth(lin(f, t, t + d))         # Einblenden ab dem Wechsel
 TAIL0 = E(10) + 12     # nach "this?": Wagen zieht sich bis zur Loop-Naht zurueck
 
 # ================================================================== Szene 1/2: Wagen, Kette, Person
 mA_w, mA_g = mats("cartA_w"), mats("cartA_g", True)
 cartA = empty("cartA", (CX, 0, 0.9))
 cartA_objs = make_cart("cartA", mA_w, mA_g, cartA)
-cartA_vis = lambda f: (1 - smooth(lin(f, A1 - 4, A1 + 8))) + smooth(lin(f, F0, F0 + 12))
+cartA_vis = lambda f: OUT_(f, A1) + IN_(f, F0)
 fade(mA_w, lambda f: min(1.0, cartA_vis(f)))
 fade(mA_g, lambda f: min(1.0, cartA_vis(f)))
 
@@ -533,10 +535,10 @@ personA = empty("personA", (CX + 1.85, 0, 0.95))
 personA.scale = (0.8, 0.8, 0.8)
 pA_objs = make_person("personA", mP_w, personA)
 pA_t0 = W(2, "freedom") - 2
-fade(mP_w, lambda f: (1 - smooth(lin(f, A1 - 4, A1 + 8))))
+fade(mP_w, lambda f: OUT_(f, A1))
 reveal_many(pA_objs, lambda f: smooth(lin(f, pA_t0, pA_t0 + 24)))
 mC = mats("chainA")
-fade(mC, lambda f: (1 - smooth(lin(f, A1 - 4, A1 + 8))))
+fade(mC, lambda f: OUT_(f, A1))
 links = chain_links("chainA", (CX - 0.95, 0.7), (CX + 1.4, 0.45), 9, mC, None, sag=0.3)
 ch0, ch1 = W(2, "it's") - 3, WE(2, "not") + 10
 for k, o in enumerate(links):
@@ -546,12 +548,12 @@ for o in cartA_objs + pA_objs + links:
     hide_when(o, lambda f: f < A1 + 10 or f > F0 - 1)
 for o in pA_objs + links:
     hide_when(o, lambda f: pA_t0 - 2 < f < A1 + 10)
-anchor("lbl_cart", (0, -0.2, -1.35), cartA, "CART", lambda f: smooth(lin(f, 14, 34)) * (1 - smooth(lin(f, A1 - 6, A1 + 4))))
-anchor("lbl_you", (0, -0.2, -1.65), personA, "YOU", lambda f: smooth(lin(f, pA_t0 + 8, pA_t0 + 22)) * (1 - smooth(lin(f, A1 - 6, A1 + 4))))
+anchor("lbl_cart", (0, -0.2, -1.35), cartA, "CART", lambda f: smooth(lin(f, 14, 34)) * OUT_(f, A1))
+anchor("lbl_you", (0, -0.2, -1.65), personA, "YOU", lambda f: smooth(lin(f, pA_t0 + 8, pA_t0 + 22)) * OUT_(f, A1))
 
 # ================================================================== Szene 3: Daten (Zaehler in der Nachbearbeitung)
 mB_w, mB_g = mats("dataB_w"), mats("dataB_g", True)
-visB = lambda f: smooth(lin(f, B0, B0 + 10)) * (1 - smooth(lin(f, B1, B1 + 10)))
+visB = lambda f: IN_(f, B0) * OUT_(f, B1)
 fade(mB_w, visB)
 fade(mB_g, visB)
 cnt0, cnt1 = W(3, "spend") - 2, WE(3, "dollars")
@@ -565,7 +567,7 @@ for o in (base_line, ticks):
 
 # ================================================================== Szene 4/5: Raten-Boxen ziehen die Person nach unten
 mC_w, mC_g = mats("payC_w"), mats("payC_g", True)
-visC = lambda f: smooth(lin(f, C0, C0 + 10)) * (1 - smooth(lin(f, C1, C1 + 10)))
+visC = lambda f: IN_(f, C0) * OUT_(f, C1)
 fade(mC_g, visC)
 pay_t = [W(4, "small") - 2, W(4, "payments") + 4, W(4, "big") - 2, W(4, "chains") + 2]
 box_x = [CX - 2.25, CX - 0.75, CX + 0.75, CX + 2.25]
@@ -609,7 +611,7 @@ for o in pC_objs + box_objs + [main_rope]:
 
 # ================================================================== Szene 6/7: Wagen und Geld tauschen die Plaetze
 mD_w, mD_g = mats("swapD_w"), mats("swapD_g", True)
-visD = lambda f: smooth(lin(f, D0, D0 + 12)) * (1 - smooth(lin(f, D1, D1 + 10)))
+visD = lambda f: IN_(f, D0) * OUT_(f, D1)
 fade(mD_w, visD)
 fade(mD_g, visD)
 cartD = empty("cartD")
@@ -640,7 +642,7 @@ anchor("lbl_pay", (0, -0.2, -1.05), cashD, "PAY", lambda f: visD(f) * smooth(lin
 
 # ================================================================== Szene 8/9: Weg nach oben
 mE_w, mE_g = mats("pathE_w"), mats("pathE_g", True)
-visE = lambda f: smooth(lin(f, E0, E0 + 12)) * (1 - smooth(lin(f, E1, E1 + 12)))
+visE = lambda f: IN_(f, E0) * OUT_(f, E1)
 fade(mE_w, visE)
 fade(mE_g, visE)
 

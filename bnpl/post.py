@@ -91,7 +91,7 @@ HEADS = [
     (S(6) - 6, "SWAP"),
     (S(8) - 6, ["DISCIPLINE TODAY.", "*FREEDOM* TOMORROW."]),
     (S(10) - 6, ["WHO WILL", "*PAY* FOR THIS?"]),
-    (TAIL0, ["BUY NOW.", "PAY *LATER.*"]),
+    (TAIL0 - 14, ["BUY NOW.", "PAY *LATER.*"]),     # bis zum letzten Frame voll sichtbar (= Frame 0)
 ]
 
 
@@ -129,6 +129,8 @@ def line_layout(line, size):
 
 
 def draw_tok(d, t, gold, x, y, size, alpha):
+    if alpha < 0.004:          # PIL ueberschreibt Alpha: unsichtbare Woerter wuerden Loecher stanzen
+        return
     f = tok_font(gold, size)
     col = GOLD if gold else WHITE
     # Grundlinie auf y ausrichten
@@ -170,9 +172,10 @@ def draw_swap(d, f, t_in, alpha):
     for word, (la, ia), (lb, ib), bulge in (("BUY", (0, 0), (1, 0), 265), ("PAY", (1, 0), (0, 0), 10)):
         xa, ya = A[la][ia][2], HEAD_Y[la]
         xb, yb = B[lb][ib][2], HEAD_Y[lb]
+        sc = 1 - 0.3 * math.sin(math.pi * u)         # unterwegs kleiner, damit sich nichts beruehrt
+        bulge = min(bulge, xa - 70)                  # Bogen bleibt in der Safe-Zone (links >= 60 px)
         x = xa + (xb - xa) * u - bulge * math.sin(math.pi * u)
         y = ya + (yb - ya) * u
-        sc = 1 - 0.22 * math.sin(math.pi * u)        # unterwegs kleiner, damit sich nichts beruehrt
         w0 = tok_font(False, size).getlength(word)
         w1 = tok_font(False, size * sc).getlength(word)
         draw_tok(d, word, False, x + (w0 - w1) / 2, y - (1 - sc) * size * 0.3, size * sc, alpha * (k if u == 0 else 1.0))
@@ -183,7 +186,7 @@ def draw_heads(d, f):
         f1 = HEADS[i + 1][0] if i + 1 < len(HEADS) else N + 100
         if not (f0 <= f < f1 + 8):
             continue
-        t_in = 99 if i == 0 else f - f0 - 8            # neue Zeile erst nach dem Ausblenden der alten
+        t_in = 99 if i == 0 else f - f0 - 4            # neue Zeile kurz nach dem Beginn des Ausblendens der alten
         alpha = 1 - smooth(lin(f, f1, f1 + 8))
         if spec == "SWAP":
             draw_swap(d, f, t_in, alpha)
@@ -199,6 +202,8 @@ def spaced(d, text, cx, cy, size, col, alpha, track=0.22):
     tot = sum(ws) + gap * (len(text) - 1)
     x = cx - tot / 2
     asc = f.getmetrics()[0]
+    if alpha < 0.004:
+        return
     for c, w in zip(text, ws):
         d.text((x, cy - asc * 0.72), c, font=f, fill=(*col, int(255 * alpha)))
         x += w + gap
@@ -216,7 +221,7 @@ def draw_labels(d, f):
 # ------------------------------------------------------------------ Daten-Szene
 def draw_data(d, f):
     b0, b1 = EV["scenes"]["B"]
-    a = smooth(lin(f, b0, b0 + 14)) * (1 - smooth(lin(f, b1, b1 + 10)))
+    a = smooth(lin(f, b0 + 2, b0 + 16)) * (1 - smooth(lin(f, b1 - 12, b1 - 2)))
     if a <= 0.003:
         return
     c0, c1 = EV["cnt"]
@@ -274,6 +279,8 @@ def draw_subs(d, f):
         if not (ch["f0"] <= f < ch["f1"]):
             continue
         a_all = smooth(lin(f, ch["f0"], ch["f0"] + 5)) * (1 - smooth(lin(f, ch["f1"] - 5, ch["f1"])))
+        if a_all < 0.004:
+            continue
         toks = [w["w"] for w in ch["words"]]
         size = SUB_SIZE
         while True:
