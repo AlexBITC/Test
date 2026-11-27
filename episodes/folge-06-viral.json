@@ -1,0 +1,136 @@
+{
+  "folge": 6,
+  "slug": "viral",
+  "titel": "Byte macht Kalle viral",
+  "hook": "Kalle hat noch nie ein Video gemacht.",
+  "begriff": "Reichweite",
+  "kapitel": ["DREHEN", "SCHNEIDEN", "POSTEN"],
+  "szenen": [
+    {
+      "sprecher": "byte",
+      "text": "Kalle! Ich hab 'ne Idee. Wir drehen Videos!",
+      "highlight": ["Videos"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte schießt aus dem aufgeklappten Laptop auf der Theke, er trägt ein Mini-Headset und hält eine winzige Kamera. Er bremst direkt vor Kalles Gesicht, Kalle zuckt zurück, Mehl staubt von seiner Schürze. [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: 'Kalle hat noch nie ein Video gemacht.' Kamera: push_in, schnell, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Videos? I bin Bäcker, koi Influencer!",
+      "highlight": ["Influencer"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle verschränkt die Arme, sein Schnurrbart zuckt, er schiebt die Mini-Kamera mit einem Finger weg. Hinter ihm liegen Brezeln auf dem Blech. Kamera: zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Du musst nix können. Back einfach wie immer.",
+      "highlight": ["wie immer"],
+      "reaktion": "neutral",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte stellt ein kleines Ringlicht auf die Theke, es schaltet sich mit einem Klick an und taucht Kalle in weiches Licht. Byte klappt eine winzige Regieklappe zu. Kamera: rueckfahrt."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Na gut. Aber nur eine Brezel.",
+      "highlight": ["eine Brezel"],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": 0,
+      "visual": "[3D] Kalle schlingt einen Teigstrang zur Brezel, sehr schnell, die Hände verschwimmen fast. Byte schwebt mit der Mini-Kamera um ihn herum, ein rotes REC-Licht blinkt. Kamera: schwenk von Kalles Händen zu Byte."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Drei Minuten Material. Wackelig, dunkel, Mehl auf der Linse.",
+      "highlight": ["Drei Minuten"],
+      "reaktion": "staunen",
+      "set": "theke",
+      "kapitel": 0,
+      "visual": "[3D] Byte wischt mit der Hand Mehl von der Mini-Kamera, eine kleine Mehlwolke pufft. [Screen] Auf dem Laptop läuft das Rohvideo: verwackelt, zu dunkel, ein weißer Mehlfleck mitten im Bild, Zeitstempel '03:00'. Kamera: push_in auf den Laptop."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ich such die besten acht Sekunden.",
+      "highlight": ["acht Sekunden"],
+      "reaktion": "neutral",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[3D] Byte springt auf die Laptop-Tastatur und tippt mit beiden Händen blitzschnell, die Tasten leuchten unter seinen Händen auf. [Screen] Eine Schnitt-Timeline: Der lange Clip wird in Stücke zerlegt, schlechte Teile werden rot markiert und fliegen raus, übrig bleibt ein grüner Block '0:08'. Kamera: zoom auf den Laptop-Bildschirm."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Zeitlupe beim Schlingen. Untertitel. Musik drauf.",
+      "highlight": ["Zeitlupe"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[Screen] Auf dem Laptop werden im Takt drei Effekte eingeblendet: Kalles Hände in Zeitlupe, dann Untertitel, dann eine Musik-Wellenform. Jeder Effekt erscheint mit einem Häkchen. [3D] Byte schnippt bei jedem Effekt. Kamera: fahrt am Laptop entlang."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Des bin ja i! Des sieht aus wie im Fernsehen!",
+      "highlight": ["Fernsehen"],
+      "reaktion": "staunen",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[3D] Kalle beugt sich ganz nah an den Laptop, seine Nase berührt fast den Bildschirm, die Augen werden groß, die Mütze rutscht nach vorn. [Screen] Das fertige Video im Hochformat, Kalle in Zeitlupe. Kamera: zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Und die erste Sekunde: Kalle schlingt mit geschlossenen Augen.",
+      "highlight": ["erste Sekunde"],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Kulissenwechsel. Byte schwebt vor dem großen Studio-Screen und zeigt mit dem Finger auf das erste Frame. [Screen] Das erste Frame des Videos stark vergrößert: Kalle schlingt eine Brezel mit geschlossenen Augen, darüber der Text 'Seit 30 Jahren. Blind.' Kamera: push_in."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Gepostet um 18 Uhr. Da sind deine Kunden online.",
+      "highlight": ["18 Uhr"],
+      "reaktion": "neutral",
+      "set": "buero",
+      "kapitel": 2,
+      "visual": "[3D] Kulissenwechsel ins Büro am Abend: Draußen vor dem Fenster ist es dunkel, eine Schreibtischlampe brennt. Die Wanduhr springt auf '18:00', Byte drückt einen großen leuchtenden 'POSTEN'-Knopf. Kamera: schwenk von der Uhr zu Byte."
+    },
+    {
+      "sprecher": "byte",
+      "text": "12.000 Aufrufe. Über Nacht.",
+      "highlight": ["12.000"],
+      "reaktion": "staunen",
+      "set": "buero",
+      "kapitel": 2,
+      "visual": "[3D] Neben Byte rattert ein mechanischer Aufrufzähler wie ein Spielautomat bis '12.000', Herzchen-Symbole steigen auf wie Seifenblasen. Vor dem Fenster wird es langsam hell. Kamera: harter_zoom auf den Zähler."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Was isch denn hier los?!",
+      "highlight": ["los"],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel zurück an die Theke am Morgen. Vor der Theke steht eine lange Schlange Low-Poly-Kunden, viele halten ihr Handy hoch und filmen Kalle. Kalle lässt das Brezelblech fast fallen. Kamera: rueckfahrt, damit die Schlange ins Bild passt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Das ist Reichweite. Und alle wollen die blinde Brezel.",
+      "highlight": ["Reichweite"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte sitzt lässig auf der Kasse, das Headset im Nacken. Hinter ihm springt die Kasse immer wieder auf, Münzen hüpfen heraus. Kamera: zoom_gesicht auf Byte."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Byte … i hätt da au no a Idee!",
+      "highlight": ["Idee"],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle schnappt sich die Mini-Kamera, setzt sich Bytes Headset auf und dreht sich grinsend zum Laptop. Kamera: endet exakt in der Startposition von Szene 1 (Loop: Byte schießt gleich wieder aus dem Laptop)."
+    }
+  ]
+}

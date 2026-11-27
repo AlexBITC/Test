@@ -1,4 +1,4 @@
-"""Soundeffekte (Pop, Whoosh, Ding, Buzz) – mit ffmpeg aus Sinus und Rauschen erzeugt – und Audio-Mix.
+"""Soundeffekte (Pop, Whoosh, Ding, Buzz; ab 2.2 Knistern und Ticken, ab 2.3 Stadtrauschen, Zug und Grillen als leise Atmosphaere) – mit ffmpeg aus Sinus und Rauschen erzeugt – und Audio-Mix.
 Keine Musik. Lautheit: loudnorm I=-14 LUFS, TP=-1.5 dBTP (zwei Durchlaeufe)."""
 from __future__ import annotations
 
@@ -23,6 +23,32 @@ RECIPES = {
                "afade=t=in:d=0.18,afade=t=out:st=0.25:d=0.25,highpass=f=180"),
     "ding": ("aevalsrc=exprs='0.55*exp(-t*4.5)*(sin(2*PI*1318*t)+0.45*sin(2*PI*2637*t)+0.2*sin(2*PI*3955*t))'"
              ":s=48000:d=1.1", "afade=t=in:d=0.004"),
+    # 2.2: leise Raumatmosphaere (Backstube): Knistern der Glut (2 s), Ticken der Uhr (ein Tick)
+    "knistern": ("aevalsrc=exprs='0.9*gt(random(0)\\,0.9985)*(random(1)-0.5)*2+0.04*(random(2)-0.5)'"
+                 ":s=48000:d=2.0", "highpass=f=400,lowpass=f=4500,afade=t=in:d=0.1,afade=t=out:st=1.8:d=0.2"),
+    "ticken": ("aevalsrc=exprs='0.8*exp(-t*600)*sin(2*PI*2600*t)+0.4*exp(-t*300)*sin(2*PI*1200*t)'"
+               ":s=48000:d=0.06", "afade=t=out:st=0.04:d=0.02"),
+    # 2.3: Stadt (Set 'stadtkarte'): leises Stadtrauschen (3 s), Zug (Rumpeln + Schienenstoesse, 3 s), Grillen (1,5 s)
+    "stadtrauschen": ("aevalsrc=exprs='0.6*(random(0)-0.5)*(0.75+0.25*sin(2*PI*0.33*t))"
+                      "+0.05*sin(2*PI*92*t)*(0.6+0.4*sin(2*PI*0.21*t))':s=48000:d=3.0",
+                      "lowpass=f=900,highpass=f=70,afade=t=in:d=0.5,afade=t=out:st=2.5:d=0.5"),
+    "zug": ("aevalsrc=exprs='0.35*(random(0)-0.5)*(0.5+0.5*min(1\\,t/1.2))"
+            "+0.9*exp(-mod(t\\,0.42)*38)*sin(2*PI*120*t)+0.7*exp(-mod(t+0.13\\,0.42)*38)*sin(2*PI*150*t)'"
+            ":s=48000:d=3.0", "lowpass=f=1400,highpass=f=40,afade=t=in:d=0.8,afade=t=out:st=2.2:d=0.8"),
+    "grillen": ("aevalsrc=exprs='0.5*sin(2*PI*4300*t)*gt(sin(2*PI*28*t)\\,0)*lt(mod(t\\,0.55)\\,0.16)'"
+                ":s=48000:d=1.5", "highpass=f=2500,afade=t=in:d=0.05,afade=t=out:st=1.35:d=0.15"),
+    # 2.4: Tuergloeckchen (zwei helle Glocken, leicht versetzt) und Papiertueten-Rascheln (gefiltertes Knistern)
+    "tuerglocke": ("aevalsrc=exprs='0.5*exp(-t*5)*(sin(2*PI*2093*t)+0.5*sin(2*PI*4186*t+0.3)+0.25*sin(2*PI*6280*t))"
+                   "+0.4*gt(t\\,0.11)*exp(-(t-0.11)*5)*(sin(2*PI*2637*t)+0.45*sin(2*PI*5274*t))':s=48000:d=1.4",
+                   "afade=t=in:d=0.003,afade=t=out:st=1.1:d=0.3"),
+    "rascheln": ("aevalsrc=exprs='(random(0)-0.5)*(0.3+0.7*gt(random(1)\\,0.93))*(0.55+0.45*sin(2*PI*5*t))':s=48000:d=0.9",
+                 "highpass=f=1500,lowpass=f=9000,afade=t=in:d=0.05,afade=t=out:st=0.65:d=0.25"),
+    # 2.5: 8-Bit-Varianten (nur Spielwelt) und Schluessel (leises Klimpern)
+    "pop8": ("aevalsrc=exprs='0.6*sgn(sin(2*PI*(660+1800*t)*t))*exp(-t*22)':s=48000:d=0.14", "afade=t=out:st=0.1:d=0.04"),
+    "ding8": ("aevalsrc=exprs='0.45*sgn(sin(2*PI*1046*t))*lt(t\\,0.09)+0.45*sgn(sin(2*PI*1568*t))*gt(t\\,0.09)*exp(-(t-0.09)*5)'"
+              ":s=48000:d=0.7", "lowpass=f=6000,afade=t=out:st=0.55:d=0.15"),
+    "schluessel": ("aevalsrc=exprs='0.4*exp(-mod(t\\,0.13)*45)*(sin(2*PI*3500*t)+0.6*sin(2*PI*5200*t+1)+0.4*sin(2*PI*7100*t))*lt(t\\,0.7)'"
+                   ":s=48000:d=0.8", "highpass=f=1800,afade=t=out:st=0.6:d=0.2"),
     "buzz": ("aevalsrc=exprs='0.32*(sgn(sin(2*PI*110*t))+0.6*sgn(sin(2*PI*165*t)))*(0.6+0.4*sin(2*PI*22*t))'"
              ":s=48000:d=0.38", "lowpass=f=2200,afade=t=in:d=0.01,afade=t=out:st=0.28:d=0.1"),
 }
@@ -47,7 +73,9 @@ def _load(p):
     return y
 
 
-SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22}
+SFX_GAIN = {"pop": 0.30, "whoosh": 0.32, "ding": 0.30, "buzz": 0.22, "knistern": 0.18, "ticken": 0.12,
+            "stadtrauschen": 0.15, "zug": 0.25, "grillen": 0.10, "tuerglocke": 0.18, "rascheln": 0.12,
+            "pop8": 0.22, "ding8": 0.25, "schluessel": 0.12}
 
 
 def build_mix(tl: dict, work: Path) -> Path:
@@ -57,11 +85,29 @@ def build_mix(tl: dict, work: Path) -> Path:
     n = int(tl["frames"] / FPS * SR) + SR
     mix = np.zeros(n, np.float32)
     for s in tl["scenes"]:
+        if not s.get("wav"):
+            continue                       # Folge ohne Stimme
         y = _load(ROOT / s["wav"])
         a = int(round(s["audio_start"] * SR))
         mix[a:a + len(y)] += y[: max(0, n - a)]
+    new_fmt = any(s.get("beat_list") for s in tl["scenes"])
+    speech_peak = float(np.max(np.abs(mix))) if len(mix) else 1.0
+    if any(s.get("musik") for s in tl["scenes"]):           # 2.4: Musikbett (nur wenn eine Szene 'musik' hat)
+        from . import musik
+        hop = int(0.01 * SR)
+        r = np.sqrt(np.convolve(mix ** 2, np.ones(hop) / hop, mode="same")[::hop]) + 1e-9
+        act = r[r > r.max() * 10 ** (-40 / 20)]
+        bett = musik.bett(tl, n, float(np.sqrt(np.mean(act ** 2))))
+        if bett is not None:
+            mix += bett
+    if speech_peak < 1e-3:                 # ohne Stimme: Effekte auf festen Pegel
+        speech_peak = 0.9
     for f, kind, gain in cues:
-        y = sfx[kind] * SFX_GAIN[kind] * gain
+        if new_fmt:
+            # Soundeffekte 6 dB unter der Sprache: Effekt-Spitze = halbe Sprach-Spitze
+            y = sfx[kind] / (np.max(np.abs(sfx[kind])) + 1e-9) * 0.5 * speech_peak * min(1.0, gain)
+        else:
+            y = sfx[kind] * SFX_GAIN[kind] * gain
         a = int(round(f / FPS * SR))
         if 0 <= a < n:
             mix[a:a + len(y)] += y[: n - a]
@@ -77,6 +123,15 @@ def build_mix(tl: dict, work: Path) -> Path:
     flt = (f"loudnorm=I=-14:TP=-1.5:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
            f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:"
            f"linear=true,aresample=48000")
+    tmp = work / "mix_ln.wav"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(raw), "-af", flt, "-ar", "48000", "-ac", "2",
-                    str(out)], check=True)
+                    str(tmp)], check=True)
+    # Nachkorrektur: loudnorm trifft das Ziel bei kurzen Clips mit Pausen nicht immer exakt
+    p = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(tmp), "-af",
+                        "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"],
+                       capture_output=True, text=True)
+    m2 = json.loads(re.findall(r"\{[^{}]*\}", p.stderr)[-1])
+    gain = min(-14.0 - float(m2["input_i"]), -1.5 - float(m2["input_tp"]))
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(tmp), "-af", f"volume={gain:.2f}dB", "-ar", "48000",
+                    "-ac", "2", str(out)], check=True)
     return out

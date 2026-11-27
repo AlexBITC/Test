@@ -1,0 +1,1 @@
+{"hash": "006555aff4961a65a855", "speech_text": "Obwohl ich so viel verkauft hab?", "voice": {"model": "de_DE-thorsten-high", "url_sub": "thorsten/high/", "speaker": null, "length_scale": 1.912, "noise_scale": 0.75, "noise_w": 0.85}, "model": "piper", "wav": "out/cache/006555aff4961a65a855.wav", "cached": false}

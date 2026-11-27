@@ -1,0 +1,1 @@
+{"hash": "9cd18d8b0452a8e29a1c", "speech_text": "Zwei Tage später: Geld da, Mühle bezahlt, tausendzweihundertsechzig Euro übrig.", "voice": {"model": "de_DE-kerstin-low", "url_sub": "kerstin/low/", "speaker": null, "length_scale": 1.0, "noise_scale": 0.8, "noise_w": 0.9}, "model": "piper", "wav": "out/cache/9cd18d8b0452a8e29a1c.wav", "cached": false}

@@ -1,0 +1,8 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Stimmen: ElevenLabs, Kalle = Brian, Byte = Laura; Zeilen mit ton/betonung/tempo/sprechtext laufen über engine/stimme.py (2.3). Keine Folgennummer, kein Serienname im Bild. Szene 9 und 10 sind ein Gedanke: keine Zusatzpause davor.",
+ "hook_karte": {
+  "text_oben": "Wo würdest du die zweite Bäckerei aufmachen?",
+  "gelb": "du"
+ }
+}

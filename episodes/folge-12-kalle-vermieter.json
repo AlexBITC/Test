@@ -1,0 +1,168 @@
+{
+  "folge": 12,
+  "slug": "kalle-vermieter",
+  "titel": "Meine KI macht jetzt meinen Job",
+  "hook": "Meine KI macht jetzt meinen Job.",
+  "begriff": "Cashflow",
+  "kapitel": [
+    "WOHNUNG FINDEN",
+    "RECHNEN",
+    "ENTSCHEIDEN"
+  ],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "Meine KI macht jetzt meinen ganzen Job. Und ich steh nur noch rum.",
+      "highlight": [
+        "ganzen Job"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] 0,0 s: Schon in Bewegung. Drei Helfer-Bytes wuseln um Kalle: Helfer 1 hält schwebend den Telefonhörer, Helfer 2 tippt am Laptop (Tasten leuchten türkis), Helfer 3 stapelt Brötchentüten, die mit kleinem Nachwippen landen. Aus dem Brötchenkorb steigt Dampf. 1,5 s: Kalle greift nach einer Tüte, Helfer 3 ist schneller, Kalles Hand greift ins Leere. Der Besen lehnt unbenutzt an der Theke, eine Mehlstaubwolke sinkt langsam im Licht. [Overlay] Hook groß oben: 'Meine KI macht jetzt meinen Job.' Kamera: push_in auf Kalles Gesicht. Diese Startposition merken: die letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Der Laden läuft, Kalle. Du hast jetzt Zeit.",
+      "highlight": [
+        "Zeit"
+      ],
+      "reaktion": "neutral",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] 0,0 s: Die drei Helfer fliegen in einer Spirale zusammen und verschmelzen mit Whoosh zu einem Byte, ein türkiser Lichtring breitet sich wie eine Welle über die Theke aus. Byte ist danach sichtbar größer und heller als früher, die Antenne pulsiert. 1,5 s: Über der Kasse blinkt ein kleines grünes Schild 'Alles erledigt'. Kamera: rueckfahrt, bis Kalle und Byte im Bild sind."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Dann werd ich Vermieter! 75.000 Euro hab ich gespart.",
+      "highlight": [
+        "Vermieter",
+        "75.000 Euro"
+      ],
+      "reaktion": "jubel",
+      "set": "buero",
+      "kapitel": null,
+      "visual": "[3D] 0,0 s: Kalle zieht ein Sparbuch aus der Schreibtischschublade und knallt es auf den Tisch, Papiere flattern hoch. 0,8 s: Aus dem Sparbuch wächst eine grüne Münzsäule und zählt mit Pop hoch bis '75.000 €', die oberste Münze dreht sich glänzend. Kalle reißt die Arme hoch, seine Mütze hüpft. Kamera: kreisfahrt um den Schreibtisch."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ich durchsuch die ganze Stadt. In 3 Sekunden.",
+      "highlight": [
+        "ganze Stadt",
+        "3 Sekunden"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] 0,0 s: Vor dem Screen baut sich ein großes Low-Poly-Stadtmodell Block für Block aus dem Boden auf, jedes Haus springt mit kurzem Squash hoch: Neckar als glitzerndes türkises Band mit kleinen Wellen, Altstadt mit roten Fachwerkdächern, Burg auf dem Hügel, grüne Weinberge in Reihen. Winzige Autos fahren über eine Brücke, Fenster leuchten warm. 1,5 s: Byte steigt über die Stadt, eine türkise Scan-Linie fegt mit Whoosh über alle Dächer, auf dutzenden Häusern poppen kleine Pins auf. [Screen] ein Countdown-Ring läuft in 3 Sekunden voll. Kamera: fahrt langsam schräg über das Stadtmodell."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Die hier: 60 Quadratmeter, 250.000 Euro. Miete: 750 Euro im Monat.",
+      "highlight": [
+        "250.000 Euro",
+        "750 Euro"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] 0,0 s: Alle Pins erlöschen nacheinander wie Dominosteine, nur einer bleibt. Ein Mehrfamilienhaus hebt sich leicht aus dem Modell und leuchtet gelb, ein Fenster im 2. Stock geht an. 1,0 s: Über dem Haus klappt ein Preisschild '250.000 €' auf. 2,0 s: Darunter erscheint ein grünes Schild 'Miete 750 €' und wippt nach. [Screen] nur: '60 m² · 250.000 €'. Kamera: push_in auf das leuchtende Haus."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "750 Euro jeden Monat? Die Wohnung zahlt sich doch von allein ab!",
+      "highlight": [
+        "von allein"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] 0,0 s: Kalle beugt sich über das Stadtmodell und tippt mit dem Finger auf das Haus, es wackelt. 0,8 s: Aus dem Haus fliegen grüne Münzen in einem Bogen zu ihm, er versucht sie aufzufangen. Konfetti-Funken in Grün. Kamera: zoom_gesicht auf Kalle.",
+      "ton": "begeistert"
+    },
+    {
+      "sprecher": "byte",
+      "text": "Moment. Die Bank leiht dir 200.000 Euro. Dafür will sie 1.000 Euro im Monat.",
+      "highlight": [
+        "200.000 Euro",
+        "1.000 Euro"
+      ],
+      "reaktion": "zweifel",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] 0,0 s: Die fliegenden Münzen frieren mitten in der Luft ein (Zeitlupe), Byte schiebt sich dazwischen, sein Licht wechselt kurz auf warnendes Orange. 1,0 s: Ein Low-Poly-Bankgebäude mit Säulen gleitet ins Bild, aus seiner Tür rollt ein roter Teppich mit dem Schild '200.000 €'. 2,5 s: Über der Bank klappt ein rotes Schild 'Rate 1.000 € / Monat' auf. [Screen] nur: 'Rate: 1.000 € im Monat'. Kamera: schwenk vom Haus zur Bank."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "1.000 raus, nur 750 rein?",
+      "highlight": [
+        "1.000",
+        "750"
+      ],
+      "reaktion": "schock",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] 0,0 s: Eine große Waage fällt von oben ins Bild und federt nach. Links landet eine schwere rote Scheibe '1.000 €', rechts eine kleine grüne '750 €'. 0,8 s: Die Waage kippt mit Buzz hart nach links, die grüne Scheibe hüpft hoch, Mehlstaub stiebt auf. Kalle fasst sich an die Mütze. Kamera: harter_zoom auf Kalles Gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Dir fehlen jeden Monat 250 Euro. Das heißt negativer Cashflow.",
+      "highlight": [
+        "250 Euro",
+        "Cashflow"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] 0,0 s: Unter der gekippten Waage hängt ein Portemonnaie, aus dem einzelne Münzen tropfen, jede mit kleinem Klirren und Aufprall-Squash. 1,5 s: Ein rotes Etikett '−250 € jeden Monat' schwingt an einer Kette ins Bild. Das Licht im Studio wird einen Tick kühler. [Screen] nur: 1.000 € − 750 € = 250 €. Kamera: langsame fahrt von der Waage nach unten zum Portemonnaie."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Dann war die Idee wohl nix.",
+      "highlight": [
+        "nix"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[3D] Ruhiger, leiser Moment: Kalle lehnt allein an der Theke, schiebt das Sparbuch langsam von sich weg. Abendlicht fällt schräg herein, Staubkörnchen schweben im Licht, der letzte Dampf über dem Brötchenkorb verfliegt. Kamera: sehr langsamer push_in.",
+      "ton": "enttaeuscht",
+      "tempo": "langsam"
+    },
+    {
+      "sprecher": "byte",
+      "text": "Doch. Nur nicht diese Wohnung. Ich such jede Nacht weiter.",
+      "highlight": [
+        "jede Nacht"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] 0,0 s: Das Stadtmodell erscheint wieder, jetzt in Nachtstimmung: Fenster leuchten warm, über dem Neckar spiegelt sich ein Mond, Straßenlaternen gehen nacheinander an. 1,0 s: Byte kreist über den Dächern, die Scan-Linie läuft in Schleife, einzelne Häuser blinken kurz auf und erlöschen wieder. [Screen] 'Nachtsuche läuft …' mit pulsierendem Ladebalken. Kamera: kreisfahrt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ich meld mich erst, wenn die Miete die Rate trägt.",
+      "highlight": [
+        "Miete",
+        "Rate"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] 0,0 s: Die Waage kehrt zurück und pendelt langsam aus, bis beide Schalen exakt gleich hoch stehen. 1,5 s: Ein grüner Haken erscheint mit Ding, ein grüner Lichtimpuls läuft über die ganze Stadt. Kamera: push_in auf die Waage."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Du suchst, ich entscheide. Das ist jetzt mein Job.",
+      "highlight": [
+        "ich entscheide"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] 0,0 s: Kalle richtet sich auf, zieht das Sparbuch zurück und steckt es in die Schürze. Morgenlicht statt Abendlicht, frischer Dampf steigt aus dem Brötchenkorb. 1,5 s: Byte teilt sich mit Whoosh wieder in drei Helfer, die um Kalle herumwuseln wie in Szene 1. Kamera: rueckfahrt auf exakt die Startposition von Szene 1, damit das Video nahtlos loopt.",
+      "ton": "stolz"
+    }
+  ]
+}

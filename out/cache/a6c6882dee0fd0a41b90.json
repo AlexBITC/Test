@@ -1,0 +1,1 @@
+{"hash": "a6c6882dee0fd0a41b90", "speech_text": "Viel verkauft … kein Geld da!", "voice": {"model": "de_DE-thorsten_emotional-medium", "url_sub": "thorsten_emotional/medium/", "speaker": 1, "length_scale": 1.18, "noise_scale": 0.8, "noise_w": 0.85}, "model": "piper", "wav": "out/cache/a6c6882dee0fd0a41b90.wav", "cached": false}

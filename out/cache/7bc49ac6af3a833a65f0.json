@@ -1,0 +1,1 @@
+{"hash": "7bc49ac6af3a833a65f0", "speech_text": "Drei Rechnungen offen. Jee sechshundertzwanzig Euro, zusammen tausendachthundertsechzig.", "voice": {"model": "de_DE-kerstin-low", "url_sub": "kerstin/low/", "speaker": null, "length_scale": 1.0, "noise_scale": 0.5, "noise_w": 0.8}, "model": "piper", "wav": "out/cache/7bc49ac6af3a833a65f0.wav", "cached": false}

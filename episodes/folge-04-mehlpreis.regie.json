@@ -1,0 +1,8 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Stimmen wie folge-03-website: ElevenLabs eleven_multilingual_v2, Kalle = Brian, Byte = Laura.",
+ "pause_vor_szene": {
+  "8": 0.3,
+  "11": 0.3
+ }
+}

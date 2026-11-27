@@ -1,0 +1,77 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Kalle = Brian, Byte = Laura. Szene 2 und 4 leise und unsicher (ton nachdenklich, tempo langsam, pegel_db -4), Szene 9 fassungslos (ton fragend), Szene 11 laut und lachend (ton begeistert, pegel_db +2), Szene 12 trocken und kurz (ton ruhig). Keine Folgennummer, kein Serienname, keine Logos im Bild. halt_nach_szene: Platz für die Abläufe (Linse und Brezel, Handy und Zähler, Rückfahrt in den Loop), Pausen zwischen den Zeilen sonst kurz; pausen: Wortpausen höchstens 0,25 s.",
+ "pegel_db": {
+  "2": -4,
+  "4": -4,
+  "11": 2
+ },
+ "hook_karte": {
+  "text_oben": "Ein Video – und der Laden platzt.",
+  "gelb": "platzt"
+ },
+ "halt_nach_szene": {
+  "1": 0.4,
+  "2": 0.5,
+  "3": 0.3,
+  "4": 0.4,
+  "5": 0.9,
+  "6": 0.5,
+  "7": 0.4,
+  "8": 0.5,
+  "9": 0.9,
+  "10": 0.4,
+  "11": 0.4,
+  "12": 1.3
+ },
+ "pausen": {
+  "1": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "2": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "3": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "4": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "5": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "6": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "7": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "8": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "9": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "10": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "11": {
+   "max": 0.25,
+   "ende_max": 0.1
+  },
+  "12": {
+   "max": 0.25,
+   "ende_max": 0.1
+  }
+ }
+}

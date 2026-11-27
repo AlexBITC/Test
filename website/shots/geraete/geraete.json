@@ -1,0 +1,49 @@
+{
+ "formular": [
+  {
+   "datei": "handy_formular_00.png",
+   "schritt": "leer",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_01.png",
+   "schritt": "name:A",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_02.png",
+   "schritt": "name:n",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_03.png",
+   "schritt": "name:n",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_04.png",
+   "schritt": "name:a",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_05.png",
+   "schritt": "anzahl:2",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_06.png",
+   "schritt": "abholtag:Samstag",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_07.png",
+   "schritt": "button:gedrueckt",
+   "y_offset_px": 208
+  },
+  {
+   "datei": "handy_formular_08.png",
+   "schritt": "bestaetigung",
+   "y_offset_px": 208
+  }
+ ]
+}

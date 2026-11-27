@@ -1,0 +1,168 @@
+{
+  "folge": 4,
+  "slug": "mehlpreis",
+  "titel": "Byte telefoniert",
+  "hook": "24 Euro für en Sack Mehl?! Die spinnet doch!",
+  "begriff": "Angebotsvergleich",
+  "kapitel": [
+    "ANRUFEN",
+    "VERHANDELN",
+    "SPAREN"
+  ],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "24 Euro für en Sack Mehl?! Die spinnet doch!",
+      "highlight": [
+        "24 Euro"
+      ],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle reißt eine Rechnung aus dem Umschlag, sie rollt sich meterlang bis über die Theke ab, rot umkreist '24 €/Sack'. Hinter ihm platzt ein Mehlsack 'WEIZEN 550' auf, Mehlwolke. Kalles Augen springen raus, Mütze hüpft hoch. [Overlay] Hook groß oben: '24 € für einen Sack Mehl?!' Kamera: harter_zoom auf Kalle, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ich telefonier das mal schnell weg.",
+      "highlight": [
+        "telefonier"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte ploppt aus dem Laptop, landet auf der Rechnung und rutscht darauf wie auf einem Teppich bis zu Kalle. Kamera: fahrt mit Byte mit."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Du? Telefonieren? Du hast doch net mal Ohren!",
+      "highlight": [
+        "Ohren"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle beugt sich runter und klopft Byte seitlich an den Kopf, es macht 'tock', Mehl rieselt von seinem Finger. Kamera: zoom_gesicht auf Kalle, Augenbraue ganz oben."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Brauch ich nicht. Ich hab drei Hörer.",
+      "highlight": [
+        "drei Hörer"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Zack-zack-zack: aus Bytes Antenne schnellen nacheinander drei altmodische Telefonhörer mit Ringelkabeln. Kalle weicht erschrocken zurück. Kamera: rueckfahrt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Hallo! Hier ist Byte, die KI der Bäckerei Kalle!",
+      "highlight": [
+        "KI"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Byte jongliert die drei Hörer, die Kabel führen zu drei Holzkisten 'MÜHLE A', 'MÜHLE B', 'MÜHLE C', die Kisten klingeln und wackeln. [Screen] Drei Anruffenster mit pulsierenden Wellenformen. Kamera: push_in."
+    },
+    {
+      "sprecher": "byte",
+      "text": "23. 21. 22 Euro. Drei Angebote in vierzig Sekunden.",
+      "highlight": [
+        "vierzig Sekunden"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Aus jeder Kiste ploppt im Takt ein Angebotszettel: '23 €', '21 €', '22 €'. Der 21-€-Zettel leuchtet grün. Die Ringelkabel haben sich um Byte gewickelt, er dreht sich frei. [Screen] Stoppuhr stoppt bei 0:40. Kamera: schwenk über die drei Zettel."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Zack, die 21! Bestell!",
+      "highlight": [
+        "21"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": 0,
+      "visual": "[3D] Kalle haut mit der flachen Hand auf die Theke, Mehl staubt hoch, die Kasse springt auf. Kamera: push_in."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Moment. Jetzt wird's spannend.",
+      "highlight": [
+        "spannend"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Licht dimmt, ein Spot auf Byte, er setzt eine winzige Sonnenbrille auf. Eine vierte Kiste rollt ins Bild, ein Stempel klatscht 'STAMMLIEFERANT' drauf. Kamera: zoom_gesicht auf Byte."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Die Konkurrenz macht 21. Und Sie?",
+      "highlight": [
+        "Konkurrenz"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Byte schnippt den grünen 21-€-Zettel wie eine Spielkarte zur Kiste 'STAMMLIEFERANT'. Die Kiste schwitzt sichtbar Tropfen. [Screen] Wellenform zappelt hektisch. Kamera: fahrt von Byte zur Kiste."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Byte! Des isch mein Müller, der kennt mi!",
+      "highlight": [
+        "mein Müller"
+      ],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[3D] Kalle hält sich mit beiden Händen die Mütze fest und linst panisch zum Laptop, hinter ihm flattern Bestellzettel. Kamera: harter_zoom."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Eben. Darum macht er's jetzt für 19,70.",
+      "highlight": [
+        "19,70"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Ein großes Preisschild klappt um: '24 €' wird durchgestrichen, darunter knallt '19,70 €'. Mehlstaub-Konfetti. Byte nimmt lässig die Sonnenbrille ab. Kamera: push_in auf das Preisschild."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Das sind ja 18 Prozent!",
+      "highlight": [
+        "18 Prozent"
+      ],
+      "reaktion": "staunen",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Kalle lässt die lange Rechnung fallen, sie rollt sich von selbst wieder ein und trifft ihn am Bauch. Mund steht offen. [Overlay] '−18 %' groß und grün. Kamera: zoom_gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Bei 40 Säcken im Monat: über 2.000 Euro im Jahr.",
+      "highlight": [
+        "2.000 Euro"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Byte sitzt auf einem Stapel Mehlsäcke, daneben schießt eine Münzsäule bis zum oberen Bildrand, Münzen klimpern herunter. [Screen] '40 Säcke × 12 Monate'. Kamera: schwenk von unten nach oben."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Und i hab jahrelang einfach bezahlt…",
+      "highlight": [
+        "jahrelang"
+      ],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle sackt hinter der Theke zusammen, greift nach dem nächsten Umschlag, die Rechnung rollt sich wieder ab, ein Mehlsack hinter ihm platzt. Kamera: endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}
