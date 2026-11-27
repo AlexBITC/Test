@@ -475,6 +475,86 @@
    "datei": "assets/props/kalle_vermieter.py",
    "funktion": "muenzsaeule_gruen",
    "beschreibung": "Grüne Münzsäule (props.coin_column wiederverwendet, Material am Objekt)"
+  },
+  "ladenseite": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "ladenseite",
+   "beschreibung": "Rechte Ladenwand mit offener Tür und Schaufenster, draußen Gehweg, Straße, Häuser, Himmel (Set theke, x = 2,45)"
+  },
+  "kundenschlange": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "kundenschlange",
+   "beschreibung": "Low-Poly-Kunden (viral.kunde_mit_handy) auf einem Pfad Theke → Tür → Gehweg, wippen, einige mit Handy; schlange_bewegen: rückwärts verschwinden und hereinströmen"
+  },
+  "tuerglocke": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "tuerglocke",
+   "beschreibung": "Ladenglocke an Feder mit Klöppel, bimmeln(stärke_fn) schwingt wild oder hängt still"
+  },
+  "kameralinse_byte": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "kameralinse_byte",
+   "beschreibung": "Runde Linse vor Bytes Gesicht, Gehäuse klappt mit Überschwingen herunter, Blende öffnet, roter REC-Punkt blinkt (linse_aufklappen)"
+  },
+  "brezel_schlingen": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "brezel_schlingen",
+   "beschreibung": "Teigstrang fliegt im Bogen, dreht sich in Zeitlupe und landet als Brezel (Squash, Mehlwolke, Glitzern); teigstrang() einzeln"
+  },
+  "zeitleiste_clips": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "zeitleiste_clips",
+   "beschreibung": "Filmstreifen mit Clip-Kacheln; zeitleiste_schneiden: Lichtschnitt, graue Kacheln fallen zu Boden, drei leuchtende rasten mit Pop ein"
+  },
+  "handy_hochkant": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "handy_hochkant",
+   "beschreibung": "Hochkant-Handy ohne Logo: Brezel-Video, Untertitel Wort für Wort, Titelzeile klappt auf, Notensymbole, Fortschrittsbalken (handy_abspielen)"
+  },
+  "papierflieger_licht": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "papierflieger_licht",
+   "beschreibung": "Leuchtender Papierflieger, flug() mit Schräglage in Kurven (Lichtspur über characters.trail)"
+  },
+  "handy_vibriert": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "handy_vibriert",
+   "beschreibung": "Handy flach auf dem Tisch, vibrieren(): zittert in Pulsen und wandert über die Tischplatte"
+  },
+  "herzen_burst": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "herzchen + sprechblasen",
+   "beschreibung": "Herzen (viral.herzchen) und Sprechblasen mit drei Punkten steigen schaukelnd auf und ploppen"
+  },
+  "wellenringe": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "wellenringe",
+   "beschreibung": "Mehrere türkise Lichtringe nacheinander (kalle_vermieter.lichtring_welle), radius(f) der Wellenfront"
+  },
+  "mini_baeckerei": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "mini_baeckerei",
+   "beschreibung": "Kleine Low-Poly-Bäckerei mit Satteldach, Markise rot-weiß, Kamin und Brezelschild"
+  },
+  "figuren_feld": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "figuren_feld + figuren_poppen",
+   "beschreibung": "Kleine Figuren im Kreis, poppen auf, wenn die Welle sie erreicht, hüpfen und drehen sich zur Bäckerei"
+  },
+  "stempel_gestern_heute": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "stempel + stempel_klappen",
+   "beschreibung": "Stempel 'GESTERN' / 'HEUTE', klappt um die Oberkante auf; Position oben links in der Schärfeebene der Kamera (Regie)"
+  },
+  "fragezeichen": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "fragezeichen + fragezeichen_an",
+   "beschreibung": "Graues Fragezeichen über Passanten, poppt auf und löst sich auf"
+  },
+  "zaehler_aufrufe": {
+   "datei": "assets/screens/laden_platzt.py",
+   "funktion": "_slot",
+   "beschreibung": "Zähler wie ein Spielautomat (fünf Walzen rollen aus bis 50.000 'Aufrufe') auf dem Laptop-Display, dazu Zahl als Overlay-Label in der Regie"
   }
  },
  "bildschirme": {
@@ -560,6 +640,19 @@
     "rate_1000_im_monat",
     "rechnung_1000_minus_750",
     "nachtsuche_ladebalken"
+   ]
+  },
+  "laden-platzt": {
+   "datei": "assets/screens/laden_platzt.py",
+   "inhalte": [
+    "video_herzen",
+    "gestern_grau",
+    "sucher_rec",
+    "10_min_zu_15_s",
+    "uhr_18_59_19_00",
+    "spielautomat_50000",
+    "50000_aufrufe",
+    "haken_mehl_bestellt"
    ]
   }
  }
