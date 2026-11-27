@@ -273,7 +273,7 @@ def direct(W):
     # Kalle reicht Tueten ueber die Theke (periodisch: Szene 1 und 12 -> Loop)
     PER = N / (3 * max(1, round(N / (3 * 34))))                # ganzzahlig oft im Video -> Loop
     STAPEL = TH.p(-0.62, -0.5, TOP)
-    MITTE = TH.p(0.02, -0.6, TOP + 0.42)
+    MITTE = TH.p(0.2, -0.62, TOP + 0.16)                   # unterhalb von Kalles Gesicht (Mund bleibt frei)
     KUNDE = TH.p(0.3, -0.98, 1.2)
 
     def reichen(f):
@@ -358,7 +358,7 @@ def direct(W):
     T.set(b.root, "location", lambda f: tuple(B_LOOP), 0, f2a)
     C.kalle_react(T, k, "schock", hl(0), hold=f1b - hl(0) - 4, speaking=True, hat=False)
     C.kalle_look(T, k, lambda f: KUNDE + V(0, 0, 0.5), 0, f1b, ramp=1)
-    A1 = (TH.p(0.4, -5.2, 2.35), TH.p(1.15, -0.6, 1.4), 21.0)
+    A1 = (TH.p(0.4, -5.2, 2.35), TH.p(1.05, -0.55, 1.45), 25.0)
     B1 = (TH.p(0.35, -6.3, 2.75), TH.p(1.3, -0.6, 1.3), 20.0)
     cam.add_shot(f1a, f1b, rueckfahrt(f1a, f1b, A1, B1, ease=ease_in_out))
 
@@ -596,7 +596,7 @@ def direct(W):
     C.kalle_react(T, k, "schock", hl(8) - 2, hold=f9b - hl(8), speaking=True, hat=True)
     B9 = BU.p(1.25, -0.25, 1.65)
     T.set(b.root, "location", lambda f: tuple(B9), f9a, f9b)
-    A9 = (BU.p(0.3, -3.1, 1.55), BU.p(0.4, 0.05, 1.3), 28.0)
+    A9 = (BU.p(0.1, -3.2, 1.6), BU.p(0.2, 0.05, 1.3), 26.0)
     face9 = K_SITZ + V(0.0, -0.25, 1.62)
     Z9 = (face9 + V(0.35, -1.9, 0.08), face9 + V(0, 0, -0.02), 42.0)
     cam.add_shot(f9a, f9b, harter_zoom(f9a, f9b, A9, Z9, f_stop + 13, dur=5))
