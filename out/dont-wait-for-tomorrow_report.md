@@ -24,10 +24,10 @@
 - Pausen (Stille zwischen den hörbaren Grenzen): 0,5 s; vor Satz 8 0,8 s.
 
 ## Ton
-Version 2 (auf Wunsch): keine Melodie. Akkordflächen, Bass, Arpeggio und Glöckchen sind entfernt (`MELODIC = False` in `motivation/audio.py`). Geblieben sind der dumpfe Herzschlag-Puls (ab Satz 6, im Finale dichter) und die synthetischen Effekte: Blätter, Neon-Brummen, Riss, Zerbrechen, Grollen, Schritte, Ticken, Riser, Explosion. Der Puls wird unter der Stimme um bis zu 6 dB abgesenkt, die Effekte um bis zu 4,4 dB.
+Version 2 (auf Wunsch): keine Melodie. Akkordflächen, Bass, Arpeggio und Glöckchen sind entfernt (`MELODIC = False` in `motivation/audio.py`). Geblieben sind der dumpfe Herzschlag-Puls (ab Satz 6, im Finale dichter) und die synthetischen Effekte: Blätter, Neon-Brummen, Riss, Zerbrechen, Grollen, Schritte, Ticken, Riser, Explosion. Der Puls wird unter der Stimme um bis zu 6 dB abgesenkt, die Effekte um bis zu 4,4 dB. Der Hall ist zirkulär gerechnet: die Hallfahnen laufen über den Loop-Punkt.
 
 ## Bild
-Version 2 (auf Wunsch): weniger hell. In der Nachbearbeitung senkt eine Tonkurve den Glow-Schleier stärker als die Linienkerne. Lichtblitze, Bokeh, Staub und das Leuchten der Schlagzeile sind schwächer, der Hintergrund ist dunkler. Die mittlere Bildhelligkeit sinkt um etwa 35–40 %. Der Hall ist zirkulär gerechnet: die Hallfahnen laufen über den Loop-Punkt.
+Version 2 (auf Wunsch): weniger hell. In der Nachbearbeitung senkt eine Tonkurve den Glow-Schleier stärker als die Linienkerne. Lichtblitze, Bokeh, Staub und das Leuchten der Schlagzeile sind schwächer, der Hintergrund ist dunkler. Die mittlere Bildhelligkeit sinkt um etwa 35–40 %.
 
 ## Gefundene und behobene Fehler
 1. Die Figur lief rückwärts („Moonwalk“): Das Knie beugte sich im falschen Gangabschnitt.

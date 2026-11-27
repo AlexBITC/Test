@@ -8,3 +8,4 @@ node_modules/
 out/motivation/*/
 out/motivation/*.wav
 out/motivation/*.log
+out/motivation/*.png
