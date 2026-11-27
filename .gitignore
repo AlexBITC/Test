@@ -9,3 +9,8 @@ out/motivation/*/
 out/motivation/*.wav
 out/motivation/*.log
 out/motivation/*.png
+# BNPL-Video: Zwischenstaende (gross, reproduzierbar); Vorschaubilder bleiben versioniert
+out/bnpl/*/
+!out/bnpl/vorschau/
+out/bnpl/*.wav
+out/bnpl/*.log

@@ -1,0 +1,589 @@
+{
+ "fps": 30,
+ "n_frames": 1060,
+ "duration": 35.333333333333336,
+ "lead": 0.2,
+ "outro": 1.44,
+ "voice": {
+  "name": "Brian - Deep, Resonant and Comforting",
+  "voice_id": "nPczCjzI2devNBz1zQrb",
+  "source": "ElevenLabs GET /v1/voices (premade), vom Nutzer gewaehlt aus Wyatt/Frank/Brian",
+  "model": "eleven_multilingual_v2",
+  "settings": {
+   "stability": 0.45,
+   "similarity_boost": 0.8,
+   "style": 0.2,
+   "use_speaker_boost": true
+  }
+ },
+ "mood_gain_db": {
+  "calm": 0.0
+ },
+ "sentences": [
+  {
+   "id": 1,
+   "text": "Buy now. Pay later.",
+   "mood": "calm",
+   "start": 0.18,
+   "end": 1.48,
+   "wav": "out/bnpl/voice/final_s01.wav",
+   "seed": 1123,
+   "pause_before": 0.0,
+   "lufs": -20.32,
+   "words": [
+    {
+     "w": "Buy",
+     "start": 0.18,
+     "end": 0.424
+    },
+    {
+     "w": "now.",
+     "start": 0.505,
+     "end": 0.691
+    },
+    {
+     "w": "Pay",
+     "start": 0.877,
+     "end": 1.074
+    },
+    {
+     "w": "later.",
+     "start": 1.132,
+     "end": 1.376
+    }
+   ],
+   "audible": [
+    0.2,
+    1.425
+   ]
+  },
+  {
+   "id": 2,
+   "text": "Sounds like freedom. It's not.",
+   "mood": "calm",
+   "start": 2.025,
+   "end": 4.765,
+   "wav": "out/bnpl/voice/final_s02.wav",
+   "seed": 1220,
+   "pause_before": 0.6,
+   "lufs": -21.53,
+   "words": [
+    {
+     "w": "Sounds",
+     "start": 2.025,
+     "end": 2.443
+    },
+    {
+     "w": "like",
+     "start": 2.478,
+     "end": 2.629
+    },
+    {
+     "w": "freedom.",
+     "start": 2.675,
+     "end": 3.058
+    },
+    {
+     "w": "It's",
+     "start": 3.883,
+     "end": 4.126
+    },
+    {
+     "w": "not.",
+     "start": 4.231,
+     "end": 4.626
+    }
+   ],
+   "audible": [
+    2.025,
+    4.6
+   ]
+  },
+  {
+   "id": 3,
+   "text": "This holiday season, Americans are expected to spend over 21 billion dollars on buy now, pay later.",
+   "mood": "calm",
+   "start": 5.17,
+   "end": 11.835,
+   "wav": "out/bnpl/voice/final_s03.wav",
+   "seed": 1317,
+   "pause_before": 0.6,
+   "lufs": -22.99,
+   "words": [
+    {
+     "w": "This",
+     "start": 5.135,
+     "end": 5.356
+    },
+    {
+     "w": "holiday",
+     "start": 5.414,
+     "end": 5.832
+    },
+    {
+     "w": "season,",
+     "start": 5.924,
+     "end": 6.389
+    },
+    {
+     "w": "Americans",
+     "start": 6.621,
+     "end": 7.26
+    },
+    {
+     "w": "are",
+     "start": 7.294,
+     "end": 7.411
+    },
+    {
+     "w": "expected",
+     "start": 7.445,
+     "end": 7.91
+    },
+    {
+     "w": "to",
+     "start": 7.945,
+     "end": 8.003
+    },
+    {
+     "w": "spend",
+     "start": 8.049,
+     "end": 8.281
+    },
+    {
+     "w": "over",
+     "start": 8.339,
+     "end": 8.502
+    },
+    {
+     "w": "21",
+     "start": 8.606,
+     "end": 9.106
+    },
+    {
+     "w": "billion",
+     "start": 9.198,
+     "end": 9.477
+    },
+    {
+     "w": "dollars",
+     "start": 9.524,
+     "end": 9.802
+    },
+    {
+     "w": "on",
+     "start": 9.849,
+     "end": 9.942
+    },
+    {
+     "w": "buy",
+     "start": 10.023,
+     "end": 10.209
+    },
+    {
+     "w": "now,",
+     "start": 10.29,
+     "end": 10.51
+    },
+    {
+     "w": "pay",
+     "start": 10.998,
+     "end": 11.23
+    },
+    {
+     "w": "later.",
+     "start": 11.323,
+     "end": 11.671
+    }
+   ],
+   "audible": [
+    5.2,
+    11.68
+   ]
+  },
+  {
+   "id": 4,
+   "text": "Small payments. Big chains.",
+   "mood": "calm",
+   "start": 12.28,
+   "end": 14.62,
+   "wav": "out/bnpl/voice/final_s04.wav",
+   "seed": 1401,
+   "pause_before": 0.6,
+   "lufs": -21.57,
+   "words": [
+    {
+     "w": "Small",
+     "start": 12.28,
+     "end": 12.686
+    },
+    {
+     "w": "payments.",
+     "start": 12.744,
+     "end": 13.232
+    },
+    {
+     "w": "Big",
+     "start": 13.534,
+     "end": 13.789
+    },
+    {
+     "w": "chains.",
+     "start": 13.871,
+     "end": 14.428
+    }
+   ],
+   "audible": [
+    12.28,
+    14.47
+   ]
+  },
+  {
+   "id": 5,
+   "text": "Every 'later' is a piece of your future you already sold.",
+   "mood": "calm",
+   "start": 15.04,
+   "end": 18.305,
+   "wav": "out/bnpl/voice/final_s05.wav",
+   "seed": 1485,
+   "pause_before": 0.6,
+   "lufs": -22.56,
+   "words": [
+    {
+     "w": "Every",
+     "start": 15.035,
+     "end": 15.372
+    },
+    {
+     "w": "'later'",
+     "start": 15.441,
+     "end": 15.766
+    },
+    {
+     "w": "is",
+     "start": 15.975,
+     "end": 16.173
+    },
+    {
+     "w": "a",
+     "start": 16.219,
+     "end": 16.254
+    },
+    {
+     "w": "piece",
+     "start": 16.312,
+     "end": 16.556
+    },
+    {
+     "w": "of",
+     "start": 16.591,
+     "end": 16.637
+    },
+    {
+     "w": "your",
+     "start": 16.684,
+     "end": 16.8
+    },
+    {
+     "w": "future",
+     "start": 16.858,
+     "end": 17.241
+    },
+    {
+     "w": "you",
+     "start": 17.287,
+     "end": 17.369
+    },
+    {
+     "w": "already",
+     "start": 17.45,
+     "end": 17.717
+    },
+    {
+     "w": "sold.",
+     "start": 17.775,
+     "end": 18.17
+    }
+   ],
+   "audible": [
+    15.07,
+    18.16
+   ]
+  },
+  {
+   "id": 6,
+   "text": "The rich don't buy now and pay later.",
+   "mood": "calm",
+   "start": 18.755,
+   "end": 20.752,
+   "wav": "out/bnpl/voice/final_s06.wav",
+   "seed": 1595,
+   "pause_before": 0.6,
+   "lufs": -21.66,
+   "words": [
+    {
+     "w": "The",
+     "start": 18.755,
+     "end": 18.918
+    },
+    {
+     "w": "rich",
+     "start": 18.976,
+     "end": 19.161
+    },
+    {
+     "w": "don't",
+     "start": 19.208,
+     "end": 19.405
+    },
+    {
+     "w": "buy",
+     "start": 19.452,
+     "end": 19.637
+    },
+    {
+     "w": "now",
+     "start": 19.719,
+     "end": 19.87
+    },
+    {
+     "w": "and",
+     "start": 19.928,
+     "end": 20.009
+    },
+    {
+     "w": "pay",
+     "start": 20.044,
+     "end": 20.171
+    },
+    {
+     "w": "later.",
+     "start": 20.253,
+     "end": 20.566
+    }
+   ],
+   "audible": [
+    18.76,
+    20.63
+   ]
+  },
+  {
+   "id": 7,
+   "text": "They pay now, and buy later.",
+   "mood": "calm",
+   "start": 21.52,
+   "end": 23.759,
+   "wav": "out/bnpl/voice/final_s07.wav",
+   "seed": 1692,
+   "pause_before": 0.9,
+   "lufs": -22.89,
+   "words": [
+    {
+     "w": "They",
+     "start": 21.52,
+     "end": 21.752
+    },
+    {
+     "w": "pay",
+     "start": 21.833,
+     "end": 21.984
+    },
+    {
+     "w": "now,",
+     "start": 22.066,
+     "end": 22.333
+    },
+    {
+     "w": "and",
+     "start": 22.565,
+     "end": 22.739
+    },
+    {
+     "w": "buy",
+     "start": 22.82,
+     "end": 23.006
+    },
+    {
+     "w": "later.",
+     "start": 23.111,
+     "end": 23.459
+    }
+   ],
+   "audible": [
+    21.53,
+    23.495
+   ]
+  },
+  {
+   "id": 8,
+   "text": "Wait. Save. Then buy it in cash.",
+   "mood": "calm",
+   "start": 24.075,
+   "end": 26.85,
+   "wav": "out/bnpl/voice/final_s08.wav",
+   "seed": 1789,
+   "pause_before": 0.6,
+   "lufs": -21.59,
+   "words": [
+    {
+     "w": "Wait.",
+     "start": 24.075,
+     "end": 24.435
+    },
+    {
+     "w": "Save.",
+     "start": 24.69,
+     "end": 25.224
+    },
+    {
+     "w": "Then",
+     "start": 25.608,
+     "end": 25.793
+    },
+    {
+     "w": "buy",
+     "start": 25.851,
+     "end": 25.979
+    },
+    {
+     "w": "it",
+     "start": 26.014,
+     "end": 26.072
+    },
+    {
+     "w": "in",
+     "start": 26.118,
+     "end": 26.176
+    },
+    {
+     "w": "cash.",
+     "start": 26.223,
+     "end": 26.676
+    }
+   ],
+   "audible": [
+    24.095,
+    26.7
+   ]
+  },
+  {
+   "id": 9,
+   "text": "Discipline today is freedom tomorrow.",
+   "mood": "calm",
+   "start": 27.3,
+   "end": 29.643,
+   "wav": "out/bnpl/voice/final_s09.wav",
+   "seed": 1886,
+   "pause_before": 0.6,
+   "lufs": -23.71,
+   "words": [
+    {
+     "w": "Discipline",
+     "start": 27.3,
+     "end": 27.985
+    },
+    {
+     "w": "today",
+     "start": 28.031,
+     "end": 28.357
+    },
+    {
+     "w": "is",
+     "start": 28.403,
+     "end": 28.484
+    },
+    {
+     "w": "freedom",
+     "start": 28.565,
+     "end": 28.844
+    },
+    {
+     "w": "tomorrow.",
+     "start": 28.925,
+     "end": 29.343
+    }
+   ],
+   "audible": [
+    27.3,
+    29.37
+   ]
+  },
+  {
+   "id": 10,
+   "text": "So before you click 'buy'... ask yourself: who will pay for this?",
+   "mood": "calm",
+   "start": 29.96,
+   "end": 34.047,
+   "wav": "out/bnpl/voice/final_s10.wav",
+   "seed": 1983,
+   "pause_before": 0.6,
+   "lufs": -22.47,
+   "words": [
+    {
+     "w": "So",
+     "start": 29.96,
+     "end": 30.157
+    },
+    {
+     "w": "before",
+     "start": 30.215,
+     "end": 30.471
+    },
+    {
+     "w": "you",
+     "start": 30.506,
+     "end": 30.575
+    },
+    {
+     "w": "click",
+     "start": 30.622,
+     "end": 30.842
+    },
+    {
+     "w": "'buy'...",
+     "start": 30.958,
+     "end": 31.26
+    },
+    {
+     "w": "ask",
+     "start": 32.038,
+     "end": 32.282
+    },
+    {
+     "w": "yourself:",
+     "start": 32.328,
+     "end": 32.712
+    },
+    {
+     "w": "who",
+     "start": 32.781,
+     "end": 32.955
+    },
+    {
+     "w": "will",
+     "start": 32.99,
+     "end": 33.13
+    },
+    {
+     "w": "pay",
+     "start": 33.176,
+     "end": 33.327
+    },
+    {
+     "w": "for",
+     "start": 33.385,
+     "end": 33.489
+    },
+    {
+     "w": "this?",
+     "start": 33.536,
+     "end": 33.815
+    }
+   ],
+   "audible": [
+    29.97,
+    33.86
+   ]
+  }
+ ]
+}

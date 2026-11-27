@@ -1,0 +1,25 @@
+{
+  "title": "Buy now, pay later",
+  "voice": {
+    "name": "Brian - Deep, Resonant and Comforting",
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "source": "ElevenLabs GET /v1/voices (premade), vom Nutzer gewaehlt aus Wyatt/Frank/Brian",
+    "model": "eleven_multilingual_v2",
+    "settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": true}
+  },
+  "sentences": [
+    {"id": 1, "text": "Buy now. Pay later.", "mood": "calm", "pause_before": 0.0},
+    {"id": 2, "text": "Sounds like freedom. It's not.", "mood": "calm", "pause_before": 0.5},
+    {"id": 3, "text": "This holiday season, Americans are expected to spend over 21 billion dollars on buy now, pay later.", "mood": "calm", "pause_before": 0.5},
+    {"id": 4, "text": "Small payments. Big chains.", "mood": "calm", "pause_before": 0.5},
+    {"id": 5, "text": "Every 'later' is a piece of your future you already sold.", "mood": "calm", "pause_before": 0.45},
+    {"id": 6, "text": "The rich don't buy now and pay later.", "mood": "calm", "pause_before": 0.55},
+    {"id": 7, "text": "They pay now, and buy later.", "mood": "calm", "pause_before": 0.9},
+    {"id": 8, "text": "Wait. Save. Then buy it in cash.", "mood": "calm", "pause_before": 0.55},
+    {"id": 9, "text": "Discipline today is freedom tomorrow.", "mood": "calm", "pause_before": 0.5},
+    {"id": 10, "text": "So before you click 'buy'... ask yourself: who will pay for this?", "mood": "calm", "pause_before": 0.6}
+  ],
+  "mood_gain_db": {"calm": 0.0},
+  "mood_speed": {"calm": 0.92},
+  "mood_cue": {"calm": "he said slowly and calmly, like a wise mentor."}
+}
