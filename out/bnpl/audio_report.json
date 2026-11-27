@@ -1,0 +1,7 @@
+{
+ "voice_lufs": -16.0,
+ "music_lufs": -44.0,
+ "music_below_voice_db": 28.0,
+ "mix_lufs": -14.03,
+ "mix_true_peak_dbtp": -3.0
+}
