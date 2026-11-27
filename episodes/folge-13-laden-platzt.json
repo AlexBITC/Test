@@ -1,0 +1,156 @@
+{
+  "folge": 13,
+  "slug": "laden-platzt",
+  "titel": "Ein Video – und der Laden platzt",
+  "hook": "Ein Video – und der Laden platzt.",
+  "begriff": "Reichweite",
+  "kapitel": [
+    "FILMEN",
+    "SCHNEIDEN",
+    "POSTEN"
+  ],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "Byte hat ein Video von mir gepostet. Jetzt steht die Schlange bis zur Straße!",
+      "highlight": [
+        "Video",
+        "Schlange"
+      ],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] 0,0 s: Schon in Bewegung. Die Türglocke bimmelt ununterbrochen und schwingt wild. Vor der Theke drängt sich eine Schlange aus Low-Poly-Kunden, die durch die offene Tür bis hinaus auf den Gehweg reicht; die Figuren wippen ungeduldig, einige halten Handys hoch. 1,0 s: Kalle reicht hektisch Brezeltüten über die Theke, Mehlstaub wirbelt auf, Dampf steigt aus dem leeren Brezelkorb. [Overlay] Hook groß oben: 'Ein Video – und der Laden platzt.' Kamera: rueckfahrt von Kalle bis die Schlange durch die Tür sichtbar ist. Diese Kameraposition merken: die letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Dabei war hier gestern noch gähnende Leere.",
+      "highlight": [
+        "gestern"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "ton": "nachdenklich",
+      "tempo": "langsam",
+      "visual": "[3D] 0,0 s: Ein Zurückspul-Effekt (kurzes Flackern, Whoosh rückwärts): alle Kunden verschwinden nacheinander rückwärts durch die Tür. [Overlay] Stempel 'GESTERN' klappt oben links auf. 1,0 s: Der Laden ist leer und etwas entsättigt, die Türglocke hängt still, draußen gehen zwei Passanten am Fenster vorbei ohne hereinzuschauen. Kalle stützt das Kinn auf die Hand, ein einzelnes Brötchen liegt im Korb. Kamera: langsamer push_in auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Die Leute laufen vorbei, Kalle. Weil keiner weiß, wie gut du bist.",
+      "highlight": [
+        "keiner weiß"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] 0,0 s: Byte schwebt mit Whoosh aus dem Laptop und bleibt am Fenster stehen, sein Licht fällt auf die Scheibe. 1,0 s: Über den vorbeilaufenden Passanten erscheinen kleine graue Fragezeichen, die sich wieder auflösen. Kamera: schwenk vom Fenster zurück zu Kalle."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Ich und Videos? Ich kann doch nur backen.",
+      "highlight": [
+        "nur backen"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "ton": "nachdenklich",
+      "tempo": "langsam",
+      "visual": "[3D] Kalle zuckt mit den Schultern und hebt verlegen einen Teigstrang hoch, ein bisschen Mehl rieselt herunter. Kamera: zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Genau das filmen wir. Mach einfach eine Brezel.",
+      "highlight": [
+        "filmen"
+      ],
+      "reaktion": "staunen",
+      "set": "theke",
+      "kapitel": 0,
+      "visual": "[3D] 0,0 s: Vor Bytes Gesicht klappt mit Pop eine runde Kameralinse auf, daneben blinkt ein roter REC-Punkt. 1,0 s: Kalle schlingt den Teigstrang: Der Strang fliegt in einem Bogen hoch, dreht sich in Zeitlupe und landet als perfekte Brezel auf dem Blech, eine Mehlwolke pufft auf und glitzert in Bytes Licht. Kamera: kreisfahrt um Kalle und die Brezel."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Aus 10 Minuten mach ich 15 Sekunden. Nur die besten Momente.",
+      "highlight": [
+        "10 Minuten",
+        "15 Sekunden"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] 0,0 s: Vor dem Screen schwebt eine lange Filmstreifen-Zeitleiste aus vielen kleinen Clip-Kacheln. 1,0 s: Ein türkiser Lichtschnitt fährt mit Whoosh hindurch, die langweiligen Kacheln (Kalle kratzt sich, Kalle wartet) fallen grau zu Boden, nur drei leuchtende Kacheln bleiben und rasten mit Pop aneinander. [Screen] nur: '10 min → 15 s'. Kamera: fahrt entlang der Zeitleiste."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Dazu Untertitel, Musik und ein erster Satz, der sofort neugierig macht.",
+      "highlight": [
+        "neugierig"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] 0,0 s: Die drei Kacheln falten sich in ein großes Hochkant-Handy ohne Logo. Im Handy läuft das Brezel-Video, Untertitel poppen Wort für Wort auf, kleine Notensymbole schweben am Rand. 1,5 s: Oben im Handy erscheint groß der Text 'Brezel in 3 Sekunden?'. Kamera: push_in auf das Handy."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Deine Kunden scrollen abends um sieben. Dann geht's raus.",
+      "highlight": [
+        "sieben"
+      ],
+      "reaktion": "neutral",
+      "set": "buero",
+      "kapitel": 2,
+      "visual": "[3D] 0,0 s: Auf dem Laptop springt eine Digitaluhr von '18:59' auf '19:00', mit Ding. 0,8 s: Das Handy-Video faltet sich zu einem leuchtenden Papierflieger und schießt mit Whoosh aus dem Fenster in den Abendhimmel, hinterlässt eine türkise Lichtspur. Kamera: schwenk vom Laptop zum Fenster."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Byte! 50.000 Aufrufe? Über Nacht?",
+      "highlight": [
+        "50.000"
+      ],
+      "reaktion": "schock",
+      "set": "buero",
+      "kapitel": 2,
+      "ton": "fragend",
+      "visual": "[3D] 0,0 s: Morgenlicht im Büro. Kalles Handy vibriert auf dem Tisch und wandert durch die Vibration über die Tischplatte (Buzz in schneller Folge). 0,8 s: Auf dem Laptop rollt ein Zähler wie ein Spielautomat hoch bis '50.000 Aufrufe', aus dem Bildschirm platzen kleine Herzen und Sprechblasen und schweben nach oben. Kalle fällt fast vom Stuhl. Kamera: harter_zoom auf Kalles Gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Das ist Reichweite. 50.000 Menschen, die dich gestern noch nicht kannten.",
+      "highlight": [
+        "Reichweite",
+        "50.000"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] 0,0 s: In der Mitte steht eine kleine Low-Poly-Bäckerei. Von ihr breiten sich mit Whoosh türkise Wellenringe aus, immer größer. 1,0 s: Mit jedem Ring poppen mehr kleine Figuren auf, die sich zur Bäckerei umdrehen, bis die ganze Fläche voll ist. [Screen] nur: '50.000 Aufrufe'. Kamera: rueckfahrt, damit die Ringe immer größer wirken."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Und jetzt stehen sie alle hier. Byte, wir brauchen mehr Brezeln!",
+      "highlight": [
+        "mehr Brezeln"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "ton": "begeistert",
+      "visual": "[3D] 0,0 s: Vorspul-Effekt (Flackern, Whoosh vorwärts). [Overlay] Stempel 'HEUTE' klappt oben links auf. Die Kunden strömen wieder herein, die Türglocke bimmelt. 1,0 s: Kalle hält lachend den leeren Brezelkorb hoch. Kamera: push_in auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Schon bestellt.",
+      "highlight": [
+        "bestellt"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "ton": "ruhig",
+      "visual": "[3D] Byte zwinkert (blinzeln), auf dem Laptop erscheint mit Ding ein grüner Haken 'Mehl bestellt'. Kamera: rueckfahrt auf exakt die Kameraposition von Szene 1 mit der Schlange bis auf die Straße, damit das Video nahtlos loopt."
+    }
+  ]
+}

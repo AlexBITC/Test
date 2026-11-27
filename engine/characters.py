@@ -18,8 +18,9 @@ FPS = 30
 
 # =================================================================== Kalle
 class Kalle:
-    def __init__(self, coll):
+    def __init__(self, coll, extras=False):
         self.coll = coll
+        self.extras = extras
         m_skin = L.mat("skin", L.SKIN, 0.62)
         m_skin2 = L.mat("skin_dark", L.SKIN_DARK, 0.62)
         m_cheek = L.mat("cheek", L.CHEEK, 0.7)
@@ -110,6 +111,15 @@ class Kalle:
             L.sphere(f"k_pupil_{side}", 0.045, 10, 6, (1, 0.6, 1.1), m_pupil, pp, (0, -0.066, 0), c)
             L.sphere(f"k_glint_{side}", 0.013, 6, 4, (1, 1, 1), m_glint, pp, (0.018, -0.094, 0.022), c)
             self.eye[side], self.pupil[side] = e, pp
+        # Spiegelungen in den Kugelaugen (drei leuchtende Geraete, Szene 'Des gibt's doch net!')
+        self.reflect = {}
+        m_ref = L.mat("eye_reflect", "#BFFFF8", 0.4, emit="#BFFFF8", strength=4.0)
+        for side, sx in (("R", -1), ("L", 1)):
+            rf = L.empty(f"k_reflect_{side}", self.pupil[side], (0, -0.093, 0.006), c)
+            for j, (w, h) in enumerate([(0.008, 0.015), (0.016, 0.013), (0.022, 0.012)]):
+                L.box(f"k_refl_{side}{j}", (w, 0.002, h), m_ref, rf, (-0.022 + j * 0.019, 0, 0), c)
+            rf.scale = (0, 0, 0)
+            self.reflect[side] = rf
         # Brauen
         self.brow = {}
         for side, sx in (("R", -1), ("L", 1)):
@@ -140,6 +150,110 @@ class Kalle:
         self.cloth = L.box("k_cloth", (0.2, 0.16, 0.035), L.mat("cloth", "#8FA6C7", 0.8), self.hand["R"],
                            (0, -0.02, -0.08), c, bevel=0.012)
         self.glasses = None
+        if extras:
+            self._extras(c, m_white)
+        self._details_v22(c)
+        self._details_v24(c)
+
+    def _details_v24(self, c):
+        """Engine 2.4: weiches Laecheln mit geschlossenem Mund (Bogen nach oben) und feuchter Augenglanz fuer
+        'geruehrt'. Beides standardmaessig unsichtbar."""
+        _geruehrt_teile(self, c, "k", mouth_z=0.098, mouth_w=0.07)
+
+    def _details_v22(self, c):
+        """Engine 2.2: Augenlider (standardmaessig unsichtbar), Lachfalten, Mehlspuren an Haenden und Unterarmen,
+        Mehlstaub auf der Muetze, Schuerzenbaender am Ruecken, Mundwinkel fuer 'traurig' (standardmaessig unsichtbar)."""
+        m_skin = L.mat("skin", L.SKIN, 0.62)
+        m_line = L.mat("lachfalte", "#B9744F", 0.7)
+        m_flour = L.mat("flourstain", "#FFFFFF", 0.9)
+        m_dust = L.mat("mehlstaub_muetze", "#ECE4D4", 0.8)
+        m_apron = L.mat("apron", L.APRON, 0.66)
+        # Augenlider: Kuppel ueber dem Augapfel, gesenkt ueber Rotation um X (0 = halb zu)
+        self.lid = {}
+        for side in ("R", "L"):
+            bm = bmesh.new()
+            bmesh.ops.create_uvsphere(bm, u_segments=12, v_segments=8, radius=0.095)
+            kill = [v for v in bm.verts if v.co.z < -0.004]
+            bmesh.ops.delete(bm, geom=kill, context="VERTS")
+            bmesh.ops.scale(bm, vec=Vector((1.04, 0.86, 1.12)), verts=bm.verts)
+            piv = L.empty(f"k_lidpiv_{side}", self.eye[side], (0, 0, 0), c)
+            L.from_bm(f"k_lid_{side}", bm, m_skin, piv, (0, 0, 0), c)
+            piv.rotation_euler = (-1.3, 0, 0)
+            piv.scale = (0, 0, 0)
+            self.lid[side] = piv
+        # Lachfalten an den aeusseren Augenwinkeln
+        for side, sx in (("R", -1), ("L", 1)):
+            for j, (dz, rot) in enumerate([(0.03, 0.35), (-0.005, 0.0), (-0.04, -0.35)]):
+                o = L.box(f"k_lachfalte_{side}{j}", (0.045, 0.012, 0.009), m_line, self.head,
+                          (sx * 0.232, -0.2, 0.35 + dz), c)
+                o.rotation_euler = (0, sx * rot, sx * 0.55)
+        # Mehlspuren auf Haenden und Unterarmen
+        rr = random.Random(22)
+        for side in ("R", "L"):
+            for j in range(3):
+                L.sphere(f"k_mehl_arm_{side}{j}", rr.uniform(0.012, 0.018), 6, 4, (1.4, 0.3, 1.0), m_flour, self.el[side],
+                         (rr.uniform(-0.03, 0.03), -0.072, -0.12 - 0.07 * j), c)
+            for j in range(2):
+                L.sphere(f"k_mehl_hand_{side}{j}", rr.uniform(0.012, 0.016), 6, 4, (1.3, 0.35, 1), m_flour, self.hand[side],
+                         (rr.uniform(-0.04, 0.04), -0.088, rr.uniform(-0.03, 0.03)), c)
+        # Mehlstaub auf der Muetze
+        for j in range(8):
+            a = math.radians(-90 + rr.uniform(-60, 60))
+            o = L.sphere(f"k_mehl_muetze{j}", rr.uniform(0.02, 0.032), 6, 4, (1.8, 0.2, 0.8), m_dust, self.hat,
+                         (0.262 * math.cos(a), 0.262 * math.sin(a), rr.uniform(0.02, 0.13)), c)
+            o.rotation_euler = (0, rr.uniform(-0.5, 0.5), a + math.pi / 2)
+        # Schuerzenbaender am Ruecken mit Schleife und haengenden Enden
+        for sx in (-1, 1):
+            o = L.box(f"k_apronband{sx}", (0.33, 0.02, 0.035), m_apron, self.torso, (sx * 0.26, 0.2, 0.36), c)
+            o.rotation_euler = (0, 0, sx * -0.95)
+        self.apron_bow = L.empty("k_apronbow", self.torso, (0, 0.37, 0.36), c)
+        for sx in (-1, 1):
+            lp = L.sphere(f"k_apronloop{sx}", 0.05, 8, 5, (1.2, 0.35, 0.7), m_apron, self.apron_bow, (sx * 0.05, 0, 0), c)
+        L.sphere("k_apronknot", 0.025, 8, 5, (1, 0.6, 1), m_apron, self.apron_bow, (0, 0.005, 0), c)
+        self.apron_ends = []
+        for sx in (-1, 1):
+            e = L.empty(f"k_aproned{sx}", self.apron_bow, (sx * 0.02, 0.01, -0.01), c)
+            L.box(f"k_apronendm{sx}", (0.03, 0.012, 0.22), m_apron, e, (0, 0, -0.11), c)
+            e.rotation_euler = (0, sx * 0.25, 0)
+            self.apron_ends.append(e)
+        # Mundwinkel nach unten (Bogen), nur bei 'traurig' sichtbar
+        self.frown = L.empty("k_frown", self.head, (0, -0.29, 0.072), c)
+        bm = bmesh.new()
+        n = 10
+        pts = []
+        for i in range(n + 1):
+            t = math.pi * i / n
+            pts.append((0.068 * math.cos(t), 0.03 * math.sin(t)))
+        w = 0.018
+        vs_o = [bm.verts.new((x, 0, z + w / 2)) for x, z in pts]
+        vs_i = [bm.verts.new((x * 0.93, 0, z - w / 2)) for x, z in pts]
+        for i in range(n):
+            f = bm.faces.new((vs_i[i], vs_i[i + 1], vs_o[i + 1], vs_o[i]))
+        L.from_bm("k_frownmesh", bm, L.mat("mouth", "#4A1E26", 0.7), self.frown, (0, 0, 0), c)
+        self.frown.scale = (0, 0, 0)
+
+    def _extras(self, c, m_white):
+        """Merkmale fuer neuere Folgen (zuschaltbar, aeltere Folgen bleiben unveraendert):
+        6. Mueztzen-Puff + Neigung 5 Grad nach rechts (Bildsicht), graue Schlaefen, 2 Knoepfe,
+        kariertes Geschirrtuch an der Schuerze."""
+        L.sphere("k_hatpuff5", 0.13, 10, 7, (1, 1, 0.75), m_white, self.hat, (0.09, -0.1, 0.3), c)
+        self.hat.rotation_euler = (0, math.radians(5), 0)
+        m_grey = L.mat("temple_grey", "#A9A5A0", 0.7)
+        for side, sx in (("R", -1), ("L", 1)):
+            o = L.sphere(f"k_temple_{side}", 0.058, 8, 6, (0.5, 0.85, 1.15), m_grey, self.head,
+                         (sx * 0.288, -0.04, 0.38), c)
+            o.rotation_euler = (0, sx * 0.25, 0)
+        m_btn = L.mat("button", "#5E3E2B", 0.5)
+        for k, z in enumerate((0.58, 0.47)):
+            L.cyl(f"k_button{k}", 0.024, 0.02, 10, m_btn, self.torso, (0, -0.372 - 0.012 * k, z), c, axis="Y")
+        self.towel = L.empty("k_towelpiv", self.hips, (0.3, -0.25, 0.06), c)
+        import os
+        tex = os.path.join(os.path.dirname(__file__), "fonts", "..", "textures", "geschirrtuch.png")
+        L.tplane("k_towel", tex, height=0.3, parent=self.towel, loc=(0, -0.004, -0.15), coll=c, emit=0.0,
+                 alpha=False)
+        L.box("k_towel_back", (0.14, 0.006, 0.3), L.mat("towel_back", "#E8E2D6", 0.8), self.towel,
+              (0, 0.002, -0.15), c)
+        self.towel.rotation_euler = (0, 0, -0.25)
 
     # ---------------------------------------------------------- Hilfen
     def scale_all(self, s):
@@ -163,6 +277,11 @@ def kalle_idle(T, k, f0, f1, seed=7, blink=True):
     for side, sx in (("R", -1), ("L", 1)):
         T.add(k.sh[side], "rotation_euler", lambda f, s=sx: (0.03 * nz2(f / FPS + s), 0.02 * s * nz(f / FPS + 2), 0),
               f0, f1)
+    if getattr(k, "apron_ends", None):                # 2.2: Schuerzenbaender schwingen mit
+        for j, e in enumerate(k.apron_ends):
+            follow_through(T, e, k.hips, "rotation_euler", 1, 2.2, 4, f0, f1, out_idx=1)
+            follow_through(T, e, k.hips, "rotation_euler", 0, 1.8, 4, f0, f1, out_idx=0)
+            T.add(e, "rotation_euler", lambda f, j=j: (0.05 * math.sin(f * 0.13 + j), 0, 0), f0, f1)
     if blink:
         r = random.Random(seed)
         blinks, t = [], f0 + r.randint(20, 60)
@@ -242,7 +361,7 @@ def _mouth(T, k, speaking, fn, f0, f1):
         T.set(k.mouth, "scale", lambda x: (1, 1, 0.18), f1, f1 + 1)
 
 
-def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False):
+def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False, hat=True):
     """Reaktion mit Antizipation -> Hauptbewegung -> Nachschwingen. f = Hauptakzent."""
     if kind == "neutral":
         T.add(k.head, "rotation_euler", lambda x: (0.06 * window(x, f - 4, f + 14, 4, 10), 0, 0), f - 4, f + 14)
@@ -303,13 +422,20 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False):
             if t <= 0 or t >= 1:
                 return 0.0
             return 0.9 * 4 * t * (1 - t)
-        T.add(k.hat, "location", lambda x: (0, 0, hatz(x)), f, f + 22)
-        T.add(k.hat, "rotation_euler", lambda x: (0, 0, 2 * math.pi * ease_in_out((x - f) / 22)), f, f + 22)
-        T.mul(k.hat, "scale", lambda x: (1, 1, 1 - 0.18 * spring((x - f - 22) / FPS, 4, 0.3) if x > f + 22 else 1),
-              f + 22, f + 40)
+        if hat:
+            T.add(k.hat, "location", lambda x: (0, 0, hatz(x)), f, f + 22)
+            T.add(k.hat, "rotation_euler", lambda x: (0, 0, 2 * math.pi * ease_in_out((x - f) / 22)), f, f + 22)
+            T.mul(k.hat, "scale", lambda x: (1, 1, 1 - 0.18 * spring((x - f - 22) / FPS, 4, 0.3) if x > f + 22 else 1),
+                  f + 22, f + 40)
         for side, sx in (("R", -1), ("L", 1)):
             T.add(k.sh[side], "rotation_euler", lambda x, s=sx: (0, -s * 0.5 * window(x, f, f + hold, 3, 15), 0),
                   f, f + hold)
+        return
+    if kind == "traurig":
+        kalle_traurig(T, k, f - 6, f + hold, speaking=speaking)
+        return
+    if kind == "geruehrt":
+        kalle_geruehrt(T, k, f - 6, f + hold, speaking=speaking)
         return
     if kind == "jubel":
         a0 = f - 5
@@ -325,12 +451,130 @@ def kalle_react(T, k, kind, f, hold=40, props=None, speaking=False):
             return 0.28 * 4 * t * (1 - t) if 0 < t < 1 else 0
         T.add(k.body, "location", lambda x: (0, 0, jump(x) - 0.06 * window(x, a0, f + 1, 3, 1)), a0, f + 16)
         T.mul(k.torso, "scale", lambda x: (1, 1, 1 + 0.06 * spring((x - f - 14) / FPS, 3, 0.3) if x > f + 14 else 1), f + 14, f + 34)
-        T.add(k.hat, "location", lambda x: (0, 0, 0.25 * 4 * ((x - f - 2) / 16) * (1 - (x - f - 2) / 16) if 0 < x - f - 2 < 16 else 0),
-              f, f + 20)
+        if hat:
+            T.add(k.hat, "location", lambda x: (0, 0, 0.25 * 4 * ((x - f - 2) / 16) * (1 - (x - f - 2) / 16)
+                                                if 0 < x - f - 2 < 16 else 0), f, f + 20)
         _mouth(T, k, speaking, lambda x: (1.3, 1, 0.18 + 1.2 * window(x, f, f + hold, 3, 10)), f, f + hold)
         for side in ("R", "L"):
             T.add(k.brow[side], "location", lambda x: (0, 0, 0.05 * window(x, f, f + hold, 3, 12)), f, f + hold)
         return
+
+
+# Erlaubte Werte fuer "reaktion" (Episoden-JSON): neutral, zweifel, staunen, schock, jubel, traurig (ab 2.2),
+# geruehrt (ab 2.4)
+REAKTIONEN = ("neutral", "zweifel", "staunen", "schock", "jubel", "traurig", "geruehrt")
+
+
+def _geruehrt_teile(k, c, pre, mouth_z, mouth_w, smile_y=None):
+    """Laecheln-Bogen (k.smile) und feuchter Augenglanz (k.wet[side]) fuer 'geruehrt' (2.4), unsichtbar."""
+    m_mouth = L.mat("mouth", "#4A1E26", 0.7)
+    k.smile = L.empty(f"{pre}_smile", k.head, (0, smile_y if smile_y is not None else -0.29, mouth_z), c)
+    bm = bmesh.new()
+    n = 10
+    pts = [(mouth_w * math.cos(math.pi + math.pi * i / n), 0.026 * math.sin(math.pi + math.pi * i / n)) for i in range(n + 1)]
+    w = 0.016
+    vo = [bm.verts.new((x, 0, z - w / 2)) for x, z in pts]
+    vi = [bm.verts.new((x * 0.93, 0, z + w / 2)) for x, z in pts]
+    for i in range(n):
+        bm.faces.new((vi[i], vi[i + 1], vo[i + 1], vo[i]))
+    L.from_bm(f"{pre}_smilemesh", bm, m_mouth, k.smile, (0, 0, 0), c)
+    k.smile.scale = (0, 0, 0)
+    m_wet = L.mat("augenglanz", "#FFFFFF", 0.2, emit="#E9FBFF", strength=4.0)
+    k.wet = {}
+    for side in ("R", "L"):
+        wt = L.empty(f"{pre}_wet_{side}", k.pupil[side], (0, 0, 0), c)
+        L.sphere(f"{pre}_wetmain_{side}", 0.017, 8, 5, (1.3, 0.4, 0.8), m_wet, wt, (-0.016, -0.093, -0.02), c)
+        L.sphere(f"{pre}_wetdot_{side}", 0.008, 6, 4, (1, 0.4, 1), m_wet, wt, (0.02, -0.094, -0.028), c)
+        wt.scale = (0, 0, 0)
+        k.wet[side] = wt
+
+
+def kalle_geruehrt(T, k, f0, f1, speaking=False, ramp=12, staerke=1.0):
+    """Geruehrt (2.4): weiches Laecheln mit geschlossenem Mund, glaenzende Augen (feiner Lichtreflex), Brauen leicht
+    hochgezogen und innen angehoben, Kopf leicht geneigt, Lider ein wenig gesenkt. Fuer Kalle und Lea."""
+    env = lambda x: staerke * window(x, f0, f1, ramp, ramp)  # noqa: E731
+    for side, sx in (("R", -1), ("L", 1)):
+        T.set(k.lid[side], "scale", lambda x: (1, 1, 1) if env(x) > 0.01 else (0, 0, 0), f0 - 1, f1 + 1)
+        T.set(k.lid[side], "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+        T.add(k.lid[side], "rotation_euler", lambda x: (0.55 * env(x), 0, 0), f0, f1)
+        T.add(k.brow[side], "rotation_euler", lambda x, sx=sx: (0, sx * 0.3 * env(x), 0), f0, f1)
+        T.add(k.brow[side], "location", lambda x: (0, 0, 0.03 * env(x)), f0, f1)
+        T.set(k.wet[side], "scale", lambda x: ((1.0 + 0.08 * math.sin(x * 0.4)) * min(1.0, 1.4 * env(x)),) * 3, f0 - 1, f1 + 1)
+        T.set(k.wet[side], "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+    T.add(k.head, "rotation_euler", lambda x: (0.05 * env(x), 0.14 * env(x), 0), f0, f1)
+    T.set(k.smile, "scale", lambda x: (min(1.0, 1.3 * env(x)),) * 3, f0 - 1, f1 + 1)
+    T.set(k.smile, "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+    if not speaking:
+        T.mul(k.mouth, "scale", lambda x: (1, 1, 1 - 0.6 * env(x)), f0, f1)
+    if getattr(k, "stache", None) is not None:
+        T.add(k.stache, "location", lambda x: (0, 0, 0.008 * env(x)), f0, f1)
+
+
+def kalle_traurig(T, k, f0, f1, speaking=False, ramp=14, staerke=1.0):
+    """Traurig (2.2): Lider halb gesenkt, Brauen schraeg nach innen, Mundwinkel nach unten, Schultern haengen,
+    Kopf gesenkt, Blick nach unten. Langsame Rampe (ramp Frames)."""
+    env = lambda x: staerke * window(x, f0, f1, ramp, ramp)  # noqa: E731
+    for side, sx in (("R", -1), ("L", 1)):
+        T.set(k.lid[side], "scale", lambda x: (1, 1, 1) if env(x) > 0.01 else (0, 0, 0), f0 - 1, f1 + 1)
+        T.set(k.lid[side], "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+        T.add(k.lid[side], "rotation_euler", lambda x: (1.3 * env(x), 0, 0), f0, f1)
+        T.add(k.brow[side], "rotation_euler", lambda x, sx=sx: (0, sx * 0.42 * env(x), 0), f0, f1)
+        T.add(k.brow[side], "location", lambda x, sx=sx: (-sx * 0.012 * env(x), 0, 0.012 * env(x)), f0, f1)
+        T.add(k.sh[side], "location", lambda x: (0, 0.02 * env(x), -0.06 * env(x)), f0, f1)
+        T.add(k.sh[side], "rotation_euler", lambda x, sx=sx: (0.12 * env(x), 0, sx * 0.08 * env(x)), f0, f1)
+        T.add(k.pupil[side], "rotation_euler", lambda x: (0.32 * env(x), 0, 0), f0, f1)
+    T.add(k.head, "rotation_euler", lambda x: (0.26 * env(x), 0, 0), f0, f1)
+    T.add(k.hips, "rotation_euler", lambda x: (0.1 * env(x), 0, 0), f0, f1)
+    T.add(k.neck, "location", lambda x: (0, -0.02 * env(x), -0.03 * env(x)), f0, f1)
+    T.set(k.frown, "scale", lambda x: (1, 1, 1) if env(x) > 0.25 else (0, 0, 0), f0 - 1, f1 + 1)
+    T.set(k.frown, "scale", lambda x: (0, 0, 0), f1 + 1, f1 + 2)
+    if not speaking:
+        T.mul(k.mouth, "scale", lambda x: (1 - 0.35 * env(x), 1, 1 - 0.4 * env(x)), f0, f1)
+    T.add(k.stache, "location", lambda x: (0, 0, -0.012 * env(x)), f0, f1)
+
+
+def kalle_haende(T, k, art, f0, f1, ramp=6):
+    """Haende (2.2): 'kneten' (beide Haende druecken abwechselnd), 'greifen' (Finger eingerollt),
+    'stuetzen' (Haende flach auf den Tisch gestuetzt)."""
+    if art == "stuetzen":
+        pose(T, k, {"sh_R": (-0.55, 0, 0.25), "sh_L": (-0.55, 0, -0.25), "el_R": (-0.35, 0, 0), "el_L": (-0.35, 0, 0),
+                    "hips": (0.12, 0, 0)}, f0, f1, ramp, ramp)
+        for side in ("R", "L"):
+            T.add(k.hand[side], "rotation_euler", lambda x: (-0.9 * window(x, f0, f1, ramp, ramp), 0, 0), f0, f1 + ramp)
+        return
+    if art == "kneten":
+        pose(T, k, {"sh_R": (-0.85, 0, 0.3), "sh_L": (-0.85, 0, -0.3), "el_R": (-0.75, 0, 0), "el_L": (-0.75, 0, 0)},
+             f0, f1, ramp, ramp)
+        for side, ph in (("R", 0.0), ("L", math.pi)):
+            T.add(k.sh[side], "rotation_euler",
+                  lambda x, ph=ph: (0.18 * math.sin(x * 0.45 + ph) * window(x, f0, f1, ramp, ramp), 0, 0), f0, f1)
+            T.add(k.hand[side], "rotation_euler",
+                  lambda x, ph=ph: (-0.4 - 0.3 * math.sin(x * 0.45 + ph), 0, 0) if f0 <= x <= f1 else (0, 0, 0), f0, f1)
+        return
+    if art == "greifen":
+        for side in ("R", "L"):
+            T.mul(k.finger[side], "scale", lambda x: (1, 1, 1 - 0.5 * window(x, f0, f1, 3, 3)), f0, f1)
+            T.add(k.finger[side], "rotation_euler", lambda x: (-1.2 * window(x, f0, f1, 3, 3), 0, 0), f0, f1)
+
+
+def reaction(T, coll, k, kind, f, hold=40, speaking=False, seed=0, hat=True):
+    """Reaktion inkl. Effekten: staunen -> '!'-Partikel, jubel -> Mehlwolke + Konfetti.
+    (schock: harter Kamera-Zoom macht die Regie)."""
+    import props as PR
+    kalle_react(T, k, kind, f, hold, speaking=speaking, hat=hat)
+    head = lambda: Vector(T.loc(k.root, f)) + Vector((0, -0.1, 2.45))  # noqa: E731
+    if kind == "staunen":
+        PR.burst(T, coll, f"bang_{f}_{seed}", "bang", tuple(head()), f + 1, 5, 900 + seed, speed=(0.8, 1.3),
+                 up=1.2, spread=0.9, gravity=-1.5, life=(16, 22), size=(0.8, 1.2), spin=1.0, drag=2.0)
+    elif kind == "jubel":
+        base = Vector(T.loc(k.root, f))
+        PR.burst(T, coll, f"jflour_{f}_{seed}", "puff", tuple(base + Vector((0, -0.2, 1.4))), f, 26, 910 + seed,
+                 speed=(1.0, 2.0), up=0.6, gravity=-0.5, life=(22, 34), size=(1.0, 2.0), drag=3.0, ring=True)
+        PR.burst(T, coll, f"jconf_{f}_{seed}", "confetti", tuple(base + Vector((0, -0.2, 2.7))), f + 2, 48,
+                 920 + seed, speed=(1.8, 3.2), up=1.4, spread=1.2, gravity=-3.0, life=(34, 48), size=(1.0, 1.5),
+                 drag=1.6, spin=10.0, flutter=0.6, wobble=0.04,
+                 kinds=["confetti_#FFE14D", "confetti_#2EE6D6", "confetti_#FF5A5F", "confetti_#3DDC84",
+                        "confetti_#F5F1E8"])
 
 
 # =================================================================== Byte
@@ -365,17 +609,123 @@ def _eye_cells(kind):
         return [(0, -1), (1, -1), (-1, 0), (2, 0), (-1, 1), (2, 1), (0, 2), (1, 2)]
     if kind == "blink":
         return [(-1, 0), (0, 0), (1, 0), (2, 0)]
+    if kind == "worried":    # schraeg nach aussen abfallend
+        return [(-1, 2), (0, 1), (1, 1), (2, 0)]
     if kind == "curious":    # gross, Punkt oben
         return [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)]
     return []
 
 
-EXPRS = ["neutral", "happy", "serious", "surprised", "wink", "curious"]
+EXPRS = ["neutral", "happy", "serious", "surprised", "wink", "curious", "worried"]
+
+# ------------------------------------------------------------------ Byte 2.1: Display-Augen je Reaktion
+BYTE_EYES = ["neutral", "jubel", "staunen", "schock", "zweifel", "wink", "traurig", "geruehrt"]
+# aeltere Ausdrucksnamen der Regie-Dateien -> Reaktion (Byte 2.1)
+EYE_ALIAS = {"happy": "jubel", "surprised": "staunen", "curious": "staunen", "worried": "schock",
+             "serious": "zweifel", "rund": "neutral"}
+EYE_X, EYE_Z = 0.056, 0.024
+
+
+def _poly_mesh(name, polys, mat, parent, coll, y=0.0):
+    """Flache Polygone (x, z) in der XZ-Ebene, Vorderseite -Y."""
+    bm = bmesh.new()
+    for pts in polys:
+        vs = [bm.verts.new((x, y, z)) for x, z in pts]
+        f = bm.faces.new(vs)
+        f.normal_update()
+        if f.normal.y > 0:
+            f.normal_flip()
+    return L.from_bm(name, bm, mat, parent, (0, 0, 0), coll)
+
+
+def _disc(cx, cz, r, n=22, sz=1.0):
+    return [(cx + r * math.cos(2 * math.pi * k / n), cz + r * sz * math.sin(2 * math.pi * k / n)) for k in range(n)]
+
+
+def _arc(cx, cz, R, w, a0, a1, n=12):
+    out = []
+    ro, ri = R + w / 2, R - w / 2
+    for k in range(n):
+        t0, t1 = a0 + (a1 - a0) * k / n, a0 + (a1 - a0) * (k + 1) / n
+        out.append([(cx + ri * math.cos(t0), cz + ri * math.sin(t0)), (cx + ro * math.cos(t0), cz + ro * math.sin(t0)),
+                    (cx + ro * math.cos(t1), cz + ro * math.sin(t1)), (cx + ri * math.cos(t1), cz + ri * math.sin(t1))])
+    for t in (a0, a1):                     # runde Enden
+        out.append(_disc(cx + R * math.cos(t), cz + R * math.sin(t), w / 2, 10))
+    return out
+
+
+def _stroke(pts, w):
+    out = []
+    for (x0, z0), (x1, z1) in zip(pts, pts[1:]):
+        dx, dz = x1 - x0, z1 - z0
+        ln = math.hypot(dx, dz)
+        nx, nz = -dz / ln * w / 2, dx / ln * w / 2
+        out.append([(x0 + nx, z0 + nz), (x0 - nx, z0 - nz), (x1 - nx, z1 - nz), (x1 + nx, z1 + nz)])
+    for x, z in pts:
+        out.append(_disc(x, z, w / 2, 10))
+    return out
+
+
+def _eye_polys(kind, cx, cz, outer):
+    """Ein Auge (outer = Richtung nach aussen, -1 links / +1 rechts). Rueckgabe: (Polygone, Glanzpunkte)."""
+    if kind == "neutral":                  # rund
+        return [_disc(cx, cz, 0.03)], []
+    if kind == "jubel":                    # Halbmond (Bogen nach oben)
+        return _arc(cx, cz - 0.012, 0.027, 0.015, 0.0, math.pi), []
+    if kind == "staunen":                  # gross mit Glanzpunkt
+        return [_disc(cx, cz + 0.004, 0.044, 28)], [_disc(cx + 0.016, cz + 0.022, 0.012, 14),
+                                                   _disc(cx - 0.015, cz - 0.012, 0.006, 10)]
+    if kind == "schock":                   # Zickzack
+        pts = [(cx - 0.036 + 0.012 * k, cz + (0.011 if k % 2 else -0.011)) for k in range(7)]
+        return _stroke(pts, 0.009), []
+    if kind == "traurig":                  # 2.2: flache, nach unten gebogene Boegen, aussen tiefer (haengend)
+        pts = []
+        for i in range(9):
+            t = i / 8
+            x = cx + outer * (-0.034 + 0.068 * t)          # von innen nach aussen
+            z = cz - 0.002 + 0.007 * math.sin(math.pi * t) - 0.034 * t
+            pts.append((x, z))
+        return _stroke(pts, 0.011), []
+    if kind == "geruehrt":                 # 2.4: weiche, nach oben gebogene Boegen mit kleinem Glanzpunkt
+        return _arc(cx, cz - 0.016, 0.03, 0.012, 0.15, math.pi - 0.15, 14), [_disc(cx + 0.012 * outer, cz + 0.004, 0.007, 12)]
+    if kind == "zweifel":                  # schraeg, halb geschlossen (aussen hoch, innen tief)
+        r = 0.031
+        hi, lo = 0.016, -0.002
+        top_out, top_in = (cx + outer * r, cz + hi), (cx - outer * r, cz + lo)
+        arc = [(cx + r * math.cos(t), cz + 0.85 * r * math.sin(t))
+               for t in [math.pi + math.pi * k / 14 for k in range(15)]]
+        if outer < 0:
+            pts = [top_out] + arc + [top_in]
+        else:
+            pts = [top_in] + arc + [top_out]
+        return [pts], []
+    return [], []
+
+
+def _eyes_mesh(name, kind, mat, glint_mat, parent, coll):
+    ee = L.empty(name, parent, (0, 0, 0), coll)
+    polys, glints = [], []
+    for side, outer in ((-1, -1), (1, 1)):
+        k = kind
+        if kind == "wink":
+            k = "neutral" if side < 0 else "jubel"
+        p, g = _eye_polys(k, side * EYE_X, EYE_Z, outer)
+        polys += p
+        glints += g
+    _poly_mesh(f"{name}_m", polys, mat, ee, coll)
+    if glints:
+        _poly_mesh(f"{name}_glint", glints, glint_mat, ee, coll, y=-0.0015)
+    return ee
 
 
 class Byte:
-    def __init__(self, coll, name="byte", scale=1.0, light_energy=60.0, emissive=1.0):
+    """Byte (KI-Kugel). Ab Version 2.1 (v21=True): Display-Gesicht mit Augen je Reaktion, leuchtende Nahtlinien,
+    Lueftungsgitter, Status-LED auf der Brust, leuchtende Antennenspitze mit Nachschwingen, kleine Arme mit Haenden,
+    Schwebeschatten am Boden. Form, Farbe, Groesse und Antenne bleiben wie bisher."""
+
+    def __init__(self, coll, name="byte", scale=1.0, light_energy=60.0, emissive=1.0, v21=True):
         self.name = name
+        self.v21 = v21
         c = coll
         self.coll = coll
         self.base_scale = scale
@@ -391,22 +741,46 @@ class Byte:
         # Bildschirm-Gesicht
         m_screen = L.mat("byte_screen", L.NAVY, 0.45)
         m_rim = L.mat("byte_rim", L.NAVY2, 0.5)
-        L.cyl(f"{name}_screenrim", 0.16, 0.05, 16, m_rim, self.body, (0, -0.185, 0.0), c, axis="Y")
-        L.cyl(f"{name}_screen", 0.145, 0.05, 16, m_screen, self.body, (0, -0.195, 0.0), c, axis="Y")
+        L.cyl(f"{name}_screenrim", 0.16, 0.05, 16 if not v21 else 28, m_rim, self.body, (0, -0.185, 0.0), c, axis="Y")
+        L.cyl(f"{name}_screen", 0.145, 0.05, 16 if not v21 else 28, m_screen, self.body, (0, -0.195, 0.0), c, axis="Y")
         self.m_pix = L.unique_mat(L.mat("byte_pixel", L.TURQ, 0.5, emit=L.TURQ, strength=5.0), f"{name}_pixmat")
         self.face = L.empty(f"{name}_face", self.body, (0, -0.222, 0.0), c)
         self.expr = {}
-        for e in EXPRS:
-            ee = L.empty(f"{name}_ex_{e}", self.face, (0, 0, 0), c)
-            if e == "wink":
-                lc, rc = _eye_cells("neutral"), _eye_cells("happy")
-            else:
-                lc = rc = _eye_cells(e)
-            lc2 = [(x - 3, z + 1) for x, z in lc]
-            rc2 = [(-x + 3 + (1 if e in ("neutral", "surprised", "curious") else 0) - 1, z + 1) for x, z in rc]
-            _pixels(f"{name}_px_{e}", lc2 + rc2, self.m_pix, ee, c)
-            ee.scale = (0, 0, 0) if e != "neutral" else (1, 1, 1)
-            self.expr[e] = ee
+        if v21:
+            m_glint = L.mat("byte_glint", "#FFFFFF", 0.4, emit="#FFFFFF", strength=4.0)
+            for e in BYTE_EYES:
+                ee = _eyes_mesh(f"{name}_ex_{e}", e, self.m_pix, m_glint, self.face, c)
+                ee.scale = (0, 0, 0) if e != "neutral" else (1, 1, 1)
+                self.expr[e] = ee
+        else:
+            for e in EXPRS:
+                ee = L.empty(f"{name}_ex_{e}", self.face, (0, 0, 0), c)
+                if e == "wink":
+                    lc, rc = _eye_cells("neutral"), _eye_cells("happy")
+                else:
+                    lc = rc = _eye_cells(e)
+                lc2 = [(x - 3, z + 1) for x, z in lc]
+                rc2 = [(-x + 3 + (1 if e in ("neutral", "surprised", "curious") else 0) - 1, z + 1) for x, z in rc]
+                _pixels(f"{name}_px_{e}", lc2 + rc2, self.m_pix, ee, c)
+                ee.scale = (0, 0, 0) if e != "neutral" else (1, 1, 1)
+                self.expr[e] = ee
+        # Code-Gesicht: laufende Mini-Code-Zeilen statt Pixelaugen (beim Code-Schreiben)
+        ce = L.empty(f"{name}_ex_code", self.face, (0, 0, 0), c)
+        ce.scale = (0, 0, 0)
+        self.expr["code"] = ce
+        rr = random.Random(77)
+        cols = [L.TURQ, L.YELLOW, "#FF9F43", "#FFFFFF"]
+        self.code_rows = []
+        for i in range(8):
+            row = L.empty(f"{name}_coderow{i}", ce, (0, -0.002, 0), c)
+            x = -0.11 + rr.uniform(0, 0.03)
+            for k in range(rr.randint(2, 3)):
+                w = rr.uniform(0.025, 0.07)
+                col = cols[(i + k) % 4] if k else L.TURQ
+                L.box(f"{name}_codeseg{i}_{k}", (w, 0.004, 0.014), L.mat(f"codeseg_{col}", col, 0.5, emit=col,
+                                                                          strength=4.0), row, (x + w / 2, 0, 0), c)
+                x += w + 0.014
+            self.code_rows.append(row)
         # Mund: kleiner Strich (still) und Equalizer (sprechen)
         self.mouth_idle = L.empty(f"{name}_mouthidle", self.face, (0, 0, 0), c)
         _pixels(f"{name}_px_mouth", [(-1, -3), (0, -3), (1, -3)], self.m_pix, self.mouth_idle, c)
@@ -416,30 +790,275 @@ class Byte:
             L.box(f"{name}_eqbar{i}", (PIX * 0.8, 0.004, PIX * 3), self.m_pix, bar, (0, 0, 0), c, origin="bottom")
             bar.scale = (1, 1, 0.0)
             self.eq.append(bar)
-        # Antenne mit Leuchtpunkt
+        # Antenne mit Leuchtpunkt (2.1: zwei Glieder, Spitze schwingt verzoegert nach)
         self.ant = L.empty(f"{name}_ant", self.body, (0.03, 0, 0.2), c)
-        L.cyl(f"{name}_antstalk", 0.011, 0.16, 6, L.mat("antenna", L.METAL, 0.5, metallic=0.4), self.ant,
-              (0, 0, 0.08), c)
+        m_ant = L.mat("antenna", L.METAL, 0.5, metallic=0.4)
         self.m_tip = L.unique_mat(L.mat("byte_tip", L.YELLOW, 0.4, emit=L.YELLOW, strength=4.0), f"{name}_tipmat")
-        self.tip = L.ico(f"{name}_tip", 0.032, 1, (1, 1, 1), self.m_tip, self.ant, (0, 0, 0.17), c)
+        if v21:
+            L.cyl(f"{name}_antstalk", 0.011, 0.09, 6, m_ant, self.ant, (0, 0, 0.045), c)
+            self.ant2 = L.empty(f"{name}_ant2", self.ant, (0, 0, 0.09), c)
+            L.sphere(f"{name}_antjoint", 0.012, 8, 5, (1, 1, 1), m_ant, self.ant2, (0, 0, 0), c)
+            L.cyl(f"{name}_antstalk2", 0.009, 0.08, 6, m_ant, self.ant2, (0, 0, 0.04), c)
+            self.tip = L.ico(f"{name}_tip", 0.032, 1, (1, 1, 1), self.m_tip, self.ant2, (0, 0, 0.082), c)
+            self.halo = L.ico(f"{name}_tiphalo", 0.056, 2, (1, 1, 1),
+                              L.mat("byte_tiphalo", L.YELLOW, 0.4, emit=L.YELLOW, strength=2.0, alpha=0.28),
+                              self.ant2, (0, 0, 0.082), c)
+            self.tiplight = L.light(f"{name}_tiplight", "POINT", 6.0, L.YELLOW, (0, 0, 0.09), size=0.05,
+                                    parent=self.ant2, coll=c, shadow=False, cutoff=1.5)
+        else:
+            L.cyl(f"{name}_antstalk", 0.011, 0.16, 6, m_ant, self.ant, (0, 0, 0.08), c)
+            self.ant2 = None
+            self.tip = L.ico(f"{name}_tip", 0.032, 1, (1, 1, 1), self.m_tip, self.ant, (0, 0, 0.17), c)
         # Glow-Licht (wirft tuerkises Licht auf Kalle)
         self.light = L.light(f"{name}_light", "POINT", light_energy, L.TURQ, (0, -0.25, 0), size=0.25,
                              parent=self.body, coll=c, shadow=False, cutoff=4.0)
         self.extra = L.empty(f"{name}_extra", self.body, (0, 0, 0), c)
+        self.ears = []
+        self.arm, self.hand, self.fing = {}, {}, {}
+        self.shadow = None
+        if v21:
+            self._details()
+            self._arms()
+            self._shadow()
+
+    # ---------------------------------------------------------- 2.1: Details
+    def _details(self):
+        c, name = self.coll, self.name
+        # Display: Glasreflex oben links und leuchtender Innenrand
+        m_glare = L.mat("byte_glare", "#FFFFFF", 0.3, emit="#FFFFFF", strength=1.0, alpha=0.22)
+        _poly_mesh(f"{name}_glare", _arc(0, 0, 0.118, 0.014, 1.85, 2.7, 8)[:8], m_glare, self.face, c, y=-0.003)
+        L.torus(f"{name}_screenglow", 0.139, 0.0045, 32, 4, L.mat("byte_screenglow", L.TURQ, 0.4, emit=L.TURQ,
+                                                                  strength=2.5), self.body, (0, -0.221, 0), c, axis="Y")
+        # Nahtlinien entlang der Kanten der Huelle (nicht auf der Vorderseite)
+        m_seam = L.mat("byte_seam", "#F2FFFE", 0.4, emit="#FFFFFF", strength=4.0)
+        me = self.shell.data
+        bm = bmesh.new()
+        for e in me.edges:
+            a, b = Vector(me.vertices[e.vertices[0]].co), Vector(me.vertices[e.vertices[1]].co)
+            mid = (a + b) / 2
+            if mid.y < -0.07:
+                continue
+            n = mid.normalized()
+            d = (b - a).normalized()
+            side = d.cross(n).normalized() * 0.005
+            a2, b2 = a * 1.012 + n * 0.001, b * 1.012 + n * 0.001
+            vs = [bm.verts.new(a2 - side), bm.verts.new(a2 + side), bm.verts.new(b2 + side), bm.verts.new(b2 - side)]
+            bm.faces.new(vs)
+        L.from_bm(f"{name}_seams", bm, m_seam, self.body, (0, 0, 0), c)
+        # Lueftungsgitter (oben seitlich)
+        d = Vector((0.7, -0.15, 0.68)).normalized()
+        vent = L.empty(f"{name}_vent", self.body, tuple(d * 0.2), c)
+        vent.rotation_euler = d.to_track_quat("-Y", "Z").to_euler()
+        L.box(f"{name}_ventplate", (0.075, 0.012, 0.055), L.mat("byte_vent", L.NAVY2, 0.5), vent, (0, 0, 0), c,
+              bevel=0.006)
+        m_slat = L.mat("byte_slat", "#0E0C1E", 0.6)
+        for k in range(4):
+            L.box(f"{name}_ventslat{k}", (0.058, 0.004, 0.006), m_slat, vent, (0, -0.0065, -0.018 + 0.012 * k), c)
+        # Status-LED auf der Brust (pulsiert beim Sprechen)
+        self.m_led = L.unique_mat(L.mat("byte_led", L.GREEN, 0.4, emit=L.GREEN, strength=4.0), f"{name}_ledmat")
+        led_p = Vector((0.0, -0.118, -0.183))
+        bez = L.empty(f"{name}_ledbez", self.body, tuple(led_p), c)
+        bez.rotation_euler = led_p.normalized().to_track_quat("-Y", "Z").to_euler()
+        L.cyl(f"{name}_ledring", 0.02, 0.012, 14, L.mat("byte_rim", L.NAVY2, 0.5), bez, (0, 0, 0), c, axis="Y")
+        self.led = L.sphere(f"{name}_led", 0.013, 10, 6, (1, 0.6, 1), self.m_led, bez, (0, -0.007, 0), c)
+        full = tuple(self.m_led.diffuse_color)
+        self.led_dim = tuple(0.55 * x for x in full[:3])
+        self.m_led.diffuse_color = self.led_dim + (1.0,)
+
+    def _arms(self):
+        c, name = self.coll, self.name
+        m_arm = L.mat("byte_arm", L.NAVY2, 0.5)
+        m_joint = L.mat("byte_joint", L.TURQ, 0.5, emit=L.TURQ, strength=1.2)
+        m_hand = L.mat("byte_hand", "#D9FBF7", 0.5, emit=L.TURQ, strength=0.3)
+        self.arm_base = {}
+        for side, sx in (("R", -1), ("L", 1)):
+            sh = L.empty(f"{name}_arm_{side}", self.body, (sx * 0.19, 0.0, -0.085), c)
+            L.sphere(f"{name}_shoulder_{side}", 0.026, 10, 6, (1, 1, 1), m_joint, sh, (0, 0, 0), c)
+            L.cyl(f"{name}_upper_{side}", 0.013, 0.1, 8, m_arm, sh, (0, 0, -0.055), c)
+            hd = L.empty(f"{name}_hand_{side}", sh, (0, 0, -0.112), c)
+            L.sphere(f"{name}_palm_{side}", 0.028, 10, 7, (1.0, 0.8, 0.95), m_hand, hd, (0, 0, -0.016), c)
+            fing = {}
+            for fn, (fx, fy, fz, ln) in {"index": (-sx * 0.011, -0.012, -0.036, 0.034),
+                                          "middle": (sx * 0.011, -0.012, -0.036, 0.032),
+                                          "thumb": (-sx * 0.026, -0.012, -0.012, 0.026)}.items():
+                fp = L.empty(f"{name}_{fn}_{side}", hd, (fx, fy, fz), c)
+                L.cyl(f"{name}_{fn}seg_{side}", 0.0085, ln, 6, m_hand, fp, (0, 0, -ln / 2), c)
+                L.sphere(f"{name}_{fn}tip_{side}", 0.0095, 8, 5, (1, 1, 1), m_hand, fp, (0, 0, -ln), c)
+                fing[fn] = fp
+            fing["thumb"].rotation_euler = (0, -sx * 0.7, 0)
+            base = (0.15, -sx * 0.5, 0.0)
+            sh.rotation_euler = base
+            self.arm_base[side] = base
+            self.arm[side], self.hand[side], self.fing[side] = sh, hd, fing
+            for fn, cu in HAND_POSES["rest"].items():
+                fing[fn].rotation_euler[0] = -1.5 * cu
+
+    def _shadow(self):
+        m = L.mat("byte_shadow", "#05040C", 0.9, alpha=0.38)
+        bm = bmesh.new()
+        n = 28
+        vs = [bm.verts.new((math.cos(2 * math.pi * k / n), math.sin(2 * math.pi * k / n), 0)) for k in range(n)]
+        bm.faces.new(vs)
+        self.shadow = L.from_bm(f"{self.name}_shadow", bm, m, None, (0, 0, -50), self.coll)
+        self.shadow.scale = (0, 0, 0)
+
+    def add_ear_rings(self):
+        """Ohr-Ringe links/rechts (neuere Folgen)."""
+        m = L.mat("byte_earring", L.NAVY2, 0.45, emit=L.TURQ, strength=0.6)
+        m2 = L.mat("byte_earglow", L.TURQ, 0.4, emit=L.TURQ, strength=4.0)
+        for sx in (-1, 1):
+            e = L.torus(f"{self.name}_earring{sx}", 0.075, 0.018, 16, 5, m, self.body, (sx * 0.215, 0, 0.0),
+                        self.coll, axis="X")
+            L.torus(f"{self.name}_earglow{sx}", 0.05, 0.008, 14, 4, m2, e, (sx * 0.012, 0, 0), self.coll, axis="X")
+            self.ears.append(e)
+
+
+# Handhaltungen: Kruemmung je Finger (0 gestreckt .. 1 eingerollt)
+HAND_POSES = {"rest": {"index": 0.3, "middle": 0.35, "thumb": 0.2},
+              "offen": {"index": 0.0, "middle": 0.0, "thumb": 0.0},
+              "point": {"index": 0.0, "middle": 1.0, "thumb": 0.8},
+              "grab": {"index": 0.95, "middle": 1.0, "thumb": 0.9},
+              "snap": {"index": 0.4, "middle": 0.45, "thumb": 0.75}}
+
+
+def byte_hand(T, b, side, kind, f_in, f_out=None, ramp=4):
+    """Handhaltung (greifen, zeigen, schnippen, offen) als additiver Layer ueber der Ruhehaltung."""
+    if not b.v21:
+        return
+    end = f_out + ramp if f_out is not None else 10 ** 6
+
+    def env(f):
+        a = ease_out(min(1.0, max(0.0, (f - f_in) / ramp)))
+        if f_out is not None and f > f_out:
+            a *= 1 - ease_out(min(1.0, (f - f_out) / ramp))
+        return a
+    for fn, cu in HAND_POSES[kind].items():
+        d = -1.5 * (cu - HAND_POSES["rest"][fn])
+        T.add(b.fing[side][fn], "rotation_euler", lambda f, d=d: (d * env(f), 0, 0), f_in - 1, min(end, f_in + 10 ** 5))
+
+
+def byte_arm(T, b, side, rot, f_in, f_out=None, ramp=5, ramp_out=7, overshoot=1.6):
+    """Arm in eine Zielrotation (absolut, Euler) mit Overshoot; zurueck in die Ruhehaltung ab f_out."""
+    if not b.v21:
+        return
+    base = b.arm_base[side]
+    d = [r - b0 for r, b0 in zip(rot, base)]
+    end = f_out + ramp_out if f_out is not None else 10 ** 6
+
+    def env(f):
+        if f < f_in:
+            return 0.0
+        a = ease_out_back(min(1.0, (f - f_in) / ramp), overshoot)
+        if f_out is not None and f > f_out:
+            a *= 1 - ease_in_out(min(1.0, (f - f_out) / ramp_out))
+        return a
+    T.add(b.arm[side], "rotation_euler", lambda f: (d[0] * env(f), d[1] * env(f), d[2] * env(f)), f_in - 1,
+          min(end, f_in + 10 ** 5))
+    return env
+
+
+def byte_snap(T, b, side, f, raise_arm=True):
+    """Schnippen: Daumen und Mittelfinger druecken (f-4), Mittelfinger schnellt bei f, Hand federt."""
+    if not b.v21:
+        return f
+    sx = -1 if side == "R" else 1
+    if raise_arm:
+        byte_arm(T, b, side, (-1.9, -sx * 0.55, 0.0), f - 7, f + 8, ramp=4, ramp_out=6)
+    byte_hand(T, b, side, "snap", f - 5, f, ramp=3)
+    T.add(b.fing[side]["middle"], "rotation_euler", lambda x: (-1.2 * window(x, f, f + 8, 1, 6), 0, 0), f, f + 8)
+    T.add(b.fing[side]["thumb"], "rotation_euler", lambda x: (0.6 * window(x, f, f + 8, 1, 6), 0, 0), f, f + 8)
+    T.add(b.hand[side], "rotation_euler", lambda x: (0.35 * spring((x - f) / FPS, 5, 0.3), 0, 0), f, f + 12)
+    return f
+
+
+def byte_type(T, b, f0, f1, speed=4):
+    """Tippen mit beiden Haenden (abwechselnd, schnell)."""
+    if not b.v21:
+        return
+    for side, sx in (("R", -1), ("L", 1)):
+        byte_arm(T, b, side, (-0.75, -sx * 0.25, 0.0), f0, f1, ramp=4, ramp_out=6)
+        byte_hand(T, b, side, "point", f0, f1, ramp=3)
+        ph = 0 if side == "R" else speed / 2
+        T.add(b.arm[side], "rotation_euler",
+              lambda f, ph=ph: (0.28 * max(0.0, math.sin(2 * math.pi * (f + ph) / speed)) * window(f, f0, f1, 3, 3), 0, 0),
+              f0, f1)
 
 
 def byte_idle(T, b, f0, f1, seed=3, amp=0.03):
-    """Schweben als Sinus (0,8 Hz), Antenne schwingt bei Richtungswechsel nach, Leuchtpunkt pulsiert."""
+    """Schweben als Sinus (0,8 Hz), Antenne schwingt bei Richtungswechsel nach, Leuchtpunkt pulsiert.
+    2.1: Arme pendeln, Status-LED atmet, Antennenspitze leuchtet, Schatten am Boden."""
     ph = random.Random(seed).uniform(0, 6.28)
     T.add(b.bob, "location", lambda f: (0, 0, amp * math.sin(2 * math.pi * 0.8 * f / FPS + ph)), f0, f1)
     T.add(b.bob, "rotation_euler", lambda f: (0.05 * math.sin(2 * math.pi * 0.4 * f / FPS + ph), 0,
                                               0.06 * math.sin(2 * math.pi * 0.27 * f / FPS + ph)), f0, f1)
     tip = L.bsdf(b.m_tip).inputs["Emission Strength"]
     T.set(tip, "default_value", lambda f: 3.0 + 2.0 * (0.5 + 0.5 * math.sin(2 * math.pi * 1.1 * f / FPS + ph)), f0, f1)
+    if not b.v21:
+        return
+    # Leuchtende Spitze: Halo pulsiert (auch in Workbench sichtbar)
+    T.set(b.halo, "scale", lambda f: (0.9 + 0.25 * (0.5 + 0.5 * math.sin(2 * math.pi * 1.1 * f / FPS + ph)),) * 3, f0, f1)
+    # Arme pendeln leicht gegen das Schweben
+    for side, sx in (("R", -1), ("L", 1)):
+        T.add(b.arm[side], "rotation_euler",
+              lambda f, sx=sx: (0.12 * math.sin(2 * math.pi * 0.8 * f / FPS + ph - 0.9),
+                                sx * 0.06 * math.sin(2 * math.pi * 0.4 * f / FPS + ph + sx), 0), f0, f1)
+    # Status-LED: ruhiges Atmen
+    T.mul(b.led, "scale", lambda f: (1 + 0.12 * math.sin(2 * math.pi * 0.5 * f / FPS + ph),) * 3, f0, f1)
+    byte_shadow(T, b, f0, f1)
+
+
+def byte_shadow(T, b, f0, f1, radius=0.19):
+    """Schwebeschatten: Scheibe auf der Flaeche unter Byte (Raycast gegen die statische Szene),
+    kleiner und schwaecher, je hoeher Byte schwebt."""
+    import bpy
+    cache = {}
+
+    def compute():
+        if cache:
+            return cache
+        anim_ptrs = {ch["t"].as_pointer() for ch in T.ch.values() if isinstance(ch["t"], bpy.types.Object)}
+        bpy.context.view_layer.update()
+        dg = bpy.context.evaluated_depsgraph_get()
+        sc = bpy.context.scene
+
+        def ok(o):
+            while o is not None:
+                if o.as_pointer() in anim_ptrs or o.name.startswith(b.name):
+                    return False
+                o = o.parent
+            return True
+        for f in range(f0, f1 + 1):
+            s = T.val(b.root, "scale", 0, f)
+            p = Vector(T.loc(b.root, f)) + Vector(T.loc(b.bob, f)) * s
+            if s < 0.05:
+                cache[f] = None
+                continue
+            org = p - Vector((0, 0, 0.2 * s))
+            hit = None
+            for _ in range(12):
+                res, loc, nrm, _i, obj, _m = sc.ray_cast(dg, org, Vector((0, 0, -1)), distance=6.0)
+                if not res:
+                    break
+                orig = obj.original if hasattr(obj, "original") else obj
+                if ok(orig) and nrm.z > 0.5:
+                    hit = loc
+                    break
+                org = loc - Vector((0, 0, 1e-3))
+            if hit is None:
+                cache[f] = None
+                continue
+            h = p.z - hit.z
+            k = max(0.35, min(1.05, 1.15 - 0.3 * h))
+            cache[f] = (hit + Vector((0, 0, 0.004)), radius * s * k)
+        return cache
+
+    T.set(b.shadow, "location", lambda f: tuple(compute()[f][0]) if compute().get(f) else (0, 0, -50), f0, f1)
+    T.set(b.shadow, "scale", lambda f: (compute()[f][1], compute()[f][1], 1) if compute().get(f) else (0, 0, 0), f0, f1)
 
 
 def antenna_spring(T, b, f0, f1, gain=7.0):
-    """Antenne: gedaempfte Feder, angetrieben von der Beschleunigung der Byte-Bewegung."""
+    """Antenne: gedaempfte Feder, angetrieben von der Beschleunigung der Byte-Bewegung.
+    2.1: das obere Glied mit der Spitze folgt verzoegert (Peitschen-Effekt)."""
     cache = {}
 
     def sim():
@@ -462,10 +1081,21 @@ def antenna_spring(T, b, f0, f1, gain=7.0):
             cache[f] = (max(-0.9, min(0.9, th.x)), max(-0.9, min(0.9, th.y)))
         return cache
     T.add(b.ant, "rotation_euler", lambda f: (sim()[f][0], sim()[f][1], 0) if f in sim() else (0, 0, 0), f0, f1)
+    if getattr(b, "ant2", None) is not None:
+        def lag(f, k):
+            d = 3
+            if f in sim() and f - d in sim():
+                return 0.8 * (sim()[f - d][k] - 0.5 * sim()[f][k])
+            return 0.0
+        T.add(b.ant2, "rotation_euler", lambda f: (lag(f, 0), lag(f, 1), 0), f0, f1)
 
 
 def byte_face(T, b, schedule, f0, f1):
-    """schedule: [(frame, ausdruck), ...] – Wechsel mit 3-Frame-Pop."""
+    """schedule: [(frame, ausdruck), ...] – Wechsel mit 3-Frame-Pop.
+    2.1: Ausdruecke sind Reaktionen (neutral, jubel, staunen, schock, zweifel, wink, code);
+    alte Namen (happy, surprised, worried, serious, curious) werden umgesetzt."""
+    if getattr(b, "v21", False):
+        schedule = [(fr, EYE_ALIAS.get(e, e)) for fr, e in schedule]
     schedule = sorted(schedule)
 
     def active(f):
@@ -482,6 +1112,27 @@ def byte_face(T, b, schedule, f0, f1):
                 lc = fr
         return lc
 
+    if getattr(b, "v21", False) or "traurig" in b.expr:
+        spans, cur = [], None
+        for fr, e in schedule + [(f1 + 1, "_ende")]:
+            if e == "traurig" and cur is None:
+                cur = fr
+            elif e != "traurig" and cur is not None:
+                spans.append((max(f0, cur), min(f1, fr)))
+                cur = None
+        for a, z in spans:
+            byte_traurig(T, b, a, z)
+    if "geruehrt" in b.expr:                       # 2.4: Brust-LED pulsiert langsam und warm
+        spans, cur = [], None
+        for fr, e in schedule + [(f1 + 1, "_ende")]:
+            if e == "geruehrt" and cur is None:
+                cur = fr
+            elif e != "geruehrt" and cur is not None:
+                spans.append((max(f0, cur), min(f1, fr)))
+                cur = None
+        for a, z in spans:
+            byte_geruehrt(T, b, a, z)
+
     for e, obj in b.expr.items():
         def sc(f, e=e):
             if active(f) != e:
@@ -492,6 +1143,50 @@ def byte_face(T, b, schedule, f0, f1):
             s = ease_out_back(min(1, t), 2.5) if last_change(f) > schedule[0][0] - 1 else 1
             return (1, 1, max(0.05, s))
         T.set(obj, "scale", sc, f0, f1)
+
+
+def byte_traurig(T, b, f0, f1, ramp=20):
+    """2.2: Antenne knickt langsam ein, Brust-LED pulsiert langsamer und gedimmt (ohne v21: nur die Antenne)."""
+    env = lambda x: window(x, f0, f1, ramp, ramp)  # noqa: E731
+    T.add(b.ant, "rotation_euler", lambda x: (0.75 * env(x), 0.15 * env(x), 0), f0, f1)
+    if getattr(b, "ant2", None) is not None:
+        T.add(b.ant2, "rotation_euler", lambda x: (0.85 * env(x), 0, 0), f0, f1)
+    if getattr(b, "v21", False):
+        T.mul(b.led, "scale", lambda x: (1 - env(x) * (0.25 - 0.15 * math.sin(2 * math.pi * 0.25 * x / FPS)),) * 3, f0, f1)
+        for k_ in range(3):
+            T.mul(b.m_led, "diffuse_color", lambda x: 1 - 0.55 * env(x), f0, f1, index=k_)
+        T.mul(b.halo, "scale", lambda x: (1 - 0.35 * env(x),) * 3, f0, f1)
+
+
+def byte_geruehrt(T, b, f0, f1, ramp=16):
+    """2.4: Brust-LED pulsiert langsam (0,3 Hz) und warm (Gold), Antenne neigt sich leicht."""
+    env = lambda x: window(x, f0, f1, ramp, ramp)  # noqa: E731
+    warm = L.srgb("#F2B45A")
+    T.add(b.ant, "rotation_euler", lambda x: (0.2 * env(x), -0.12 * env(x), 0), f0, f1)
+    T.add(b.body, "rotation_euler", lambda x: (0, 0.12 * env(x), 0), f0, f1)
+    if getattr(b, "v21", False):
+        T.mul(b.led, "scale", lambda x: (1 + env(x) * 0.25 * math.sin(2 * math.pi * 0.3 * x / FPS),) * 3, f0, f1)
+        for k_ in range(3):
+            T.add(b.m_led, "diffuse_color", lambda x, k_=k_: env(x) * (warm[k_] - b.led_dim[k_]) *
+                  (0.75 + 0.25 * math.sin(2 * math.pi * 0.3 * x / FPS)), f0, f1, index=k_)
+
+
+def byte_code_face(T, b, f0, f1, speed=0.09):
+    """Code-Zeilen laufen nach oben ueber den Bildschirm (Endlos-Band), Breite folgt dem runden Rand."""
+    n = len(b.code_rows)
+    span = 0.26
+    r = 0.135
+
+    for i, row in enumerate(b.code_rows):
+        def z(f, i=i):
+            return ((i * span / n + speed * (f - f0) / FPS) % span) - span / 2
+
+        def scl(f, i=i):
+            zz = z(f)
+            w = math.sqrt(max(0.0, 1 - (zz / r) ** 2))
+            return (w, 1, 1 if abs(zz) < r - 0.01 else 0)
+        T.set(row, "location", lambda f, i=i: (0, -0.002, z(f, i)), f0, f1)
+        T.set(row, "scale", scl, f0, f1)
 
 
 def byte_blinks(T, b, f0, f1, seed=11):
@@ -518,6 +1213,13 @@ def byte_speak(T, b, scene, f0, f1):
         i = int(f) - base
         return 0 <= i < len(amp) and amp[i] > 0.05
 
+    if getattr(b, "v21", False):           # 2.1: Status-LED pulsiert mit der Lautstaerke
+        def amp_f(f):
+            i = int(f) - base
+            return amp[i] if 0 <= i < len(amp) else 0.0
+        T.mul(b.led, "scale", lambda f: (1 + 1.1 * amp_f(f),) * 3, f0, f1)
+        for k in range(3):
+            T.add(b.m_led, "diffuse_color", lambda f, k=k: 0.55 * amp_f(f) * (1.0 - b.led_dim[k]), f0, f1, index=k)
     for k, bar in enumerate(b.eq):
         T.set(bar, "scale", lambda f, k=k: (1, 1, (0.15 + 0.85 * band(f, k)) if talking(f) else 0.0), f0, f1)
     T.set(b.mouth_idle, "scale", lambda f: (0, 0, 0) if talking(f) else (1, 1, 1), f0, f1)
@@ -534,7 +1236,7 @@ def byte_speak(T, b, scene, f0, f1):
 # =================================================================== Helfer
 class Helper(Byte):
     def __init__(self, coll, n, mark):
-        super().__init__(coll, name=f"helper{n}", scale=0.45, light_energy=25.0, emissive=1.1)
+        super().__init__(coll, name=f"helper{n}", scale=0.45, light_energy=25.0, emissive=1.1, v21=False)
         c = coll
         self.n = n
         badge = L.empty(f"helper{n}_badge", self.body, (0.17, -0.12, 0.15), c)

@@ -1,0 +1,1 @@
+{"hash": "1e714fc6d28c9f819772", "speech_text": "Ich schreib eine höfliche Erinnerung: alle drei Rechnungen, Zahlung in sieben Tagen.", "voice": {"model": "de_DE-kerstin-low", "url_sub": "kerstin/low/", "speaker": null, "length_scale": 1.196, "noise_scale": 0.8, "noise_w": 0.9}, "model": "piper", "wav": "out/cache/1e714fc6d28c9f819772.wav", "cached": false}

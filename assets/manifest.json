@@ -1,0 +1,659 @@
+{
+ "hinweis": "Requisiten und Bildschirm-Inhalte je Folge. Neue Requisiten liegen in assets/props/<slug>.py, Bildschirm-Inhalte in assets/screens/<slug>.py (geladen von engine/overlays.screen_frame).",
+ "requisiten": {
+  "mini_kamera": {
+   "datei": "assets/props/viral.py",
+   "funktion": "mini_kamera, rec_blink",
+   "beschreibung": "Mini-Kamera mit blinkendem REC-Licht"
+  },
+  "headset_mini": {
+   "datei": "assets/props/viral.py",
+   "funktion": "headset_mini",
+   "beschreibung": "passt auf Byte (Massstab 1) und Kalle (Massstab ~1,42)"
+  },
+  "ringlicht": {
+   "datei": "assets/props/viral.py",
+   "funktion": "ringlicht, ringlicht_an",
+   "beschreibung": "schaltet sich ein (Ring hell, Lichtschein)"
+  },
+  "regieklappe_mini": {
+   "datei": "assets/props/viral.py",
+   "funktion": "regieklappe_mini, klappe",
+   "beschreibung": "Klappe oeffnet und schlaegt zu"
+  },
+  "posten_knopf": {
+   "datei": "assets/props/viral.py",
+   "funktion": "posten_knopf, knopf_druecken",
+   "beschreibung": "leuchtet, wird gedrueckt"
+  },
+  "aufrufzaehler": {
+   "datei": "assets/props/viral.py",
+   "funktion": "aufrufzaehler, zaehler_laufen",
+   "beschreibung": "mechanische Zahlenwalzen, rattern hoch wie ein Kilometerzaehler"
+  },
+  "herzchen_partikel": {
+   "datei": "assets/props/viral.py",
+   "funktion": "herzchen",
+   "beschreibung": "steigen wie Seifenblasen auf"
+  },
+  "kunden_schlange": {
+   "datei": "assets/props/viral.py",
+   "funktion": "kunden_schlange, kunde_mit_handy",
+   "beschreibung": "Low-Poly-Kunden mit hochgehaltenen Handys"
+  },
+  "fenster_tageszeit": {
+   "datei": "assets/props/viral.py",
+   "funktion": "fenster_tageszeit, tageszeit",
+   "beschreibung": "Nacht mit Mond und Sternen, Daemmerung, Morgen mit Sonne, Tag"
+  },
+  "schreibtischlampe": {
+   "datei": "assets/props/viral.py",
+   "funktion": "schreibtischlampe",
+   "beschreibung": "leuchtende Birne mit Lichtkegel"
+  },
+  "brezelblech": {
+   "datei": "assets/props/viral.py",
+   "funktion": "brezelblech",
+   "beschreibung": "wiederverwendbar"
+  },
+  "wanduhr": {
+   "datei": "engine/props.py",
+   "funktion": "wall_clock",
+   "beschreibung": "wiederverwendet (Buero-Uhr)"
+  },
+  "brezel": {
+   "datei": "engine/props.py",
+   "funktion": "pastry('brezel')",
+   "beschreibung": "wiederverwendet"
+  },
+  "muenzen": {
+   "datei": "engine/props.py",
+   "funktion": "burst('coinp'), coin_small",
+   "beschreibung": "wiederverwendet"
+  },
+  "mehlwolke": {
+   "datei": "engine/props.py",
+   "funktion": "burst('puff'/'flourdust')",
+   "beschreibung": "wiederverwendet"
+  },
+  "geister_kaffeemaschine": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "geister_kaffeemaschine, geist_schweben, aufloesen",
+   "beschreibung": "halbdurchsichtig, schimmernd, Ketten, Preisschild beschriftbar, loest sich in Glitzer auf"
+  },
+  "ordner_kontoauszuege": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "ordner_kontoauszuege, blaetter_einsaugen",
+   "beschreibung": "Ordner 'KONTOAUSZÜGE 2026', Blaetter fliegen heraus und werden eingesaugt"
+  },
+  "buchungs_kaertchen": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "kaertchen_tornado",
+   "beschreibung": "Partikel-Schwarm: Tornado um Byte, dann in die Faecher"
+  },
+  "kategorien_faecher": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "kategorien_faecher",
+   "beschreibung": "5 beschriftete Faecher"
+  },
+  "warnpunkt_rot": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "warnpunkt_rot, warnpunkt_pulsieren, warnpunkt_platzen",
+   "beschreibung": "pulsiert, kann aufplatzen"
+  },
+  "software_box": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "software_box",
+   "beschreibung": "beschriftbar ('KASSE PRO'), auch als Geister-Variante"
+  },
+  "stromzaehler": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "stromzaehler, zaehler_drehen",
+   "beschreibung": "Scheibe dreht schnell, Stempel-Abdruck 'AUTOMATISCH VERLÄNGERT'"
+  },
+  "briefumschlag_kuendigung": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "briefumschlag_kuendigung, umschlag_fliegen",
+   "beschreibung": "Umschlag 'KÜNDIGUNG' fliegt"
+  },
+  "kaffeetasse": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "kaffeetasse, kaffee_spritzer",
+   "beschreibung": "kann fallen, Kaffee spritzt in Zeitlupe"
+  },
+  "glitzer_partikel": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "glitzer",
+   "beschreibung": "goldene und tuerkise Funken"
+  },
+  "ladenfront": {
+   "datei": "assets/props/dashboard.py",
+   "funktion": "ladenfront",
+   "beschreibung": "Vorderwand mit Schaufenster (Hintergrund fuer Blick ueber Kalles Schulter)"
+  },
+  "muenzsaeule": {
+   "datei": "engine/props.py",
+   "funktion": "coin_column",
+   "beschreibung": "wiederverwendet"
+  },
+  "stempel": {
+   "datei": "engine/props.py",
+   "funktion": "stempel",
+   "beschreibung": "wiederverwendet"
+  },
+  "bewerbungsmappe": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "bewerbungsmappe, mappe_grau, mappe_gold",
+   "beschreibung": "37 als Faecher, klappt grau zu oder leuchtet golden (Haekchen, 'Gespräch mit Kalle')"
+  },
+  "ermittlungs_pinnwand": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "ermittlungs_pinnwand, faeden_schwingen",
+   "beschreibung": "Foto 'BÄCKEREI AM MARKTPLATZ', Zettel, rote Faeden, Preisschild '1,10 €'"
+  },
+  "sterne_leiste": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "sterne_leiste, sterne_fuellen",
+   "beschreibung": "fuellt sich bis zu einem einstellbaren Wert (z. B. 4,8)"
+  },
+  "auftrags_papierflieger": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "auftrags_papierflieger",
+   "beschreibung": "Papierflieger mit gruenem Stempel 'BESTÄTIGT'"
+  },
+  "thermoskanne": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "thermoskanne",
+   "beschreibung": "Aufschrift 'KAFFEE'"
+  },
+  "wanduhr_backstube": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "wanduhr_backstube, uhr_stellen",
+   "beschreibung": "Zeiger plus Digitalanzeige '4:12'"
+  },
+  "bewertungskarte": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "bewertungskarte",
+   "beschreibung": "fuenf Sterne, beschriftbarer Text"
+  },
+  "teigklumpen": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "teigklumpen, klumpen_kippen",
+   "beschreibung": "schiefer Klumpen, kippt um"
+  },
+  "holzscheit": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "holzscheit",
+   "beschreibung": "Scheit fuer den Ofen"
+  },
+  "schuerzenhaken": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "schuerzenhaken",
+   "beschreibung": "Brett 'SCHÜRZEN' mit Haken, Schuerze zuschaltbar"
+  },
+  "stapel": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "mappen_stapel, auftrags_stapel",
+   "beschreibung": "Stapel 'BEWERBUNGEN' und 'AUFTRÄGE'"
+  },
+  "pinzette": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "pinzette",
+   "beschreibung": "fuer das Preisschild"
+  },
+  "schluesselbund": {
+   "datei": "assets/props/nachtschicht.py",
+   "funktion": "schluesselbund",
+   "beschreibung": "Kalles Schluessel"
+  },
+  "mehlsack": {
+   "datei": "engine/props.py",
+   "funktion": "flour_sack",
+   "beschreibung": "wiederverwendet ('WEIZEN 550')"
+  },
+  "preisschild": {
+   "datei": "engine/props.py",
+   "funktion": "preisschild",
+   "beschreibung": "wiederverwendet"
+  },
+  "stadtplan_rolle": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "stadtplan_rolle, rollen",
+   "beschreibung": "Stadtplan mit Rolle, rollt auf und wieder zusammen (Running Gag)"
+  },
+  "lichtwirbel_portal": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "lichtwirbel_portal, wirbel",
+   "beschreibung": "leuchtender Spiralwirbel mit Funken, steigt aus dem Laptop"
+  },
+  "pin_nummer": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "pin, pin_steigen, pin_farbe",
+   "beschreibung": "Datenebene der Stadtkarte (Engine 2.3): nummerierter Pin mit Namensschild, steigt aus dem Boden, Farbe gruen/gelb/grau"
+  },
+  "konkurrenz_marker": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "konkurrenz, marker_setzen",
+   "beschreibung": "Datenebene (Engine 2.3): graue Brezel-Marker"
+  },
+  "info_karte_schwebend": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "info_karte, karte_zeigen",
+   "beschreibung": "Datenebene (Engine 2.3): schwebende Karte, beschriftbar, hoechstens 3 Zeilen"
+  },
+  "personen_lichtpunkte": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "personen",
+   "beschreibung": "Datenebene (Engine 2.3): leuchtende Punkte auf Strassen, Dichte einstellbar"
+  },
+  "heatmap_schleier": {
+   "datei": "engine/stadtkarte.py",
+   "funktion": "heatmap",
+   "beschreibung": "Datenebene (Engine 2.3): Schleier rot (belebt) / blau (ruhig)"
+  },
+  "zaehler_schwebend": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "zaehler_schwebend",
+   "beschreibung": "Tafel 'PASSANTEN / MORGEN'; Ziffern als Overlay-Zaehler (W.labels) bis 8.000"
+  },
+  "punktraster_100": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "punktraster_100",
+   "beschreibung": "10 x 10 Punkte, drei golden"
+  },
+  "kundenschlange_gold": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "kundenschlange_gold",
+   "beschreibung": "goldene Punkte fliegen zusammen und reihen sich bis zur Ladentuer ein"
+  },
+  "schild_filiale": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "schild_filiale, aufklappen",
+   "beschreibung": "Klappschild 'FILIALE 2?'"
+  },
+  "kiosk_hologramm": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "kiosk_hologramm, holo_an",
+   "beschreibung": "halbtransparenter Mini-Kiosk mit Schild 'KIOSK' und Scanlinien"
+  },
+  "broetchen_plastik": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "broetchen_plastik",
+   "beschreibung": "blasses, plattes Aufback-Broetchen in Folie, Etikett 'AUFGEBACKEN'"
+  },
+  "brezel_glaenzend": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "brezel_glaenzend, glitzern",
+   "beschreibung": "frische Brezel mit Glanzlichtern und glitzerndem Salz (nutzt engine/props.pastry 'brezel')"
+  },
+  "screen_tafel": {
+   "datei": "assets/props/filiale.py",
+   "funktion": "screen_tafel",
+   "beschreibung": "schwebende Tafel ueber der Stadtkarte mit der Bildschirm-Bildfolge"
+  },
+  "brezel_missglueckt": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "brezel_missglueckt, reihe_missglueckt",
+   "beschreibung": "9 Varianten: knoten, acht, klumpen, herz, brille (Brillengestell), schlange, spirale, doppelknoten, ohr"
+  },
+  "brezel_roh_perfekt": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "brezel_roh_perfekt",
+   "beschreibung": "dicker Bauch, dünne Ärmchen, roh"
+  },
+  "brezel_gebacken": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "brezel_gebacken, salz_glitzern",
+   "beschreibung": "glänzend braun, Salzkörner glitzern"
+  },
+  "teigstrang": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "teigstrang, teigstrang_form, form_gerade, form_brezel, form_schwung, form_mischen",
+   "beschreibung": "Perlen-Strang, rollbar, dreht sich in der Luft, legt sich zur Brezel"
+  },
+  "kamera_antenne": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "kamera_antenne, kamera_ausklappen",
+   "beschreibung": "klappt aus Bytes Antenne, REC-Licht (viral.mini_kamera, rec_blink)"
+  },
+  "hand_standbild_3d": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "hand_standbild_3d",
+   "beschreibung": "leuchtendes Standbild von Kalles Händen, Nummer im Kreis, beschriftbar"
+  },
+  "bewegungsbahn": {
+   "datei": "engine/ar.py",
+   "funktion": "bahn, bahn_zeichnen, bogen_punkte",
+   "beschreibung": "Engine 2.4: dünne Bahn, türkis (mit Glühen) oder grau, Form über Punkte"
+  },
+  "eisberg_wissen": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "eisberg_wissen",
+   "beschreibung": "Gipfel 'WAS KALLE SAGT' mit Schild, Unterwasserteil 'WAS KALLE KANN' mit Symbolen"
+  },
+  "ar_brille": {
+   "datei": "engine/lea.py",
+   "funktion": "Lea.brille, lea_brille",
+   "beschreibung": "Engine 2.4: schmal, transparent, türkiser Rand; auf der Nase oder in der Stirn, Gläser leuchten auf"
+  },
+  "siegerpodest_mini": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "siegerpodest_mini",
+   "beschreibung": "1-2-3-Podest"
+  },
+  "mehlfleck_schuerze": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "mehlfleck_schuerze",
+   "beschreibung": "erster Mehlfleck (Handabdruck) auf Leas Schürze"
+  },
+  "mehlstrich_stirn": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "mehlstrich_stirn",
+   "beschreibung": "Mehlstrich auf Leas Stirn, bleibt"
+  },
+  "schildchen_handschrift": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "schildchen_handschrift",
+   "beschreibung": "beschriftbar, z. B. 'VON LEA', 'Versuch 10'"
+  },
+  "papiertuete": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "papiertuete",
+   "beschreibung": "Brötchentüte 'KALLE'"
+  },
+  "kundin_lowpoly": {
+   "datei": "engine/props.py",
+   "funktion": "customer, customer_walk",
+   "beschreibung": "Low-Poly-Kundin (wie die Kunden der Kundenschlange)"
+  },
+  "auslage_theke": {
+   "datei": "assets/props/brezel_geheimnis.py",
+   "funktion": "auslage_theke",
+   "beschreibung": "Auslage hinter dem Schaufenster mit Glasfront und Gebäck"
+  },
+  "controller": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "controller",
+   "beschreibung": "Gamepad mit Steuerkreuz, 4 Knöpfen und Sticks; vibrieren(), knopf_druck(), verkehrt herum haltbar (Drehung des Körpers um die Längsachse)"
+  },
+  "monitor_buero": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "monitor_buero",
+   "beschreibung": "Bildschirm auf Standfuß, zeigt das Spielbild über die Screen-Ebene (UV wie laptop_display); display_mitte() für ins_spiel/aus_spiel"
+  },
+  "schild_offen": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "schild_offen",
+   "beschreibung": "Hängeschild 'GESCHLOSSEN'/'OFFEN', drehen() wendet es mit Nachschwingen"
+  },
+  "spielstadt_modell": {
+   "datei": "assets/props/baeckerei_spiel.py",
+   "funktion": "spielstadt_modell",
+   "beschreibung": "Studio-Fassung der Spielwelt (Katalog-Objekte im Maßstab) mit 'PLEITE'-Schild und Knopf 'NOCHMAL'; rueckspulen() setzt Tonne, Münzen und Schild zurück"
+  },
+  "stadtmodell_esslingen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "stadtmodell_esslingen",
+   "beschreibung": "Großes Low-Poly-Diorama: Neckar mit Wellen, Altstadt-Fachwerk mit roten Dächern, Burg auf dem Hügel, Weinberge in Reihen, Mehrfamilienhäuser, Brücke mit kleinen Autos, Laternen; Tag/Nacht (nacht()), baut sich blockweise mit Squash auf (aufbauen()), keine Logos, keine Schrift"
+  },
+  "preis_pin": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "preis_pin",
+   "beschreibung": "Pin (Kugel auf Nadel), poppt mit Überschwingen auf, erlischt grau (pin_an)"
+  },
+  "bank_gebaeude": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "bank_gebaeude",
+   "beschreibung": "Bank mit Säulen, Giebel und Treppe; roter Teppich rollt aus, Schilder klappen auf"
+  },
+  "waage_kippt": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "waage_kippt",
+   "beschreibung": "Balkenwaage, Schalen hängen senkrecht; kippen() und Gleichgewicht, scheibe() als beschriftetes Gewicht"
+  },
+  "sparbuch": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "sparbuch",
+   "beschreibung": "Sparbuch mit grünem Umschlag und Goldstreifen"
+  },
+  "portemonnaie_tropft": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "portemonnaie_tropft",
+   "beschreibung": "Portemonnaie, aus dem Münzen tropfen (Aufprall mit Squash, tropfen())"
+  },
+  "dampf_loop": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "dampf_loop",
+   "beschreibung": "Dampf, der in Schleife aufsteigt, Stärke als Funktion (kann verfliegen)"
+  },
+  "mehlstaub": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "mehlstaub",
+   "beschreibung": "Schwebender Mehlstaub im Licht und eine langsam sinkende Mehlwolke (mehlwolke_sinkt)"
+  },
+  "lichtring_welle": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "lichtring_welle",
+   "beschreibung": "Türkiser (oder grüner) Lichtring, breitet sich flach wie eine Welle aus"
+  },
+  "konfetti_gruen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "konfetti_gruen",
+   "beschreibung": "Grüne Konfetti-Funken"
+  },
+  "byte_lichtschein": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "byte_lichtschein",
+   "beschreibung": "Türkises Licht um Byte (weiche Hüllen) und Lichtfleck darunter, Stärke steuerbar (lichtschein_steuern)"
+  },
+  "landen_squash": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "landen",
+   "beschreibung": "Hilfsfunktion landen(): Squash & Stretch mit Nachwippen beim Aufprall; schild_klappen(): Schild klappt mit Überschwingen auf"
+  },
+  "besen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "besen",
+   "beschreibung": "Besen, an der Theke angelehnt"
+  },
+  "schild_text": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "schild_text",
+   "beschreibung": "Leuchtschild mit Text (z. B. 'Alles erledigt', Preis-/Mietschilder)"
+  },
+  "haken_gruen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "haken_gruen",
+   "beschreibung": "Grüner Haken im Ring"
+  },
+  "etikett_kette": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "etikett_kette",
+   "beschreibung": "Rotes Etikett an einer Kette, pendelt aus (schwingen())"
+  },
+  "muenzsaeule_gruen": {
+   "datei": "assets/props/kalle_vermieter.py",
+   "funktion": "muenzsaeule_gruen",
+   "beschreibung": "Grüne Münzsäule (props.coin_column wiederverwendet, Material am Objekt)"
+  },
+  "ladenseite": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "ladenseite",
+   "beschreibung": "Rechte Ladenwand mit offener Tür und Schaufenster, draußen Gehweg, Straße, Häuser, Himmel (Set theke, x = 2,45)"
+  },
+  "kundenschlange": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "kundenschlange",
+   "beschreibung": "Low-Poly-Kunden (viral.kunde_mit_handy) auf einem Pfad Theke → Tür → Gehweg, wippen, einige mit Handy; schlange_bewegen: rückwärts verschwinden und hereinströmen"
+  },
+  "tuerglocke": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "tuerglocke",
+   "beschreibung": "Ladenglocke an Feder mit Klöppel, bimmeln(stärke_fn) schwingt wild oder hängt still"
+  },
+  "kameralinse_byte": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "kameralinse_byte",
+   "beschreibung": "Runde Linse vor Bytes Gesicht, Gehäuse klappt mit Überschwingen herunter, Blende öffnet, roter REC-Punkt blinkt (linse_aufklappen)"
+  },
+  "brezel_schlingen": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "brezel_schlingen",
+   "beschreibung": "Teigstrang fliegt im Bogen, dreht sich in Zeitlupe und landet als Brezel (Squash, Mehlwolke, Glitzern); teigstrang() einzeln"
+  },
+  "zeitleiste_clips": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "zeitleiste_clips",
+   "beschreibung": "Filmstreifen mit Clip-Kacheln; zeitleiste_schneiden: Lichtschnitt, graue Kacheln fallen zu Boden, drei leuchtende rasten mit Pop ein"
+  },
+  "handy_hochkant": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "handy_hochkant",
+   "beschreibung": "Hochkant-Handy ohne Logo: Brezel-Video, Untertitel Wort für Wort, Titelzeile klappt auf, Notensymbole, Fortschrittsbalken (handy_abspielen)"
+  },
+  "papierflieger_licht": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "papierflieger_licht",
+   "beschreibung": "Leuchtender Papierflieger, flug() mit Schräglage in Kurven (Lichtspur über characters.trail)"
+  },
+  "handy_vibriert": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "handy_vibriert",
+   "beschreibung": "Handy flach auf dem Tisch, vibrieren(): zittert in Pulsen und wandert über die Tischplatte"
+  },
+  "herzen_burst": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "herzchen + sprechblasen",
+   "beschreibung": "Herzen (viral.herzchen) und Sprechblasen mit drei Punkten steigen schaukelnd auf und ploppen"
+  },
+  "wellenringe": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "wellenringe",
+   "beschreibung": "Mehrere türkise Lichtringe nacheinander (kalle_vermieter.lichtring_welle), radius(f) der Wellenfront"
+  },
+  "mini_baeckerei": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "mini_baeckerei",
+   "beschreibung": "Kleine Low-Poly-Bäckerei mit Satteldach, Markise rot-weiß, Kamin und Brezelschild"
+  },
+  "figuren_feld": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "figuren_feld + figuren_poppen",
+   "beschreibung": "Kleine Figuren im Kreis, poppen auf, wenn die Welle sie erreicht, hüpfen und drehen sich zur Bäckerei"
+  },
+  "stempel_gestern_heute": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "stempel + stempel_klappen",
+   "beschreibung": "Stempel 'GESTERN' / 'HEUTE', klappt um die Oberkante auf; Position oben links in der Schärfeebene der Kamera (Regie)"
+  },
+  "fragezeichen": {
+   "datei": "assets/props/laden_platzt.py",
+   "funktion": "fragezeichen + fragezeichen_an",
+   "beschreibung": "Graues Fragezeichen über Passanten, poppt auf und löst sich auf"
+  },
+  "zaehler_aufrufe": {
+   "datei": "assets/screens/laden_platzt.py",
+   "funktion": "_slot",
+   "beschreibung": "Zähler wie ein Spielautomat (fünf Walzen rollen aus bis 50.000 'Aufrufe') auf dem Laptop-Display, dazu Zahl als Overlay-Label in der Regie"
+  }
+ },
+ "bildschirme": {
+  "viral": {
+   "datei": "assets/screens/viral.py",
+   "inhalte": [
+    "rohvideo_wackelig",
+    "schnitt_timeline",
+    "effekte_haekchen",
+    "fertiges_video_hochformat",
+    "erstes_frame_gross"
+   ],
+   "standbilder": [
+    "assets/screens/viral/kalle_schlingt.png",
+    "assets/screens/viral/kalle_blind.png"
+   ],
+   "quelle_standbilder": "Render dieser Folge (Szene 4, Frame 330: Kalle schlingt mit geschlossenen Augen)"
+  },
+  "dashboard": {
+   "datei": "assets/screens/dashboard.py",
+   "inhalte": [
+    "upload_ablage",
+    "screen_dashboard"
+   ],
+   "baustein": "assets/props/screen_dashboard.py (render(zustand), upload_ablage(t)); Schrift Inter (assets/fonts, OFL)",
+   "aufbaustufen": {
+    "4": "Zaehler 1.200 + Ring",
+    "5": "leere Karte GELDFRESSER",
+    "6": "Zeile 1",
+    "8": "Zeilen 2 und 3",
+    "9": "Kacheln, komplett",
+    "10": "rote Kachel pulsiert",
+    "11": "Knoepfe -> Haekchen",
+    "12": "Ersparnis 1.656 €"
+   }
+  },
+  "nachtschicht": {
+   "datei": "assets/screens/nachtschicht.py",
+   "inhalte": [
+    "bewerber_37_zu_3",
+    "preisvergleich_brezel",
+    "sterne_vergleich",
+    "bestellungen_62"
+   ]
+  },
+  "filiale": {
+   "datei": "assets/screens/filiale.py",
+   "inhalte": [
+    "drei_von_hundert",
+    "rechnung_8000_3prozent"
+   ],
+   "beschreibung": "Tafel ueber der Stadtkarte: '3 von 100' (Szene 9), '8.000 × 3 % = 240 Kunden/Tag' (Szene 10)"
+  },
+  "brezel-geheimnis": {
+   "datei": "assets/screens/brezel_geheimnis.py",
+   "inhalte": [
+    "zeitlupe_kalle",
+    "bahnen_vergleich",
+    "wissen"
+   ],
+   "beschreibung": "Studio-Screen: Zeitlupe 0,25x (Szene 5), Bahnen KALLE/LEA (Szene 6), Titel 'IMPLIZITES WISSEN' (Szene 8)"
+  },
+  "baeckerei-spiel": {
+   "datei": "assets/screens/baeckerei_spiel.py",
+   "inhalte": [
+    "spielbild_hochkant (Monitor im Büro)",
+    "laden_pleite",
+    "filiale (Level-up)",
+    "laden (Studio)"
+   ],
+   "standbilder": [
+    "assets/screens/baeckerei_spiel/kalle_nah_3d.png",
+    "assets/screens/baeckerei_spiel/laden_3d.png",
+    "assets/screens/baeckerei_spiel/filiale_3d.png"
+   ],
+   "quelle_standbilder": "Renders der Spielwelt (Engine 2.5) mit Spielanzeige aus engine/spielanzeige.py"
+  },
+  "kalle-vermieter": {
+   "datei": "assets/screens/kalle_vermieter.py",
+   "inhalte": [
+    "countdown_ring_3_s",
+    "wohnung_60_qm_250000",
+    "rate_1000_im_monat",
+    "rechnung_1000_minus_750",
+    "nachtsuche_ladebalken"
+   ]
+  },
+  "laden-platzt": {
+   "datei": "assets/screens/laden_platzt.py",
+   "inhalte": [
+    "video_herzen",
+    "gestern_grau",
+    "sucher_rec",
+    "10_min_zu_15_s",
+    "uhr_18_59_19_00",
+    "spielautomat_50000",
+    "50000_aufrufe",
+    "haken_mehl_bestellt"
+   ]
+  }
+ }
+}

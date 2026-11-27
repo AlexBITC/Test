@@ -1,0 +1,1 @@
+{"hash": "dbfbd1e59939d0ab0780", "speech_text": "Freitag willl die Mühle tausendfünfhundert Euro. Auf dem Konto neunhundert. Fehlen sechshundert.", "voice": {"model": "de_DE-kerstin-low", "url_sub": "kerstin/low/", "speaker": null, "length_scale": 1.0, "noise_scale": 0.6, "noise_w": 0.8}, "model": "piper", "wav": "out/cache/dbfbd1e59939d0ab0780.wav", "cached": false}

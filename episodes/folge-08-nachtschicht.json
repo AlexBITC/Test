@@ -1,0 +1,167 @@
+{
+  "folge": 8,
+  "slug": "nachtschicht",
+  "titel": "Bytes Nachtschicht",
+  "hook": "Byte hat die ganze Nacht gearbeitet. Kalle gefällt das nicht.",
+  "begriff": "Wettbewerbsanalyse",
+  "kapitel": [
+    "MITARBEITER",
+    "KONKURRENZ",
+    "BESTELLUNGEN"
+  ],
+  "szenen": [
+    {
+      "sprecher": "byte",
+      "text": "Morgen, Kalle! Ich war die ganze Nacht fleißig.",
+      "highlight": [
+        "ganze Nacht"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "nacht",
+      "kapitel": null,
+      "visual": "[3D] Totale vom Ofen: dunkle Backstube, nur Ofenglut und Bytes türkises Leuchten. Byte sitzt auf dem Arbeitstisch zwischen drei hohen Stapeln: Bewerbungsmappen, Auftragsbestätigungen und eine Pinnwand mit Fotos und roten Fäden wie bei einer Ermittlung. Eine Wanduhr zeigt '4:12'. Im Hintergrund geht die Tür auf, Kalles Silhouette mit Schlüsselbund. [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: 'Byte hat die ganze Nacht gearbeitet.' Kamera: langsamer push_in Richtung Byte, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Um vier Uhr früh? Was hasch gmacht?",
+      "highlight": [
+        "vier Uhr"
+      ],
+      "reaktion": "staunen",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Kalle drückt den Lichtschalter, die Neonröhre flackert zweimal und geht an. Kalle ist verschlafen: Mütze schief, ein Auge halb zu, er gähnt und hält eine Thermoskanne. Er sieht die drei Stapel und bleibt stehen. Kamera: Nahe am Arbeitstisch, zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ich hab 37 Bewerbungen gelesen. Drei passen perfekt.",
+      "highlight": [
+        "37 Bewerbungen"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Kulissenwechsel. 37 Bewerbungsmappen fächern sich wie Spielkarten im Halbkreis um Byte auf, 34 davon klappen grau zu und sinken weg, drei leuchten golden auf und schweben nach vorn, jede mit einem Häkchen. [Screen] '37 → 3' mit drei Profil-Silhouetten und den Stichworten 'Bäcker-Geselle', 'Verkauf', 'Aushilfe'. Kamera: kreisfahrt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Die Bäckerei am Marktplatz verkauft Brezeln für 1,10.",
+      "highlight": [
+        "1,10"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Die Ermittlungs-Pinnwand aus der Backstube steht jetzt groß im Studio: ein Low-Poly-Foto 'BÄCKEREI AM MARKTPLATZ', rote Fäden zu Zetteln 'Preise', 'Öffnungszeiten', 'Sortiment'. Byte zieht mit einer Pinzette ein Preisschild '1,10 €' heraus. [Screen] Vergleich: 'Kalle 1,20 €' gegen 'Marktplatz 1,10 €'. Kamera: push_in auf die Pinnwand."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Aber du hast die besseren Bewertungen. 4,8 gegen 4,1.",
+      "highlight": [
+        "4,8"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Zwei Sterne-Leisten schweben nebeneinander. Bei Kalle füllen sich fast fünf goldene Sterne, beim Marktplatz nur vier, der letzte bleibt leer. Byte stemmt zufrieden die Hände in die Seiten. [Screen] '4,8 ★' grün gegen '4,1 ★' grau. Kamera: schwenk von links nach rechts."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Und 62 Bestellungen für heute. Alle bestätigt.",
+      "highlight": [
+        "62 Bestellungen"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "licht": "frueh",
+      "kapitel": 2,
+      "visual": "[3D] Kulissenwechsel an die Theke. Aus dem Laptop fliegen in schneller Folge Auftragsbestätigungen wie Papierflieger und landen in einem ordentlichen Stapel, jede bekommt im Flug einen grünen Stempel 'BESTÄTIGT'. [Screen] Zähler '62/62' mit grünem Haken. Kamera: fahrt am Laptop entlang."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Alle … scho bestätigt?",
+      "highlight": [
+        "bestätigt"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "licht": "frueh",
+      "kapitel": 2,
+      "visual": "[3D] Kalle nimmt die oberste Bestätigung in die Hand und liest sie. Langsam sinkt die Hand. Er stellt die Thermoskanne leise ab. Der Jubel ist aus der Szene raus: keine Partikel, kein Konfetti. Kamera: langsamer push_in, kein schneller Schnitt."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Wofür brauchst du mich dann eigentlich noch?",
+      "highlight": [
+        "mich"
+      ],
+      "reaktion": "traurig",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Kulissenwechsel, neuer Winkel: Kalle sitzt allein auf einem Mehlsack vor dem kalten Ofen, die Glut ist fast aus. Schultern hängen, Blick auf seine mehligen Hände. Er nimmt langsam die Mütze ab und hält sie in beiden Händen. Byte schwebt im Türrahmen im Hintergrund, klein und still. Kamera: Totale vom Ofen, sehr langsamer push_in. Keine Soundeffekte, nur leise Raumatmosphäre."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Kalle … ich kann rechnen. Aber backen kann ich nicht.",
+      "highlight": [
+        "backen"
+      ],
+      "reaktion": "traurig",
+      "set": "backstube",
+      "licht": "frueh",
+      "kapitel": null,
+      "visual": "[3D] Byte schwebt langsam heran und landet neben Kalle auf dem Mehlsack, seine Antenne knickt ein. Er versucht, mit seinen kleinen Händen ein Stück Teig zu formen. Das Ergebnis ist ein schiefer Klumpen, der traurig umkippt. Kamera: Nahe am Arbeitstisch, zoom auf Bytes Hände und den Teigklumpen."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Die Leute kommen nicht wegen mir. Sie kommen wegen dir.",
+      "highlight": [
+        "wegen dir"
+      ],
+      "reaktion": "neutral",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": null,
+      "visual": "[3D] Durchs Fenster fällt die erste warme Morgensonne, Mehlstaub tanzt im Lichtstrahl. Byte hält Kalle eine Bewertungskarte hin: '★★★★★ Die Brezeln von Kalle schmecken wie früher bei Oma.' Kalle hebt langsam den Kopf. Kamera: schwenk vom Fenster über den Lichtstrahl zu den beiden."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Und die drei Bewerber wollen dich kennenlernen.",
+      "highlight": [
+        "dich"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": null,
+      "visual": "[3D] Die drei goldenen Bewerbungsmappen schweben heran und stellen sich in einer Reihe vor Kalle auf, auf jeder steht 'Gespräch mit Kalle'. Bytes Antenne richtet sich wieder auf, das Brust-LED leuchtet hell. Kamera: rueckfahrt."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Na dann … back i jetzt mal Brezeln.",
+      "highlight": [
+        "Brezeln"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "morgen",
+      "kapitel": null,
+      "visual": "[3D] Kalle steht auf, setzt die Mütze wieder auf, sie sitzt jetzt gerade. Er krempelt die Ärmel hoch, legt Holz in den Ofen, die Glut flammt hell auf. Er schlingt die erste Brezel und schmunzelt. Byte klatscht in die Hände. Kamera: Totale vom Ofen, push_in."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Und ich arbeite heute Nacht weiter.",
+      "highlight": [
+        "heute Nacht"
+      ],
+      "reaktion": "jubel",
+      "set": "backstube",
+      "licht": "nacht",
+      "kapitel": null,
+      "visual": "[3D] Zeitraffer: Die Sonne wandert über das Fenster, Kalle backt, Kunden kommen und gehen im Hintergrund, es wird dunkel. Kalle hängt die Schürze an den Haken und geht. Byte sitzt wieder auf dem Arbeitstisch, neue Stapel wachsen um ihn. Die Uhr springt auf '4:12'. Kamera: endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}

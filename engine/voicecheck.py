@@ -15,8 +15,35 @@ _UTMOS = None
 _UTMOS_ERR = None
 
 # Dialekt/Umgangssprache: Whisper schreibt Standarddeutsch, beide Seiten werden angeglichen
-EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "gibt's": "gibts",
-         "eintausend": "tausend",}
+# Eigennamen als Vokabelhinweis fuer Whisper (kein Satzinhalt)
+NAMES = "Kalle, Byte."
+# Schwaebische Woerter duerfen abweichen (zaehlen nicht als Wortfehler)
+DIALECT = {"net", "nicht", "i", "ich", "des", "das", "verschlamp", "verschlampe"}
+DIALECT_REF = {"net", "i", "des", "verschlamp", "kaufet", "koiner", "mei", "erschte", "gmeint", "glei", "mi",
+               "gspielt", "kommet"}
+DIALECT_REF_25 = {"a", "no"}       # 2.5: nur fuer Folgen mit 2.5-Merkmalen (stimme.v25), aeltere Berichte bleiben gleich
+# Zahlwoerter und Pflichtbegriffe: muessen exakt erkannt werden
+NUMBER_WORDS = {"null", "eins", "eine", "einen", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun",
+                "zehn", "zwölf", "zwanzig", "dreißig", "fünfzig", "hundert", "tausend"}
+MUST = {"code", "marketing"}
+EQUIV = {"des": "das", "net": "nicht", "hab": "habe", "schick": "schicke", "schreib": "schreibe", "hol": "hole", "merk": "merke", "ah": "ha", "haha": "ha", "gibt's": "gibts",
+         "eintausend": "tausend", "stop": "stopp",
+         # bairische Formen (Kalle): gleiche Bedeutung wie Hochdeutsch
+         "i": "ich", "mei": "mein", "behalt": "behalte", "verkauf": "verkaufe", "verlier": "verliere",
+         "en": "einen", "spinnet": "spinnen", "isch": "ist", "mi": "mich", "telefonier": "telefoniere", "brauch": "brauche", "n": "einen",
+         # schwaebische Formen (Folge viral)
+         "koi": "kein", "hätt": "hätte", "au": "auch", "no": "noch", "a": "eine",
+         # schwaebische Formen (ab 2.3)
+         "kaufet": "kaufen", "koiner": "keiner",
+         # 2.4: Kalle (Brezel-Geheimnis) und Umgangssprache
+         "gmeint": "gemeint", "erschte": "erste", "glei": "gleich", "grad": "gerade",
+         # 2.5: Kalle (Baeckerei-Spiel)
+         "gspielt": "gespielt", "kommet": "kommen",}
+
+
+ORDINAL = {1: "erste", 2: "zweite", 3: "dritte", 4: "vierte", 5: "fünfte", 6: "sechste", 7: "siebte", 8: "achte",
+           9: "neunte", 10: "zehnte"}
+ORD_ART = {"a", "eine", "ein", "einen", "die", "der", "das", "den", "dem", "zur", "zum", "am", "im"}
 
 
 def whisper():
@@ -38,10 +65,17 @@ def load16k(path):
 
 
 def normalize(text: str, mehl_is_mail_ok: bool = False) -> list:
-    text = text.replace("€", " Euro ").replace("–", " ").replace("…", " ")
+    text = re.sub(r"(?<=[a-zäöüß])'s\b", " es", text)        # wird's / er's -> wird es / er es
+    text = text.replace("€", " Euro ").replace("–", " ").replace("…", " ").replace("%", " Prozent ")
     text = re.sub(r"(?<=[A-Za-zÄÖÜäöüß])(?=\d)|(?<=\d)(?=[A-Za-zÄÖÜäöüß])", " ", text)
     out = []
-    for w in text.split():
+    toks = text.split()
+    for j, w in enumerate(toks):
+        # 2.3: Ordinalzahl nach Artikel ("a 2. Filiale" -> "a zweite Filiale"), Whisper schreibt "zweite" als "2."
+        if re.fullmatch(r"\d{1,2}\.", w) and 0 < j < len(toks) - 1 and toks[j - 1].lower() in ORD_ART \
+                and toks[j + 1][:1].isalpha() and int(w[:-1]) in ORDINAL:
+            out.append(ORDINAL[int(w[:-1])])
+            continue
         core = re.sub(r"^[^\w]+|[^\w']+$", "", w)
         if not core:
             continue
@@ -50,8 +84,8 @@ def normalize(text: str, mehl_is_mail_ok: bool = False) -> list:
             out += r[0].lower().split()
             continue
         core = core.lower().replace("-", "")
-        core = EQUIV.get(core, core)
-        out.append(core.replace("'", ""))
+        core = EQUIV.get(core, core).replace("'", "")
+        out.append(EQUIV.get(core, core))
     # "zwei euro fünfzig euro" -> doppelte Waehrung entfernen
     res = []
     for w in out:
@@ -70,13 +104,14 @@ def split_compounds(ref: list, hyp: list) -> list:
     return out
 
 
-def wer(ref: list, hyp: list) -> float:
+def wer(ref: list, hyp: list, free=frozenset()) -> float:
+    """Wortfehlerrate; Woerter aus 'free' (Dialekt) im Referenztext kosten bei Ersetzung nichts."""
     d = np.zeros((len(ref) + 1, len(hyp) + 1), dtype=int)
-    d[:, 0] = np.arange(len(ref) + 1)
+    d[:, 0] = np.cumsum([0] + [0 if w in free else 1 for w in ref])
     d[0, :] = np.arange(len(hyp) + 1)
     for i in range(1, len(ref) + 1):
         for j in range(1, len(hyp) + 1):
-            d[i, j] = min(d[i - 1, j] + 1, d[i, j - 1] + 1, d[i - 1, j - 1] + (ref[i - 1] != hyp[j - 1]))
+            d[i, j] = min(d[i - 1, j] + (0 if ref[i - 1] in free else 1), d[i, j - 1] + 1, d[i - 1, j - 1] + (ref[i - 1] != hyp[j - 1] and ref[i - 1] not in free))
     return d[-1, -1] / max(1, len(ref))
 
 
@@ -85,11 +120,16 @@ def _contains(seq: list, sub: list) -> bool:
     return any(seq[i:i + n] == sub for i in range(len(seq) - n + 1))
 
 
-def pitch_stats(y16):
+def pitch_stats(path):
+    """Median-F0 und Streuung (Halbtoene) mit pYIN auf der Original-Abtastrate (48 kHz, 85-ms-Fenster).
+    Bei 16 kHz/1024 stuft pYIN kurze, kraeftige Ausrufe teils komplett als stimmlos ein."""
     import librosa
-    f0, vf, _ = librosa.pyin(y16, fmin=60, fmax=500, sr=16000, frame_length=1024)
+    y, sr = sf.read(str(path), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    f0, vf, _ = librosa.pyin(y, fmin=65, fmax=400, sr=sr, frame_length=4096)
     f = f0[~np.isnan(f0)]
-    if len(f) < 10:
+    if len(f) < 8:
         return 0.0, 0.0
     med = float(np.median(f))
     st = 12 * np.log2(f / med)
@@ -113,17 +153,20 @@ def utmos(y16):
         return None
 
 
-def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: str) -> dict:
+def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: str, n_words: int | None = None,
+               tempo=(2.0, 2.8), pause_limit: float = 0.7, dialekt_extra=()) -> dict:
     """words: [{'w','start','end'}] aus den API-Zeitstempeln."""
     y16 = load16k(wav_path)
     raw, sr = sf.read(str(wav_path), dtype="float32")
     dur = len(raw) / sr
     segs, _ = whisper().transcribe(y16, language="de", beam_size=5, vad_filter=False,
-                                   condition_on_previous_text=False)
+                                   condition_on_previous_text=False, initial_prompt=NAMES)
     hyp_text = " ".join(s.text.strip() for s in segs).strip()
     ref_n = normalize(text)
     hyp_n = split_compounds(ref_n, normalize(hyp_text))
-    w_err = wer(ref_n, hyp_n)
+    raw_ref = [re.sub(r"^[^\w]+|[^\w']+$", "", w).lower() for w in split_words(text)]
+    free = frozenset(EQUIV.get(w, w) for w in raw_ref if w in DIALECT_REF or w in dialekt_extra)
+    w_err = wer(ref_n, hyp_n, free)
 
     # Zahlen und Fachbegriff exakt
     exact = []
@@ -132,12 +175,21 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
         if _num_token(core):
             sub = normalize(core)
             exact.append((core, _contains(hyp_n, sub)))
+    for w in raw_ref:
+        if w in NUMBER_WORDS:
+            exact.append((w, w in hyp_n))
+        elif w in MUST and begriff and w != begriff.lower():
+            exact.append((w, w in hyp_n))
     if begriff and begriff.lower() in text.lower():
-        exact.append((begriff, begriff.lower() in hyp_n))
+        if " " in begriff.strip():                 # 2.4: Begriff aus mehreren Woertern als Wortfolge pruefen
+            exact.append((begriff, _contains(hyp_n, normalize(begriff))))
+        else:
+            exact.append((begriff, begriff.lower() in hyp_n))
 
     # Tempo: Woerter pro Sekunde ueber die gesprochene Spanne
     spoken = [w for w in words if re.search(r"\w", w["w"]) and w["end"] > w["start"]]
-    n_words = len([w for w in split_words(text) if re.search(r"\w", w)])
+    if n_words is None:
+        n_words = len([w for w in split_words(text) if re.search(r"\w", w)])
     span = (spoken[-1]["end"] - spoken[0]["start"]) if spoken else dur
     wps = n_words / max(0.1, span)
 
@@ -146,8 +198,22 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     for a, b in zip(spoken, spoken[1:]):
         gaps.append((b["start"] - a["end"], a["w"]))
     max_gap = max(gaps, default=(0.0, ""))
-    gap_limit = lambda after: 1.0 if after.endswith("…") or after == "…" else 0.7  # noqa: E731
+    gap_limit = lambda after: (1.0 if after.endswith("…") or after == "…" else 0.7) if pause_limit >= 0.7 \
+        else pause_limit  # noqa: E731
     long_pauses = [(round(g, 2), w) for g, w in gaps if g > gap_limit(w)]
+    if pause_limit < 0.7:
+        # Pausen am Signal messen (laengste Stille zwischen erstem und letztem Laut, -30 dB): Whisper-Wortgrenzen
+        # sind bei Piper-Stimmen um 0,2-0,4 s ungenau.
+        hop = int(0.01 * sr)
+        rr = np.array([np.sqrt(np.mean(raw[i:i + hop] ** 2)) for i in range(0, len(raw), hop)])
+        loud = np.nonzero(rr > rr.max() * 10 ** (-30 / 20))[0]
+        run = best = 0
+        for v_ in (rr[loud[0]:loud[-1]] <= rr.max() * 10 ** (-30 / 20)) if len(loud) else []:
+            run = run + 1 if v_ else 0
+            best = max(best, run)
+        sig_gap = best * 0.01
+        max_gap = (sig_gap, "Signal")
+        long_pauses = [(round(sig_gap, 2), "Signal")] if sig_gap > pause_limit else []
 
     # Clipping / abgeschnitten
     peak = float(np.max(np.abs(raw))) if len(raw) else 0.0
@@ -155,9 +221,11 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     tail = raw[-int(0.03 * sr):]
     tail_db = 20 * np.log10(np.sqrt(np.mean(tail ** 2)) + 1e-9) if len(tail) else -99
     rms_db = 20 * np.log10(np.sqrt(np.mean(raw ** 2)) + 1e-9)
-    cut = (tail_db - rms_db) > -12 or (spoken and spoken[-1]["end"] > dur - 0.02)
+    # Ende abgeschnitten: nur ueber den Pegel (letzte 30 ms gegen den Zeilen-Durchschnitt). Der Whisper-
+    # Zeitstempel des letzten Worts reicht bei knapp geschnittenem Ausklang (<= 0,08 s) fast immer bis zum Dateiende.
+    cut = (tail_db - rms_db) > -12
 
-    med, st = pitch_stats(y16)
+    med, st = pitch_stats(wav_path)
     mos = utmos(y16)
 
     fails = []
@@ -166,8 +234,8 @@ def check_line(wav_path, text: str, words: list, begriff: str | None, speaker: s
     for core, ok in exact:
         if not ok:
             fails.append(f"'{core}' nicht exakt erkannt")
-    if not (2.0 <= wps <= 2.8):
-        fails.append(f"Tempo {wps:.2f} W/s ausserhalb 2,0–2,8")
+    if not (tempo[0] <= wps <= tempo[1]):
+        fails.append(f"Tempo {wps:.2f} W/s ausserhalb {tempo[0]:.1f}–{tempo[1]:.1f}".replace(".", ","))
     if st < 1.5:
         fails.append(f"monoton (Tonhoehen-Streuung {st:.1f} Halbtoene)")
     if clip_frac > 0.001:

@@ -1,0 +1,170 @@
+{
+  "folge": 5,
+  "slug": "black-friday",
+  "titel": "Der teuerste Rabatt",
+  "hook": "Dieser Rabatt kostet Kalle Geld.",
+  "begriff": "Marge",
+  "kapitel": [
+    "NACHRECHNEN",
+    "DIE FALLE",
+    "DER TRICK"
+  ],
+  "szenen": [
+    {
+      "sprecher": "kalle",
+      "text": "Black Friday! 30 Prozent auf alles!",
+      "highlight": [
+        "30 Prozent"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle klatscht ein riesiges, flackerndes Neonschild '−30 % AUF ALLES' an die Theke, gleichzeitig feuert eine Konfetti-Kanone, Brezeln mit Preisschildern hüpfen auf der Theke. [Overlay] Hook groß oben, schon im ersten Frame voll lesbar: 'Dieser Rabatt kostet Kalle Geld.' Kamera: push_in, schnell, Bewegung ab Frame 0. Diese Startposition merken: letzte Szene endet exakt hier."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Stopp! Dann verlierst du bei jeder Brezel Geld.",
+      "highlight": [
+        "jeder Brezel"
+      ],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Byte schießt aus dem Laptop, auf seiner Antenne dreht sich ein rotes Alarmlicht, er bremst mit ausgebreiteten Armen direkt vor dem Neonschild. Das Schild flackert und fällt kurz aus. Kamera: fahrt mit Byte mit."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Geld verlieren? Mit Rabatt? Des geht doch gar net.",
+      "highlight": [
+        "Rabatt"
+      ],
+      "reaktion": "zweifel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle beugt sich runter zu Byte, Augenbraue ganz oben, er hält ihm eine Brezel wie einen Beweis vor die Nase. Konfetti rieselt noch von seiner Mütze. Kamera: zoom_gesicht auf Kalle."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Eine Brezel kostet dich 90 Cent. Du verkaufst sie für 1,20.",
+      "highlight": [
+        "90 Cent",
+        "1,20"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Eine große Low-Poly-Brezel dreht sich langsam in der Mitte, zwei Preisschilder klappen links und rechts auf: 'KOSTEN 0,90 €' und 'PREIS 1,20 €'. [Screen] Ein Kassenbon rollt ins Bild mit beiden Zeilen. Kamera: kreisfahrt um die Brezel."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Bleiben 30 Cent. Das ist deine Marge.",
+      "highlight": [
+        "Marge"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 0,
+      "visual": "[3D] Aus der Brezel fallen drei goldene Münzen in Bytes Hände, er hält sie hoch wie einen Pokal. [Screen] Kassenbon-Summe: '+0,30 €' groß in Grün, darunter 'MARGE'. Kamera: push_in auf die Münzen."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Minus 30 Prozent: 84 Cent. Also 6 Cent Verlust. Pro Brezel.",
+      "highlight": [
+        "6 Cent Verlust"
+      ],
+      "reaktion": "schock",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Das Preisschild '1,20 €' wird von einer Schere zerschnitten und klappt um auf '0,84 €'. Die drei Münzen in Bytes Hand zerbröseln, eine rote Minus-Münze fällt aus seiner Hand. [Screen] Kassenbon: '−0,06 €' in Rot, blinkt. Kamera: harter_zoom auf den Bon."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Und je mehr i verkauf, desto mehr verlier i?!",
+      "highlight": [
+        "mehr verlier"
+      ],
+      "reaktion": "schock",
+      "set": "theke",
+      "kapitel": 1,
+      "visual": "[3D] Kalle hält sich mit beiden Händen die Mütze fest, vor ihm steht eine Kundenschlange aus Brezel-Tüten, die immer länger wird, über jeder Tüte ploppt ein rotes '−6 ct'. Kamera: rueckfahrt, damit die Schlange ins Bild passt."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Genau. Aber ich hab was Besseres.",
+      "highlight": [
+        "Besseres"
+      ],
+      "reaktion": "neutral",
+      "set": "studio",
+      "kapitel": 1,
+      "visual": "[3D] Licht dimmt, ein einzelner Spot auf Byte, er setzt langsam eine winzige Sonnenbrille auf, das Alarmlicht auf seiner Antenne wird grün. Kamera: zoom_gesicht auf Byte."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Jeden Abend landen 40 Brezeln im Müll.",
+      "highlight": [
+        "40 Brezeln"
+      ],
+      "reaktion": "staunen",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Eine Mülltonne mit Aufschrift 'RESTE' öffnet den Deckel, 40 Brezeln purzeln heraus und stapeln sich zu einem Berg. [Screen] Zähler zählt schnell hoch bis '40'. Kamera: schwenk von der Tonne zum Brezelberg."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Ab 17 Uhr: halber Preis. Nur auf die Reste.",
+      "highlight": [
+        "17 Uhr",
+        "halber Preis"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Eine große Wanduhr springt auf '17:00', in dem Moment klappt über dem Brezelberg ein Preisschild '½ PREIS' auf. Kamera: fahrt von der Uhr zum Preisschild."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Macht 24 Euro extra. Statt null.",
+      "highlight": [
+        "24 Euro"
+      ],
+      "reaktion": "jubel",
+      "set": "studio",
+      "kapitel": 2,
+      "visual": "[3D] Die Mülltonne verwandelt sich mit einem Dreh in eine Kasse, die Schublade springt auf, Münzen fliegen heraus und stapeln sich zu einer Münzsäule. [Screen] Kassenbon: '40 × 0,60 € = +24 €' in Grün. Kamera: push_in auf die Kasse."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Und den Rest vom Tag zahlen alle voll?",
+      "highlight": [
+        "voll"
+      ],
+      "reaktion": "staunen",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Kalle lässt die Brezel fallen, der Mund steht offen, das Neonschild hinter ihm flackert unsicher. Kamera: zoom_gesicht."
+    },
+    {
+      "sprecher": "byte",
+      "text": "Genau. Und das Plakat ist schon fertig.",
+      "highlight": [
+        "Plakat"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": 2,
+      "visual": "[3D] Byte schnippt, in zwei Sekunden baut sich Stück für Stück ein Neon-Plakat im Schaufenster auf: 'AB 17 UHR – RESTE ½ PREIS'. Er nimmt lässig die Sonnenbrille ab. Kamera: schwenk von Byte zum Plakat."
+    },
+    {
+      "sprecher": "kalle",
+      "text": "Gut. Aber mei Schild behalt i!",
+      "highlight": [
+        "Schild"
+      ],
+      "reaktion": "jubel",
+      "set": "theke",
+      "kapitel": null,
+      "visual": "[3D] Kalle schnappt sich trotzig das '−30 %'-Neonschild und klatscht es wieder an die Theke, Byte schlägt sich die Hand vors Gesicht. Kamera: endet exakt in der Startposition von Szene 1 (Loop)."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+ "stimme": "elevenlabs",
+ "hinweis": "Kalle = Brian, Byte = Laura, Lea = Sarah (Engine 2.4). Pause vor Szene 3 (0,4 s: Kalle begreift) und vor Szene 12 (0,5 s) nicht kürzen. Zeilen 2, 3, 12, 13: Gefühl durch Zurücknahme (leiser, langsamer). pegel_db: Zeilen 2, 3, 12, 13 leiser abgemischt (Zurücknahme). Szene 9: Pause im Sprechtext gekürzt (Komma statt „…“), damit die Folge unter 50 s bleibt.",
+ "pause_vor_szene": {
+  "3": 0.4,
+  "12": 0.5,
+  "13": 0.5
+ },
+ "hook_karte": {
+  "text_oben": "Lea schafft die Brezel nicht.",
+  "gelb": "nicht"
+ },
+ "zuruecknahme": {
+  "zeilen": [
+   2,
+   3,
+   12,
+   13
+  ],
+  "db": -3,
+  "wps_max": 2.2
+ },
+ "pegel_db": {
+  "2": -7.5,
+  "3": -1.8,
+  "12": -2.2,
+  "13": -9.3
+ }
+}

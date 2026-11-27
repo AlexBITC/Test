@@ -1,0 +1,1 @@
+{"hash": "4199627358686aa2f5ff", "speech_text": "Höflich und klar. So schreib ich des nie!", "voice": {"model": "de_DE-thorsten-high", "url_sub": "thorsten/high/", "speaker": null, "length_scale": 1.935, "noise_scale": 0.8, "noise_w": 0.9}, "model": "piper", "wav": "out/cache/4199627358686aa2f5ff.wav", "cached": false}

@@ -1,0 +1,1 @@
+{"hash": "6acbb43c8e11bb68a76f", "speech_text": "merk dirr: Viel verkauft … heißt nicht …", "voice": {"model": "de_DE-kerstin-low", "url_sub": "kerstin/low/", "speaker": null, "length_scale": 1.05, "noise_scale": 0.75, "noise_w": 0.8}, "model": "piper", "wav": "out/cache/6acbb43c8e11bb68a76f.wav", "cached": false}

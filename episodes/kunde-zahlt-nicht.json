@@ -1,0 +1,278 @@
+{
+  "slug": "kunde-zahlt-nicht",
+  "titel": "Viel verkauft, kein Geld",
+  "hook": { "gesprochen": "Viel verkauft. Kein Geld da.", "text_oben": "Viel verkauft. Kein Geld da.", "gelb": "Kein Geld" },
+  "begriff": "Liquidität",
+  "kapitel": ["OFFENE RECHNUNGEN", "GELD-LÜCKE", "ERINNERUNG SCHREIBEN"],
+  "szenen": [
+    {
+      "id": 1,
+      "sprecher": "kalle",
+      "text": "Viel verkauft. Kein Geld da.",
+      "tts": "Viel verkauft … kein Geld da!",
+      "stimmung": "verzweifelt, laut",
+      "highlight": ["Geld"],
+      "reaktion_kalle": "schock",
+      "ausdruck_byte": "neutral",
+      "set": "theke",
+      "kapitel": null,
+      "start": "Frame 1: Theke, Amerikanisch 50 mm auf Kalle hinter der Retro-Kasse, rechte Hand drückt die Kassentaste, Schublade ist schon 5 % offen und springt in Bewegung auf. Vitrine nur noch zu 20 % gefüllt (2 Brötchen, 1 Brezel, halber Hefezopf, Krümel #B8702E). Byte ist nicht im Bild. Kontoglas und Münzen gibt es noch nicht.",
+      "beats": [
+        { "wort": "verkauft", "aktion": "Kassenschublade springt von 5 % auf 100 % auf (6 Frames, ease-out back, Overshoot 8 %), sie ist leer. Kalles linke Hand zeigt auf die fast leere Vitrine (4 Frames Antizipation, Arm schwingt 6 Frames nach), 5 Brotkrümel #B8702E rieseln vom Vitrinenrand (Seed, Schwerkraft)", "sound": "pop" },
+        { "wort": "Kein", "aktion": "Aus der leeren Schublade flattert eine Low-Poly-Motte (Spannweite 0,12 BU, Flügel #F5F1E8, Körper #3A2A22) in einem Bogen 0,5 BU nach oben links Richtung Kamera, Flügelschlag 12 Hz, 20 Frames ease-in-out, zieht eine Spur aus 4 Mehlstaub-Partikeln #F5F1E8", "sound": "buzz" },
+        { "wort": "Geld", "aktion": "schock: Ruck nach hinten, Augen ×1,8, Pupillen klein, Mütze schießt 0,6 BU hoch, dreht sich 360° und landet in 14 Frames mit Squash 110/90 %, ein Schweißtropfen #BFFFF8 rinnt an der Schläfe", "sound": "none" }
+      ],
+      "screen": null,
+      "overlay": "Hook-Karte ab Frame 1 bei y 230–520: 'Viel verkauft.' / 'Kein Geld da.' mit 'Kein Geld' in #FFE14D",
+      "kamera": "Amerikanisch 50 mm, Push-in 3 % über die ersten 20 Frames (ease-out), auf 'Geld' harter Zoom auf Kalles Gesicht 50 → 85 mm in 4 Frames"
+    },
+    {
+      "id": 2,
+      "sprecher": "kalle",
+      "text": "Das Büro gegenüber zahlt seit 6 Wochen net!",
+      "tts": "Das Büro gegenüber zahlt seit sechs Wochen net!",
+      "stimmung": "empört, ratlos",
+      "highlight": ["6"],
+      "reaktion_kalle": "zweifel",
+      "ausdruck_byte": "neutral",
+      "set": "theke",
+      "kapitel": null,
+      "start": "Aus dem Gesichts-Zoom löst sich die Kamera in 8 Frames auf Nah 70 mm. Mütze sitzt wieder 5° rechts geneigt, Motte fliegt oben links aus dem Bild, Schublade bleibt offen.",
+      "beats": [
+        { "wort": "Büro", "aktion": "Kalle zeigt mit dem rechten Daumen über die Schulter auf das Glasfenster der Ladentür. Gegenüber leuchtet ein Bürofenster #F2B45A auf (Emission 0 → 2 in 6 Frames, ease-out)", "sound": "none" },
+        { "wort": "6", "aktion": "Über Kalles Kopf ploppen 6 Kalenderblätter (je 0,08 × 0,10 BU, #F5F1E8, oberer Rand #FF5A5F) nacheinander auf (Scale-Pop, Stagger 3 Frames) und flattern dann nacheinander zu Boden (Seed, Schwerkraft)", "sound": "pop" },
+        { "wort": "net", "aktion": "zweifel: rechte Braue hoch, linke runter, Kopf 10° schief, Mund schief. Kalle tippt mit der Faust zweimal auf die Theke, die Brötchen im Korb hüpfen je 0,02 BU (Stagger 2 Frames)", "sound": "buzz" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Nah 70 mm, Dolly 0,2 BU nach links, ease-in-out, Handheld-Drift ±0,3°"
+    },
+    {
+      "id": 3,
+      "sprecher": "byte",
+      "text": "Ich hol dein Geld zurück.",
+      "tts": "Ich hol dein Geld zurück.",
+      "stimmung": "selbstsicher, frech",
+      "highlight": ["Geld"],
+      "reaktion_kalle": "neutral",
+      "ausdruck_byte": "freundlich",
+      "set": "theke",
+      "kapitel": null,
+      "start": "Byte ist noch außerhalb rechts (x > 1080 px). Kalle in zweifel-Pose, Blick nach vorn.",
+      "beats": [
+        { "wort": "hol", "aktion": "Byte fliegt im Bogen von rechts außerhalb auf seine Position rechts neben Kalles Kopf (Abstand 0,55 BU, Kopfhöhe), 14 Frames ease-out, Squash 115/85 % beim Stopp, Antenne federt 3× nach, türkises Licht #2EE6D6 fällt auf Kalles rechte Wange", "sound": "whoosh" },
+        { "wort": "zurück", "aktion": "Byte-Augen springen auf ^ ^, Leuchten pulsiert auf 3,0. Kalle dreht den Kopf zu Byte (8 Frames ease-in-out), Brauen gehen von zweifel auf neutral", "sound": "ding" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Nah 70 mm → Amerikanisch 50 mm, Pull-back in 12 Frames ease-out, damit Byte ins Bild kommt; in den letzten 8 Frames Whip-Pan nach rechts mit Motion Blur ins Büro"
+    },
+    {
+      "id": 4,
+      "sprecher": "byte",
+      "text": "3 Rechnungen offen. Je 620 Euro, zusammen 1.860.",
+      "tts": "Drei Rechnungen offen. Je sechshundertzwanzig Euro, zusammen tausendachthundertsechzig.",
+      "stimmung": "präzise, zügig",
+      "highlight": ["1.860"],
+      "reaktion_kalle": "neutral",
+      "ausdruck_byte": "ernst",
+      "set": "buero",
+      "kapitel": 0,
+      "start": "Ankunft aus dem Whip-Pan: Büro, Kalle steht am Schreibtisch, vor ihm ein aufgeklappter Ordner (Rücken #19A99D). Byte schwebt rechts über dem Ordner, der Laptop ist an.",
+      "beats": [
+        { "wort": "Rechnungen", "aktion": "Aus dem Ordner fliegen 3 Rechnungsblätter (je 0,21 × 0,30 BU, #F5F1E8, graue Textzeilen als Balken #8A8580) hoch und fächern sich vor Byte in einer Reihe auf (Stagger 3 Frames, ease-out back). Byte scannt sie mit einem türkisen Lichtstreifen #2EE6D6 von oben nach unten (10 Frames)", "sound": "pop" },
+        { "wort": "620", "aktion": "Auf jedem Blatt klappt ein roter Stempel 'OFFEN' #FF5A5F herunter (Stagger 3 Frames, Squash 120/80 % beim Aufsetzen)", "sound": "pop" },
+        { "wort": "1.860", "aktion": "Die 3 Blätter rollen sich ein und verwandeln sich in eine Münzsäule aus 18 Goldmünzen #F2B45A (r 0,04 BU, Höhe je 0,012 BU), die von unten auf der Tischplatte hochwächst (Stagger 2 Frames, ease-out)", "sound": "pop" }
+      ],
+      "screen": ["3 × 620 € = 1.860 €", "Älteste: vor 6 Wochen"],
+      "overlay": null,
+      "kamera": "Amerikanisch 50 mm auf den Schreibtisch, Kran hebt sich 0,15 BU und neigt sich 10° nach unten auf die Blätter, ease-in-out"
+    },
+    {
+      "id": 5,
+      "sprecher": "kalle",
+      "text": "Wie, in 2 Sekunden?",
+      "tts": "Wie … in zwei Sekunden?",
+      "stimmung": "ungläubig, baff",
+      "highlight": ["2"],
+      "reaktion_kalle": "staunen",
+      "ausdruck_byte": "zwinkern",
+      "set": "buero",
+      "kapitel": 0,
+      "start": "Münzsäule steht auf dem Tisch, Byte schwebt rechts neben Kalles Kopf.",
+      "beats": [
+        { "wort": "2", "aktion": "Neben Byte ploppt eine Stoppuhr auf (Durchmesser 0,15 BU, Gehäuse #8FA3B0, Zeiger #FF5A5F), der Zeiger springt mit Overshoot auf 2 Sekunden", "sound": "pop" },
+        { "wort": "Sekunden", "aktion": "staunen: Augen ×1,6 mit Overshoot, Kinnlade fällt, beide Brauen hoch, Mütze hüpft zweimal (je 0,08 BU), 4 gelbe '!'-Partikel #FFE14D. Byte zwinkert (^ —)", "sound": "ding" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Nah 70 mm auf Kalle, Push-in 6 % in 8 Frames ease-out; letzte 8 Frames Whip-Pan ins Studio"
+    },
+    {
+      "id": 6,
+      "sprecher": "byte",
+      "text": "Freitag will die Mühle 1.500 Euro. Auf dem Konto: 900. Fehlen 600.",
+      "tts": "Freitag will die Mühle tausendfünfhundert Euro. Auf dem Konto: neunhundert. Fehlen: sechshundert.",
+      "stimmung": "ernst, ruhig",
+      "highlight": ["600"],
+      "reaktion_kalle": "neutral",
+      "ausdruck_byte": "besorgt",
+      "set": "studio",
+      "kapitel": 1,
+      "start": "Studio: Kalle links unten, Byte rechts neben dem Screen. Vor dem Screen steht das 'Kontoglas': ein gläserner Zylinder (r 0,25 BU, Höhe 0,6 BU, Glas leicht türkis getönt #BFFFF8, Roughness 0,1), leer, mit einer Markierungslinie #FF5A5F ganz oben bei 100 % = 1.500 €.",
+      "beats": [
+        { "wort": "Mühle", "aktion": "Ein Mehlsack mit Etikett 'MEHL 25 kg' fällt von oben neben das Glas (10 Frames ease-in, Squash 120/80 %, Mehlwolke #F5F1E8 aus 12 Partikeln), an ihm hängt ein Zettel #F5F1E8 mit Mühlrad-Symbol #B8702E", "sound": "pop" },
+        { "wort": "1.500", "aktion": "Die rote Linie am oberen Glasrand leuchtet auf (#FF5A5F, Emission 0 → 2, 6 Frames)", "sound": "pop" },
+        { "wort": "900", "aktion": "Goldmünzen #F2B45A fallen ins Glas und füllen es auf genau 60 % der Höhe (0,36 BU = 900 von 1.500), Stagger 2 Frames, Münzen hüpfen beim Landen", "sound": "pop" },
+        { "wort": "600", "aktion": "Der leere Bereich zwischen 60 % und 100 % füllt sich mit rotem Licht #FF5A5F (50 % Deckkraft) und blinkt 2× in 12 Frames. Byte-Augen zeigen besorgt, Leuchten fällt kurz auf 1,0", "sound": "buzz" }
+      ],
+      "screen": ["1.500 € − 900 € = 600 €"],
+      "overlay": null,
+      "kamera": "Halbtotale 35 mm → Amerikanisch 50 mm, Dolly-in 0,4 BU auf das Glas, ease-in-out"
+    },
+    {
+      "id": 7,
+      "sprecher": "kalle",
+      "text": "Obwohl ich so viel verkauft hab?",
+      "tts": "Obwohl ich so viel verkauft hab?",
+      "stimmung": "verwirrt, kleinlaut",
+      "highlight": ["verkauft"],
+      "reaktion_kalle": "zweifel",
+      "ausdruck_byte": "besorgt",
+      "set": "studio",
+      "kapitel": 1,
+      "start": "Glas mit roter Lücke steht vor dem Screen, Kalle links unten blickt darauf.",
+      "beats": [
+        { "wort": "verkauft", "aktion": "zweifel: Kalle kratzt sich mit der rechten Hand unter der Mütze, die Mütze kippt 15° und schwingt 10 Frames nach, Kopf 10° schief, das Geschirrtuch rutscht 0,03 BU und schwingt nach", "sound": "none" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Nah 70 mm auf Kalle, Orbit 8° nach rechts, ease-in-out"
+    },
+    {
+      "id": 8,
+      "sprecher": "byte",
+      "text": "Ich schreib eine höfliche Erinnerung: alle 3 Rechnungen, Zahlung in 7 Tagen.",
+      "tts": "Ich schreib eine höfliche Erinnerung: alle drei Rechnungen, Zahlung in sieben Tagen.",
+      "stimmung": "flink, gut gelaunt",
+      "highlight": ["7"],
+      "reaktion_kalle": "neutral",
+      "ausdruck_byte": "freundlich",
+      "set": "studio",
+      "kapitel": 2,
+      "start": "Byte fliegt im Bogen vor den Screen, das Kontoglas rückt 0,4 BU nach links in den Hintergrund. Auf dem Screen öffnet sich ein leeres Mail-Fenster.",
+      "beats": [
+        { "wort": "Erinnerung", "aktion": "Die Mail füllt sich Zeile für Zeile (jede Zeile 6 Frames Slide von links + Fade, Stagger 4 Frames), Byte-Pixelbalken pulsieren im Takt", "sound": "pop" },
+        { "wort": "3", "aktion": "Die 3 Rechnungsblätter (wie in Szene 4, mit Stempel 'OFFEN') fliegen im Bogen heran, schrumpfen auf 20 % und docken als Anhang-Kärtchen unten an die Mail an (12 Frames, ease-in-out, Stagger 3 Frames)", "sound": "pop" },
+        { "wort": "Tagen", "aktion": "Die Mail faltet sich zu einem Briefumschlag (0,30 × 0,20 BU, #F5F1E8, türkise Kante #2EE6D6) und fliegt in einem Bogen nach rechts oben aus dem Bild, mit Funkenspur #BFFFF8 aus 8 Partikeln", "sound": "whoosh" }
+      ],
+      "screen": ["Betreff: Freundliche Erinnerung", "3 Rechnungen · 1.860 €", "Bitte zahlen in 7 Tagen"],
+      "overlay": null,
+      "kamera": "Amerikanisch 50 mm auf den Screen, Push-in 5 % ease-out, am Ende folgt ein Tilt-up 6° dem Umschlag"
+    },
+    {
+      "id": 9,
+      "sprecher": "kalle",
+      "text": "Höflich und klar. So schreib ich des nie!",
+      "tts": "Höflich und klar. So schreib ich des nie!",
+      "stimmung": "beeindruckt, herzlich",
+      "highlight": ["klar"],
+      "reaktion_kalle": "staunen",
+      "ausdruck_byte": "freundlich",
+      "set": "studio",
+      "kapitel": 2,
+      "start": "Umschlag ist aus dem Bild, Byte schwebt zurück neben Kalles Kopf (Bogen, 12 Frames).",
+      "beats": [
+        { "wort": "klar", "aktion": "Kalle nickt zweimal anerkennend (je 6 Frames) und zeigt Daumen hoch mit der rechten Hand (4 Frames Antizipation, Overshoot)", "sound": "none" },
+        { "wort": "nie", "aktion": "staunen: Augen ×1,6 mit Overshoot, Kinnlade fällt, beide Brauen hoch, Mütze hüpft zweimal, 5 gelbe '!'-Partikel #FFE14D, linke Hand legt sich aufs Herz", "sound": "ding" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Nah 70 mm, Push-in 4 % in 10 Frames ease-out"
+    },
+    {
+      "id": 10,
+      "sprecher": "byte",
+      "text": "Liquidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
+      "tts": "Liquidität heißt: Geld, das du jetzt zahlen kannst. Nicht versprochenes Geld.",
+      "stimmung": "klar, erklärend",
+      "highlight": ["Liquidität"],
+      "reaktion_kalle": "neutral",
+      "ausdruck_byte": "ernst",
+      "set": "studio",
+      "kapitel": null,
+      "start": "Kapitel-Banner fährt nach oben aus (Slide + Fade 250 ms). Das Kontoglas fährt wieder in den Vordergrund vor den Screen, Füllstand 60 %, rote Linie oben.",
+      "beats": [
+        { "wort": "Liquidität", "aktion": "Das Glas bekommt eine türkise Randkante (Rim #2EE6D6, 8 Frames Fade-in), Byte-Leuchten pulsiert einmal auf 3,0", "sound": "ding" },
+        { "wort": "jetzt", "aktion": "Die 900-€-Münzen im Glas hüpfen einmal 0,03 BU (Stagger 2 Frames, Squash beim Landen)", "sound": "pop" },
+        { "wort": "versprochenes", "aktion": "Neben dem Glas erscheint per Fade eine halbtransparente 'Geister-Münzsäule' (1.860 €, #F2B45A mit 35 % Deckkraft, gestrichelte Kontur). Byte stupst sie im Bogen an, sie zerfällt in 20 Pixel #BFFFF8, die nach oben verwehen und nach 1 s weg sind", "sound": "buzz" }
+      ],
+      "screen": ["Zahlbar jetzt: 900 €", "Freitag fällig: 1.500 €", "Nur versprochen: 1.860 €"],
+      "overlay": "Begriffskarte oben bei y 230–380: 'LIQUIDITÄT' in #FFE14D, Slide von oben + Fade 250 ms",
+      "kamera": "Halbtotale 35 mm, Orbit 12° um das Glas, ease-in-out; letzte 8 Frames Whip-Pan zur Theke"
+    },
+    {
+      "id": 11,
+      "sprecher": "byte",
+      "text": "2 Tage später: Geld da, Mühle bezahlt, 1.260 Euro übrig.",
+      "tts": "Zwei Tage später: Geld da, Mühle bezahlt, tausendzweihundertsechzig Euro übrig.",
+      "stimmung": "triumphierend, frech",
+      "highlight": ["1.260"],
+      "reaktion_kalle": "staunen",
+      "ausdruck_byte": "freundlich",
+      "set": "theke",
+      "kapitel": null,
+      "start": "Theke wie in Szene 1, Schublade zu. Das Kontoglas steht rechts auf der Theke (Füllstand 60 %), daneben der Mehlsack mit Mühlrad-Zettel. Byte schwebt rechts neben Kalles Kopf. Kapitel-Leiste zeigt alle 3 Kapitel mit ✓.",
+      "beats": [
+        { "wort": "Geld", "aktion": "Durch die Ladentür fliegt der Briefumschlag aus Szene 8 zurück, öffnet sich über dem Glas, Goldmünzen #F2B45A regnen hinein (Stagger 1 Frame, 24 Frames). Die Füllung steigt von 60 % auf 184 % der Glashöhe (2.760 €), die Münzen stapeln sich als Säule über den Rand", "sound": "ding" },
+        { "wort": "Mühle", "aktion": "Ein Münzstrom fliegt im Bogen vom Glas in den Mehlsack (15 Frames, ease-in-out), die Füllung sinkt auf 84 % (1.260 von 1.500), auf dem Mühlrad-Zettel erscheint ein grüner Haken #3DDC84 (Scale-Pop)", "sound": "pop" },
+        { "wort": "1.260", "aktion": "Grüner Lichtring #3DDC84 um den Glasboden (Fade 8 Frames), die rote Linie wird grün. Kalle staunt: Augen ×1,6, Brauen hoch", "sound": "ding" }
+      ],
+      "screen": ["900 € + 1.860 € − 1.500 € = 1.260 €"],
+      "overlay": null,
+      "kamera": "Amerikanisch 50 mm, Kran 0,2 BU nach oben, während sich das Glas füllt, ease-out"
+    },
+    {
+      "id": 12,
+      "sprecher": "kalle",
+      "text": "Ha! Byte, du bist Gold wert!",
+      "tts": "[laughs] Ha! Byte, du bist Gold wert!",
+      "stimmung": "überglücklich, lachend",
+      "highlight": ["Gold"],
+      "reaktion_kalle": "jubel",
+      "ausdruck_byte": "freundlich",
+      "set": "theke",
+      "kapitel": null,
+      "start": "Glas mit 84 % Füllstand und grünem Ring auf der Theke, Byte rechts neben Kalle.",
+      "beats": [
+        { "wort": "Ha", "aktion": "Kalle klatscht in die Hände (4 Frames Antizipation, Hände prallen mit Squash), 6 Mehlstaub-Partikel #F5F1E8 stauben auf", "sound": "pop" },
+        { "wort": "Gold", "aktion": "jubel: beide Arme hoch, Sprung 0,1 BU mit Squash beim Landen, breites Grinsen, Mehlwolke und Konfetti (40 Teile in #F2B45A, #2EE6D6, #FFE14D, #3DDC84, Seed, Schwerkraft), Mütze hüpft. Byte macht einen Looping (Durchmesser 0,3 BU, 18 Frames)", "sound": "ding" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Halbtotale 35 mm, schneller Pull-back 10 % in 8 Frames ease-out, danach leichter Handheld-Bounce"
+    },
+    {
+      "id": 13,
+      "sprecher": "byte",
+      "text": "Merk dir: Viel verkauft heißt nicht …",
+      "tts": "Merk dir: Viel verkauft … heißt nicht …",
+      "stimmung": "verschmitzt, leise",
+      "highlight": ["verkauft"],
+      "reaktion_kalle": "neutral",
+      "ausdruck_byte": "zwinkern",
+      "set": "theke",
+      "kapitel": null,
+      "start": "Konfetti ist weg, Kalle senkt die Arme, Byte direkt vor der Kamera rechts.",
+      "beats": [
+        { "wort": "Merk", "aktion": "Byte dreht sich zur Kamera und zwinkert (^ —), die Antenne federt 2× nach", "sound": "none" },
+        { "wort": "verkauft", "aktion": "Byte fliegt im Bogen nach rechts aus dem Bild (x > 1080 px, 12 Frames ease-in). Kontoglas, Münzen und Mehlsack schrumpfen per Scale-Down (100 → 0 % in 8 Frames, Stagger 2 Frames) von der Theke", "sound": "whoosh" },
+        { "wort": "nicht", "aktion": "Kalle kehrt in die Ausgangspose hinter der Kasse zurück: neutral, rechte Hand auf der Kassentaste, Schublade zu, Mütze 5° rechts. Vitrine wie in Szene 1 (20 % gefüllt)", "sound": "none" }
+      ],
+      "screen": null,
+      "overlay": null,
+      "kamera": "Halbtotale 35 mm → Amerikanisch 50 mm, Dolly-in ease-in-out, endet exakt auf der Kameraposition von Szene 1 Frame 1, in den letzten 6 Frames ohne Handheld-Drift"
+    }
+  ],
+  "loop": "Das letzte Frame entspricht dem ersten: Theke, Amerikanisch 50 mm, gleiche Kameraposition und Brennweite. Kalle in neutral hinter der Kasse, rechte Hand auf der Kassentaste, Mütze 5° rechts, Schublade geschlossen (im ersten Frame 5 % offen und in Bewegung). Vitrine 20 % gefüllt, Byte außerhalb des Bildes, kein Glas, keine Münzen, kein Mehlsack. Bytes Satz 'Viel verkauft heißt nicht …' führt direkt in Kalles Hook 'Viel verkauft. Kein Geld da.'"
+}
