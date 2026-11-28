@@ -518,11 +518,14 @@ fade(mStem, lambda f: 1.0)
 anchor("lbl_you1", (FX - 0.75, -0.2, FZ - 0.4), None, "YOU", lambda f: (1 - smooth(lin(f, B0 - 10, B0))) + smooth(lin(f, END - 30, END - 8)))
 
 
+LOOP_V = 0.35          # Anteil des Stummels in Frame 0 und im letzten Frame (Loop-Naht)
+
+
 def path_draw(f, t_full0, t_full1, retract=True):
     """Zeichen-Fortschritt eines Wegs (Anteil der Gesamtlaenge): Stummel in Szene 1, voll ab t_full,
     Rueckzug auf den Stummel in Satz 10 (Loop)."""
     stub = STUB
-    v = smooth(lin(f, 0, 30))                              # Stummel zeichnen sich in den ersten 1 s
+    v = LOOP_V + (1 - LOOP_V) * smooth(lin(f, 0, 30))      # Stummel zeichnen sich in der ersten 1 s fertig
     full = smooth(lin(f, t_full0, t_full1))
     back = smooth(lin(f, F0 + 6, END - 6)) if retract else 0.0
     return v, full, back
@@ -538,7 +541,7 @@ l0, l1 = W(3, "flat") - 4, WE(3, "familiar") + 6
 def low_frac(f):
     v, full, back = path_draw(f, l0, l1)
     frac = lo_stub * v + (1 - lo_stub) * full
-    return frac - (frac - lo_stub) * back
+    return frac - (frac - lo_stub * LOOP_V) * back
 
 
 bevel_reveal(low, low_frac)
@@ -572,7 +575,7 @@ def up_frac(f):
     v, full, back = path_draw(f, u0, u1)
     # in Etappen: jede Phrase bringt ein Stueck
     frac = up_stub * v + (1 - up_stub) * up_progress(f)
-    return frac - (frac - up_stub) * back
+    return frac - (frac - up_stub * LOOP_V) * back
 
 
 PHRASES = [(W(5, "this") - 2, WE(5, "up") + 2), (W(6, "one") - 2, WE(6, "day") + 2), (W(6, "claps") - 8, WE(6, "claps") + 2),
@@ -648,7 +651,7 @@ reveal_many(p2_objs, lambda f: smooth(lin(f, t_p2, t_p2 + 26)))
 fade(mP2, lambda f: smooth(lin(f, t_p2, t_p2 + 10)) * (1 - smooth(lin(f, F0, F0 + 16))))
 for o in p2_objs:
     hide_when(o, lambda f: t_p2 - 1 <= f <= F0 + 17)
-anchor("lbl_higher", (ux, -0.2, uz + 0.55 * 0.82 + 0.62 * 0.82 + 0.45), None, "YOU, HIGHER", lambda f: smooth(lin(f, W(9, "higher") - 4, W(9, "higher") + 10)) * (1 - smooth(lin(f, F0, F0 + 14))))
+anchor("lbl_higher", (ux, -0.2, uz + 0.55 * 0.82 + 0.62 * 0.82 + 0.45), None, "YOU, HIGHER", lambda f: smooth(lin(f, W(9, "higher") - 4, W(9, "higher") + 10)) * (1 - smooth(lin(f, F0 - 8, F0 + 4))))
 
 # ================================================================== Kamera
 def cam_state(f):
