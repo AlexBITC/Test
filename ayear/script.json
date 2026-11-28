@@ -1,0 +1,25 @@
+{
+  "title": "A year from now",
+  "voice": {
+    "name": "Carolyn - Warm Grounded Narrator",
+    "voice_id": "4rgssJ1pg3E9c0U78Iid",
+    "source": "ElevenLabs GET /v1/shared-voices (gender=female), vom Nutzer gewaehlt aus Carolyn/Fernanda/Sedona",
+    "model": "eleven_multilingual_v2",
+    "settings": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": true}
+  },
+  "sentences": [
+    {"id": 1, "text": "A year from now, you'll be somewhere.", "mood": "calm", "pause_before": 0.0},
+    {"id": 2, "text": "The only question is where.", "mood": "calm", "pause_before": 0.5},
+    {"id": 3, "text": "This path is flat. Easy. Familiar.", "mood": "calm", "pause_before": 0.55},
+    {"id": 4, "text": "Same job. Same habits. Same excuses.", "mood": "calm", "pause_before": 0.5},
+    {"id": 5, "text": "This one goes up.", "mood": "calm", "pause_before": 0.9, "fixed_pause": true},
+    {"id": 6, "text": "One step a day. Nobody claps. Nobody watches.", "mood": "calm", "pause_before": 0.5},
+    {"id": 7, "text": "But every step changes the view.", "mood": "calm", "pause_before": 0.5},
+    {"id": 8, "text": "Both roads take exactly one year.", "mood": "calm", "pause_before": 0.55},
+    {"id": 9, "text": "Only one of them takes you higher.", "mood": "calm", "pause_before": 0.5},
+    {"id": 10, "text": "So, a year from now... where will you be?", "mood": "calm", "pause_before": 0.9, "fixed_pause": true}
+  ],
+  "mood_gain_db": {"calm": 0.0},
+  "mood_speed": {"calm": 0.95},
+  "mood_cue": {"calm": "she said calmly and warmly, like a trusted mentor."}
+}

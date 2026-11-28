@@ -20,3 +20,4 @@ out/ayear/*/
 out/ayear/*.wav
 out/ayear/*.log
 out/ayear/*.png
+!out/ayear/vorschau/

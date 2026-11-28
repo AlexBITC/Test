@@ -1,0 +1,514 @@
+{
+ "fps": 30,
+ "n_frames": 962,
+ "duration": 32.06666666666667,
+ "lead": 0.2,
+ "outro": 0.7,
+ "voice": {
+  "name": "Carolyn - Warm Grounded Narrator",
+  "voice_id": "4rgssJ1pg3E9c0U78Iid",
+  "source": "ElevenLabs GET /v1/shared-voices (gender=female), vom Nutzer gewaehlt aus Carolyn/Fernanda/Sedona",
+  "model": "eleven_multilingual_v2",
+  "settings": {
+   "stability": 0.5,
+   "similarity_boost": 0.8,
+   "style": 0.15,
+   "use_speaker_boost": true
+  }
+ },
+ "mood_gain_db": {
+  "calm": 0.0
+ },
+ "sentences": [
+  {
+   "id": 1,
+   "text": "A year from now, you'll be somewhere.",
+   "mood": "calm",
+   "start": 0.165,
+   "end": 2.087,
+   "wav": "out/ayear/voice/final_s01.wav",
+   "seed": 1123,
+   "pause_before": 0.0,
+   "lufs": -32.24,
+   "words": [
+    {
+     "w": "A",
+     "start": 0.15,
+     "end": 0.243
+    },
+    {
+     "w": "year",
+     "start": 0.324,
+     "end": 0.475
+    },
+    {
+     "w": "from",
+     "start": 0.533,
+     "end": 0.649
+    },
+    {
+     "w": "now,",
+     "start": 0.684,
+     "end": 0.858
+    },
+    {
+     "w": "you'll",
+     "start": 0.939,
+     "end": 1.102
+    },
+    {
+     "w": "be",
+     "start": 1.137,
+     "end": 1.207
+    },
+    {
+     "w": "somewhere.",
+     "start": 1.241,
+     "end": 1.787
+    }
+   ],
+   "audible": [
+    0.2,
+    1.74
+   ]
+  },
+  {
+   "id": 2,
+   "text": "The only question is where.",
+   "mood": "calm",
+   "start": 2.21,
+   "end": 3.745,
+   "wav": "out/ayear/voice/final_s02.wav",
+   "seed": 1194,
+   "pause_before": 0.5,
+   "lufs": -32.82,
+   "words": [
+    {
+     "w": "The",
+     "start": 2.145,
+     "end": 2.308
+    },
+    {
+     "w": "only",
+     "start": 2.366,
+     "end": 2.528
+    },
+    {
+     "w": "question",
+     "start": 2.575,
+     "end": 2.9
+    },
+    {
+     "w": "is",
+     "start": 2.946,
+     "end": 3.016
+    },
+    {
+     "w": "where.",
+     "start": 3.074,
+     "end": 3.445
+    }
+   ],
+   "audible": [
+    2.24,
+    3.415
+   ]
+  },
+  {
+   "id": 3,
+   "text": "This path is flat. Easy. Familiar.",
+   "mood": "calm",
+   "start": 3.955,
+   "end": 7.668,
+   "wav": "out/ayear/voice/final_s03.wav",
+   "seed": 1317,
+   "pause_before": 0.55,
+   "lufs": -34.49,
+   "words": [
+    {
+     "w": "This",
+     "start": 3.955,
+     "end": 4.176
+    },
+    {
+     "w": "path",
+     "start": 4.222,
+     "end": 4.431
+    },
+    {
+     "w": "is",
+     "start": 4.477,
+     "end": 4.547
+    },
+    {
+     "w": "flat.",
+     "start": 4.594,
+     "end": 4.93
+    },
+    {
+     "w": "Easy.",
+     "start": 5.488,
+     "end": 5.929
+    },
+    {
+     "w": "Familiar.",
+     "start": 6.823,
+     "end": 7.368
+    }
+   ],
+   "audible": [
+    3.965,
+    7.57
+   ]
+  },
+  {
+   "id": 4,
+   "text": "Same job. Same habits. Same excuses.",
+   "mood": "calm",
+   "start": 8.065,
+   "end": 13.926,
+   "wav": "out/ayear/voice/final_s04.wav",
+   "seed": 1414,
+   "pause_before": 0.5,
+   "lufs": -28.94,
+   "words": [
+    {
+     "w": "Same",
+     "start": 8.065,
+     "end": 8.425
+    },
+    {
+     "w": "job.",
+     "start": 8.483,
+     "end": 8.889
+    },
+    {
+     "w": "Same",
+     "start": 10.283,
+     "end": 10.608
+    },
+    {
+     "w": "habits.",
+     "start": 10.654,
+     "end": 11.176
+    },
+    {
+     "w": "Same",
+     "start": 12.605,
+     "end": 12.883
+    },
+    {
+     "w": "excuses.",
+     "start": 12.918,
+     "end": 13.626
+    }
+   ],
+   "audible": [
+    8.07,
+    13.68
+   ]
+  },
+  {
+   "id": 5,
+   "text": "This one goes up.",
+   "mood": "calm",
+   "start": 14.55,
+   "end": 15.641,
+   "wav": "out/ayear/voice/final_s05.wav",
+   "seed": 1485,
+   "pause_before": 0.9,
+   "lufs": -33.08,
+   "words": [
+    {
+     "w": "This",
+     "start": 14.505,
+     "end": 14.702
+    },
+    {
+     "w": "one",
+     "start": 14.76,
+     "end": 14.888
+    },
+    {
+     "w": "goes",
+     "start": 14.923,
+     "end": 15.12
+    },
+    {
+     "w": "up.",
+     "start": 15.178,
+     "end": 15.341
+    }
+   ],
+   "audible": [
+    14.58,
+    15.37
+   ]
+  },
+  {
+   "id": 6,
+   "text": "One step a day. Nobody claps. Nobody watches.",
+   "mood": "calm",
+   "start": 15.845,
+   "end": 19.849,
+   "wav": "out/ayear/voice/final_s06.wav",
+   "seed": 1608,
+   "pause_before": 0.5,
+   "lufs": -27.98,
+   "words": [
+    {
+     "w": "One",
+     "start": 15.845,
+     "end": 16.158
+    },
+    {
+     "w": "step",
+     "start": 16.205,
+     "end": 16.449
+    },
+    {
+     "w": "a",
+     "start": 16.507,
+     "end": 16.53
+    },
+    {
+     "w": "day.",
+     "start": 16.6,
+     "end": 16.913
+    },
+    {
+     "w": "Nobody",
+     "start": 17.285,
+     "end": 17.61
+    },
+    {
+     "w": "claps.",
+     "start": 17.668,
+     "end": 18.225
+    },
+    {
+     "w": "Nobody",
+     "start": 18.631,
+     "end": 18.933
+    },
+    {
+     "w": "watches.",
+     "start": 18.991,
+     "end": 19.549
+    }
+   ],
+   "audible": [
+    15.87,
+    19.63
+   ]
+  },
+  {
+   "id": 7,
+   "text": "But every step changes the view.",
+   "mood": "calm",
+   "start": 20.055,
+   "end": 21.713,
+   "wav": "out/ayear/voice/final_s07.wav",
+   "seed": 1692,
+   "pause_before": 0.5,
+   "lufs": -29.45,
+   "words": [
+    {
+     "w": "But",
+     "start": 20.055,
+     "end": 20.218
+    },
+    {
+     "w": "every",
+     "start": 20.252,
+     "end": 20.427
+    },
+    {
+     "w": "step",
+     "start": 20.461,
+     "end": 20.694
+    },
+    {
+     "w": "changes",
+     "start": 20.752,
+     "end": 21.053
+    },
+    {
+     "w": "the",
+     "start": 21.088,
+     "end": 21.158
+    },
+    {
+     "w": "view.",
+     "start": 21.204,
+     "end": 21.413
+    }
+   ],
+   "audible": [
+    20.13,
+    21.505
+   ]
+  },
+  {
+   "id": 8,
+   "text": "Both roads take exactly one year.",
+   "mood": "calm",
+   "start": 22.02,
+   "end": 24.335,
+   "wav": "out/ayear/voice/final_s08.wav",
+   "seed": 1776,
+   "pause_before": 0.55,
+   "lufs": -32.55,
+   "words": [
+    {
+     "w": "Both",
+     "start": 22.015,
+     "end": 22.282
+    },
+    {
+     "w": "roads",
+     "start": 22.34,
+     "end": 22.561
+    },
+    {
+     "w": "take",
+     "start": 22.607,
+     "end": 22.816
+    },
+    {
+     "w": "exactly",
+     "start": 22.863,
+     "end": 23.327
+    },
+    {
+     "w": "one",
+     "start": 23.455,
+     "end": 23.71
+    },
+    {
+     "w": "year.",
+     "start": 23.756,
+     "end": 24.035
+    }
+   ],
+   "audible": [
+    22.055,
+    24.085
+   ]
+  },
+  {
+   "id": 9,
+   "text": "Only one of them takes you higher.",
+   "mood": "calm",
+   "start": 24.54,
+   "end": 26.233,
+   "wav": "out/ayear/voice/final_s09.wav",
+   "seed": 1899,
+   "pause_before": 0.5,
+   "lufs": -33.81,
+   "words": [
+    {
+     "w": "Only",
+     "start": 24.54,
+     "end": 24.807
+    },
+    {
+     "w": "one",
+     "start": 24.865,
+     "end": 24.981
+    },
+    {
+     "w": "of",
+     "start": 25.004,
+     "end": 25.051
+    },
+    {
+     "w": "them",
+     "start": 25.086,
+     "end": 25.202
+    },
+    {
+     "w": "takes",
+     "start": 25.248,
+     "end": 25.446
+    },
+    {
+     "w": "you",
+     "start": 25.469,
+     "end": 25.55
+    },
+    {
+     "w": "higher.",
+     "start": 25.62,
+     "end": 25.933
+    }
+   ],
+   "audible": [
+    24.585,
+    26.045
+   ]
+  },
+  {
+   "id": 10,
+   "text": "So, a year from now... where will you be?",
+   "mood": "calm",
+   "start": 26.94,
+   "end": 31.721,
+   "wav": "out/ayear/voice/final_s10.wav",
+   "seed": 1996,
+   "pause_before": 0.9,
+   "lufs": -28.37,
+   "words": [
+    {
+     "w": "So,",
+     "start": 26.94,
+     "end": 27.265
+    },
+    {
+     "w": "a",
+     "start": 27.857,
+     "end": 27.927
+    },
+    {
+     "w": "year",
+     "start": 27.997,
+     "end": 28.147
+    },
+    {
+     "w": "from",
+     "start": 28.205,
+     "end": 28.345
+    },
+    {
+     "w": "now...",
+     "start": 28.403,
+     "end": 28.589
+    },
+    {
+     "w": "where",
+     "start": 30.597,
+     "end": 30.795
+    },
+    {
+     "w": "will",
+     "start": 30.818,
+     "end": 30.945
+    },
+    {
+     "w": "you",
+     "start": 30.992,
+     "end": 31.062
+    },
+    {
+     "w": "be?",
+     "start": 31.12,
+     "end": 31.421
+    }
+   ],
+   "audible": [
+    26.945,
+    31.36
+   ]
+  }
+ ]
+}
