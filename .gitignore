@@ -15,3 +15,8 @@ out/bnpl/*/
 out/bnpl/*.wav
 out/bnpl/*.log
 out/bnpl/*.png
+# A-year-from-now-Video: Zwischenstaende
+out/ayear/*/
+out/ayear/*.wav
+out/ayear/*.log
+out/ayear/*.png
